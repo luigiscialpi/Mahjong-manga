@@ -1,0 +1,1315 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}</style><style>:root{color-scheme:light dark;--md-bg:#fff;--md-text:rgba(0,0,0,.8);--md-muted:rgba(0,0,0,.6);--md-fill:rgba(0,0,0,.04);--md-fill-strong:rgba(0,0,0,.06);--md-rule:rgba(0,0,0,.1);--md-rule-strong:rgba(0,0,0,.16);--md-link:hsl(210 100% 45%)}@media (prefers-color-scheme:dark){:root:where(:not([data-theme="light"])){--md-bg:#0d0d0d;--md-text:rgba(255,255,255,.85);--md-muted:rgba(255,255,255,.6);--md-fill:rgba(255,255,255,.06);--md-fill-strong:rgba(255,255,255,.09);--md-rule:rgba(255,255,255,.14);--md-rule-strong:rgba(255,255,255,.22);--md-link:hsl(210 100% 72%)}}:root[data-theme="dark"]{color-scheme:dark;--md-bg:#0d0d0d;--md-text:rgba(255,255,255,.85);--md-muted:rgba(255,255,255,.6);--md-fill:rgba(255,255,255,.06);--md-fill-strong:rgba(255,255,255,.09);--md-rule:rgba(255,255,255,.14);--md-rule-strong:rgba(255,255,255,.22);--md-link:hsl(210 100% 72%)}:root[data-theme="light"]{color-scheme:light}@media print{:root,:root[data-theme="dark"]{color-scheme:light;--md-bg:#fff;--md-text:rgba(0,0,0,.8);--md-muted:rgba(0,0,0,.6);--md-fill:rgba(0,0,0,.04);--md-fill-strong:rgba(0,0,0,.06);--md-rule:rgba(0,0,0,.1);--md-rule-strong:rgba(0,0,0,.16);--md-link:hsl(210 100% 45%)}}body{background:var(--md-bg);color:var(--md-text);max-width:720px;margin:0 auto;padding:32px;display:flex;flex-direction:column;gap:10px;font:14px/1.55 -apple-system,BlinkMacSystemFont,'SF Pro','Segoe UI',sans-serif;overflow-wrap:break-word}body>:first-child{margin-top:0}h1,h2,h3,h4,h5,h6{margin:6px 0 0;line-height:1.25;font-weight:600;text-wrap:balance}h1{font-size:1.35em}h2{font-size:1.15em;color:var(--md-muted)}h3,h4,h5,h6{font-size:1em}p,ul,ol,blockquote,table,pre,hr{margin:0}strong{font-weight:600}a{color:var(--md-link);text-decoration:none}a:hover{text-decoration:underline}ul,ol{display:flex;flex-direction:column;gap:6px;padding-left:22px}ul{list-style:disc}ol{list-style:decimal}:is(li,td,th)>*+:is(p,ul,ol,blockquote){margin-top:6px}blockquote{display:flex;flex-direction:column;gap:10px;border-left:2px solid var(--md-rule);padding-left:10px;color:var(--md-muted)}:not(pre)>code{background:var(--md-fill);padding:1px 3px;border-radius:4px;font:.92em 'SF Mono',ui-monospace,Menlo,Consolas,monospace}a>code{background:none;color:inherit}pre{background:var(--md-fill);padding:10px 12px;border-radius:6px;overflow-x:auto;font:12px/1.5 'SF Mono',ui-monospace,Menlo,Consolas,monospace;margin-block:4px}pre code{background:none;padding:0;font:inherit}table{width:100%;border-collapse:separate;border-spacing:2px;font:inherit}th,td{padding:6px 8px;border-radius:3px;text-align:left;vertical-align:top}th{background:var(--md-fill-strong);font-weight:600}td{background:var(--md-fill)}:is(th,td) :not(pre)>code{background:transparent}hr{border:0;border-top:1px solid var(--md-rule-strong);margin-block:10px}img{max-width:100%;height:auto;border-radius:4px}</style>
+</head><body>
+<h1>Majoa Mahjong — Manuale di sviluppo</h1>
+<blockquote>
+<p><strong>Scopo.</strong> Questo documento è la memoria tecnica del gioco: spiega com'è fatto, perché è fatto così e come si modifica senza romperlo. Serve a chi (persona o Claude) riprende il lavoro in una nuova chat.
+<strong>Regola operativa.</strong> Ogni modifica approvata viene (1) sviluppata, (2) testata, (3) <strong>documentata qui</strong> (sezioni toccate + registro modifiche), (4) pubblicata sullo stesso link.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Versione gioco / manuale</strong></td>
+<td>gioco 1.10 · manuale 1.10</td>
+</tr>
+<tr>
+<td><strong>Link gioco (artifact)</strong></td>
+<td><a href="https://claude.ai/artifact/RH5sNxhfP2mYozRjn2bA6g">https://claude.ai/artifact/RH5sNxhfP2mYozRjn2bA6g</a></td>
+</tr>
+<tr>
+<td><strong>Link manuale</strong></td>
+<td><a href="https://claude.ai/artifact/GTc4WQjbfQfnXW2fQBp6VK">https://claude.ai/artifact/GTc4WQjbfQfnXW2fQBp6VK</a></td>
+</tr>
+<tr>
+<td><strong>File sorgente</strong></td>
+<td><code>mahjong.html</code> (un solo file, ~1100 righe, ~67 KB)</td>
+</tr>
+<tr>
+<td><strong>Lingue dell'interfaccia</strong></td>
+<td><strong>Francese (predefinita)</strong>, inglese, italiano · commenti nel codice in italiano</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Per riprendere il lavoro in una nuova chat:</strong> leggi il codice dal link del gioco con l'azione <code>read</code> dello strumento Artifact (copia il file in <code>/mnt/user-data/outputs/artifacts/</code>), leggi questo manuale, poi lavora sul file e ripubblica <strong>sullo stesso link</strong> (parametro <code>url</code>) per non creare duplicati.</p>
+<hr>
+<h2>1. Panoramica</h2>
+<p>Mahjong solitario (&quot;Mahjong Solitaire&quot;) per telefono Android, giocabile dal browser/app Claude.</p>
+<ul>
+<li><strong>20 livelli</strong> sequenziali, ognuno con tema di colori, nota musicale, layout e limiti propri.</li>
+<li><strong>30 tipi di tessera</strong> disegnati in SVG in stile manga (animali, lettere/numeri, stella, sole, luna, mare).</li>
+<li><strong>Livelli 11–20:</strong> tessere <em>nascoste</em> 🔒 che si sbloccano abbinando coppie di stelle ⭐.</li>
+<li><strong>Sempre risolvibile:</strong> i disegni vengono assegnati simulando una partita al contrario.</li>
+<li>Aiuto / Annulla / Mescola con numero limitato nei livelli alti, rimescolo automatico se non ci sono mosse.</li>
+<li>Suoni sintetizzati (WebAudio), vibrazione, fuochi d'artificio e coriandoli alla vittoria.</li>
+<li>Valutazione a 1–3 stelle in base al <strong>tempo e agli aiuti usati</strong>, record per livello, progressi salvati.</li>
+<li><strong>3 lingue</strong> (francese predefinita, inglese, italiano) scelte dal menu (§11.1).</li>
+<li><strong>Modale delle novità</strong> che spiega le regole nuove la prima volta che si entra in certi livelli (§11.2).</li>
+</ul>
+<h3>Vincoli di progetto (non negoziabili senza decisione esplicita)</h3>
+<ol>
+<li><strong>Un solo file HTML</strong> autosufficiente: CSS e JS inline, nessuna immagine esterna, nessuna libreria.</li>
+<li><strong>Tessere di taglia media</strong>: larghezza massima 64 px; tavole entro <strong>6 colonne × 7 righe</strong>; i livelli alti crescono in altezza (più piani), non in larghezza. <em>(In futuro la «Modalità comoda», §17.0, potrà alzare il tetto per i senior.)</em></li>
+<li><strong>Mobile first</strong> (Android, ~360–400 px di larghezza), tocco, niente hover.</li>
+<li><strong>Nessuna dipendenza di rete</strong> (la pagina pubblicata non può chiamare altri siti).</li>
+<li><strong>Il suono non deve mai poter bloccare il gioco</strong> (vedi §12).</li>
+</ol>
+<hr>
+<h2>2. Ambiente di pubblicazione (artifact)</h2>
+<p>Il gioco è una pagina HTML pubblicata con lo strumento <strong>Artifact</strong> su claude.ai. Regole dell'ambiente che condizionano il codice:</p>
+<ul>
+<li>Script esterni ammessi solo da <code>cdnjs.cloudflare.com</code>, <code>cdn.jsdelivr.net/npm/</code>, <code>cdn.tailwindcss.com</code>, <code>code.jquery.com</code>; font solo Google Fonts. <strong>Il gioco non usa nulla di esterno</strong> e deve restare così.</li>
+<li><code>fetch</code> verso altri siti, <code>window.storage</code>, <code>window.claude.*</code> <strong>non funzionano</strong> nella pagina pubblicata.</li>
+<li><code>localStorage</code> funziona (privato per artifact e per browser). Va sempre usato dentro <code>try/catch</code>.</li>
+<li>Dimensione massima 16 MB (siamo a ~50 KB).</li>
+<li>Per aggiornare: <code>Artifact</code> con <code>action:&quot;publish&quot;</code>, <code>file_path:&quot;/mnt/user-data/outputs/mahjong.html&quot;</code> e <code>url:&quot;&lt;link del gioco&gt;&quot;</code>.</li>
+<li>Per rileggere il sorgente: <code>action:&quot;read&quot;</code> con il link.</li>
+<li>Meta viewport con <code>viewport-fit=cover</code> e padding con <code>env(safe-area-inset-*)</code> su <code>:root</code>.</li>
+</ul>
+<hr>
+<h2>3. Struttura del file</h2>
+<pre><code>&lt;head&gt;     meta viewport · &lt;style&gt; (tutto il CSS)
+&lt;body&gt;     header · #area/#board · nav · #menu · #win
+&lt;script&gt;   un&#39;unica IIFE: (function(){ ... })();
+</code></pre>
+<h3>Ordine delle sezioni dentro la IIFE (l'ordine conta)</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Sezione (commento nel codice)</th>
+<th>Contenuto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><em>(senza titolo)</em> helper grafici</td>
+<td><code>O</code>, <code>el</code>, <code>E</code>, <code>C</code>, <code>P</code>, <code>L</code>, <code>eye</code>, <code>blush</code>, <code>omega</code>, <code>smileV</code>, <code>glyph</code>, <code>starPath</code>, <code>spark</code>, <code>lionMane</code>, <code>sunRays</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>FACES</code>, <code>BGS</code>, <code>STAR_IDX</code>, <code>TYPES</code>, <code>NT</code></td>
+<td>i 30 disegni e gli sfondi</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>LIVELLI</code></td>
+<td><code>rect</code>, <code>LEVELS</code>, <code>markHidden</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>PROGRESSI</code></td>
+<td><code>prog</code> (con <code>seen</code>), <code>muted</code>, <code>saveProg</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>LINGUE</code></td>
+<td><code>I18N</code> (fr/en/it), <code>lang</code>, <code>tx</code>, <code>lname</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>AUDIO</code></td>
+<td><code>ac</code>, <code>tone</code>, <code>noise</code>, <code>lv</code>, <code>cfg</code>, <code>root</code>, <code>SND</code>, <code>buzz</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>LOGICA</code></td>
+<td><code>isFree</code>, <code>shuffleArr</code>, <code>makeGroups</code>, <code>assign</code></td>
+</tr>
+<tr>
+<td>8</td>
+<td>stato e helper</td>
+<td>variabili globali (incluse <code>hintsUsed</code>, <code>undosUsed</code>, <code>shufUsed</code>, <code>shufBarrier</code>), <code>G</code>, <code>isLocked</code>, <code>selectable</code>, <code>alive</code>, <code>toast</code>, <code>applyTheme</code>, <code>counts</code>, <code>LOCKED</code>, <code>paintTile</code>, <code>layout</code>, <code>refresh</code>, <code>findMove</code>, <code>startTimer</code></td>
+</tr>
+<tr>
+<td>9</td>
+<td>azioni di gioco</td>
+<td><code>tap</code>, <code>unlockGroup</code>, <code>rescue</code>, <code>afterMove</code></td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>EFFETTI VITTORIA</code></td>
+<td>canvas fuochi/coriandoli, <code>calcStars</code>, <code>win</code></td>
+</tr>
+<tr>
+<td>11</td>
+<td><code>MODALE NOVITA' DEL LIVELLO</code></td>
+<td><code>INTRO_VIS</code>, <code>INTRO_ICON</code>, <code>miniTile</code>, <code>buildVis</code>, <code>needIntro</code>, <code>showIntro</code></td>
+</tr>
+<tr>
+<td>12</td>
+<td><code>AVVIO LIVELLO</code></td>
+<td><code>startLevel</code></td>
+</tr>
+<tr>
+<td>13</td>
+<td><code>MENU</code></td>
+<td><code>buildMenu</code>, <code>fmtInfo</code>, <code>openMenu</code>, <code>closeMenu</code></td>
+</tr>
+<tr>
+<td>14</td>
+<td><code>PULSANTI</code></td>
+<td>handler dei pulsanti, mute, reset, <code>applyLang</code>, bottoni lingua, <code>resize</code></td>
+</tr>
+<tr>
+<td>15</td>
+<td>avvio</td>
+<td><code>applyTheme(LEVELS[0]); applyLang(); counts(); openMenu();</code></td>
+</tr>
+</tbody>
+</table>
+<p>Note: <code>lv</code> e <code>cfg</code> sono dichiarate nella sezione AUDIO ma usate ovunque (anche da <code>lname</code>/<code>tx</code> indirettamente tramite <code>lang</code>); <code>shuffleArr</code> è una function declaration (hoisting) usata già da <code>markHidden</code>. Se si sposta codice, ricontrollare queste dipendenze.</p>
+<hr>
+<h2>4. Modello dati</h2>
+<h3>4.1 Tessera (oggetto in <code>tiles[]</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Significato</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>x</code>, <code>y</code></td>
+<td>posizione in <strong>unità di tessera</strong> (1 unità = 1 tessera). Oggi solo interi, ma la logica supporta anche mezze posizioni</td>
+</tr>
+<tr>
+<td><code>z</code></td>
+<td>piano (0 = base)</td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td>indice 0–29 in <code>TYPES</code> (il disegno)</td>
+</tr>
+<tr>
+<td><code>hid</code></td>
+<td>0 = normale; <code>g ≥ 1</code> = nascosta, appartiene al gruppo <code>g</code></td>
+</tr>
+<tr>
+<td><code>gone</code></td>
+<td>true se già tolta</td>
+</tr>
+<tr>
+<td><code>el</code></td>
+<td>elemento DOM <code>div.tile</code></td>
+</tr>
+<tr>
+<td><code>_k</code></td>
+<td>valore temporaneo di ordinamento usato da <code>assign</code></td>
+</tr>
+</tbody>
+</table>
+<h3>4.2 Livello (voce di <code>LEVELS[]</code>)</h3>
+<pre><code class="language-js">{ name:&#39;Menta&#39;,        // nome mostrato
+  n:16,                // quanti TIPI di disegno usare
+  hints:3,             // aiuti (null = illimitati)
+  shuf:2,              // mescolate (null = illimitate)
+  undo:8,              // annulla (null = illimitati)
+  dim:false,           // true = tessere bloccate scurite &#34;forte&#34;
+  hid:[6],             // OPZIONALE: gruppi di tessere nascoste (qui 1 gruppo da 6)
+  th:[feltA, feltB, accent, edge, edge2],   // tema colori
+  build:function(a){ rect(a, x0, y0, w, h, z, corners); ... } // layout
+}
+</code></pre>
+<p><code>rect(a,x0,y0,w,h,z,corners)</code> aggiunge un rettangolo di tessere al piano <code>z</code>; con <code>corners=true</code> toglie i 4 angoli.</p>
+<h3>4.3 Stato globale (variabili della IIFE)</h3>
+<p><code>tiles</code> · <code>sel</code> (tessera selezionata) · <code>history</code> (voci <code>[a,b,g]</code>) · <code>secs</code>/<code>timer</code> · <code>over</code> · <code>started</code> · <code>unl</code> (n° gruppi sbloccati) · <code>hintsLeft</code>/<code>shufLeft</code>/<code>undoLeft</code> · <code>combo</code>/<code>lastMatch</code> · <code>lv</code>/<code>cfg</code> (livello e sua config) · <code>lang</code> (lingua corrente) · <code>hintsUsed</code>/<code>undosUsed</code>/<code>shufUsed</code> (aiuti usati nella partita, per le stelle) · <code>shufBarrier</code> (true dopo un rimescolo) · <code>tw</code>,<code>th</code>,<code>COLS</code>,<code>ROWS</code>,<code>maxZ</code> (geometria calcolata da <code>layout</code>).</p>
+<h3>4.4 Progressi (localStorage)</h3>
+<table>
+<thead>
+<tr>
+<th>Chiave</th>
+<th>Valore</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mj_prog3</code></td>
+<td><code>{&quot;unlocked&quot;:N,&quot;stars&quot;:{&quot;1&quot;:3,...},&quot;best&quot;:{&quot;1&quot;:42,...},&quot;seen&quot;:{&quot;11&quot;:true,...}}</code> — <code>unlocked</code> = ultimo livello giocabile; <code>stars</code> = migliore valutazione 1–3; <code>best</code> = miglior tempo in secondi; <code>seen</code> = livelli di cui è già stata mostrata la modale delle novità (campo aggiunto in 1.10, compatibile all'indietro: se manca, <code>prog.seen = {}</code>)</td>
+</tr>
+<tr>
+<td><code>mj_lang</code></td>
+<td><code>&quot;fr&quot;</code>, <code>&quot;en&quot;</code> o <code>&quot;it&quot;</code> (se manca o non valida → francese)</td>
+</tr>
+<tr>
+<td><code>mj_mute</code></td>
+<td><code>&quot;1&quot;</code> = suoni spenti, <code>&quot;0&quot;</code> = accesi</td>
+</tr>
+<tr>
+<td><code>mj_prog2</code></td>
+<td><strong>vecchia chiave, viene cancellata all'avvio</strong> (serviva a far ripartire tutti da zero)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Se si cambia la <strong>struttura</strong> di <code>prog</code>, cambiare anche il nome della chiave (es. <code>mj_prog4</code>) per evitare dati incompatibili.</p>
+</blockquote>
+<hr>
+<h2>5. Regole del gioco</h2>
+<h3>5.1 Tessera libera (<code>isFree(t, alive)</code>)</h3>
+<p>Una tessera è <strong>libera</strong> se:</p>
+<ol>
+<li>nessuna tessera del piano <code>z+1</code> la copre (stessa zona: <code>|dx|&lt;1</code> e <code>|dy|&lt;1</code>), <strong>e</strong></li>
+<li><strong>non</strong> ha tessere vicine sia a sinistra <strong>sia</strong> a destra sullo stesso piano. Vicina a sinistra = stesso <code>z</code>, <code>|dy|&lt;1</code>, <code>u.x&lt;t.x</code> e <code>t.x−u.x&lt;2</code> (idem a destra).</li>
+</ol>
+<p>Le tessere nascoste (non ancora sbloccate) <strong>contano come ostacoli</strong> per le altre, ma <strong>non si possono selezionare</strong>.</p>
+<h3>5.2 Selezionabile (<code>selectable</code>)</h3>
+<p><code>selectable = !isLocked(t) &amp;&amp; isFree(t, alive)</code>, dove <code>isLocked(t) = (t.hid||0) &gt; unl</code>.</p>
+<h3>5.3 Abbinamento</h3>
+<p>Si tocca una tessera selezionabile (si evidenzia), poi una seconda: se hanno lo stesso <code>type</code> spariscono; altrimenti la selezione passa alla seconda. Toccare di nuovo la stessa deseleziona. Toccare una tessera non libera → suono + messaggio; una nascosta → messaggio «Abbina due ⭐ per sbloccarla».</p>
+<h3>5.4 Tessere nascoste e stelle</h3>
+<ul>
+<li><code>cfg.hid = [a,b,...]</code> = gruppi di dimensione a, b, … ; <code>G()</code> = numero di gruppi.</li>
+<li><code>markHidden</code> sceglie a caso, a ogni partita, le tessere di ciascun gruppo.</li>
+<li>Abbinare <strong>una coppia di stelle</strong> (<code>type === STAR_IDX</code>, 26) con <code>unl &lt; G()</code> fa <code>unl++</code> e <strong>sblocca il gruppo numero <code>unl</code></strong> (<code>unlockGroup</code>): le tessere di quel gruppo vengono ridisegnate col loro vero disegno, con animazione di &quot;giro&quot; e suono.</li>
+<li>Ogni coppia di stelle sblocca un solo gruppo. Con 3 gruppi servono 3 coppie.</li>
+<li><strong>Annulla</strong> su una coppia di stelle che aveva sbloccato un gruppo <strong>richiude</strong> quel gruppo (la voce di <code>history</code> è <code>[a,b,g]</code> con <code>g</code> ≠ 0).</li>
+</ul>
+<h3>5.5 Aiuti</h3>
+<table>
+<thead>
+<tr>
+<th>Azione</th>
+<th>Effetto</th>
+<th>Costo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Aiuto</strong></td>
+<td>fa pulsare una coppia possibile; se ci sono tessere da sbloccare, indica <strong>prima le stelle</strong></td>
+<td>1 aiuto se limitati</td>
+</tr>
+<tr>
+<td><strong>Annulla</strong></td>
+<td>rimette le due ultime tessere (e richiude il gruppo se era una coppia di stelle). <strong>Non si può tornare indietro oltre un rimescolo</strong> (§5.7)</td>
+<td>1 annulla se limitati</td>
+</tr>
+<tr>
+<td><strong>Mescola</strong></td>
+<td>riassegna i disegni delle tessere rimaste (sempre risolvibile) e <strong>azzera la cronologia di Annulla</strong></td>
+<td>1 mescolata se limitate</td>
+</tr>
+<tr>
+<td><strong>Ricomincia</strong></td>
+<td><code>startLevel(lv)</code>: nuova partita dello stesso livello</td>
+<td>gratis</td>
+</tr>
+<tr>
+<td><strong>Rimescolo automatico</strong> (<code>rescue</code>)</td>
+<td>se non ci sono mosse, dopo 1,1 s rimescola da solo (azzera anch'esso la cronologia di Annulla)</td>
+<td><strong>gratis, illimitato e non conta come aiuto per le stelle</strong></td>
+</tr>
+</tbody>
+</table>
+<h3>5.6 Vittoria e stelle di valutazione</h3>
+<p>Le stelle dipendono da <strong>tempo e aiuti usati</strong> (<code>calcStars(sec, pairs, aids)</code>), e vale il <strong>più basso</strong> dei due risultati.</p>
+<ul>
+<li><code>pairs = tessere/2</code>.</li>
+<li><strong>Per tempo:</strong> ★★★ se <code>sec ≤ pairs×5</code>; ★★ se <code>sec ≤ pairs×10</code>; altrimenti ★.</li>
+<li><strong>Per aiuti:</strong> <code>aids = hintsUsed + undosUsed + shufUsed</code> (Aiuto + Annulla + Mescola usati davvero; il rimescolo automatico <strong>non</strong> conta). ★★★ se <code>aids ≤ 1</code>; ★★ se <code>aids ≤ max(3, ceil(pairs/6))</code>; altrimenti ★.</li>
+<li><strong>Risultato</strong> = <code>min(per tempo, per aiuti)</code>.</li>
+<li>Esempi: livello 2 (10 coppie) → 3★ con 0–1 aiuti, al massimo 2★ con 2–3, 1★ con 4 o più. Livello 20 (48 coppie) → al massimo 2★ fino a 8 aiuti, 1★ da 9.</li>
+<li>I contatori si azzerano a ogni <code>startLevel</code>.</li>
+<li>La scheda di vittoria mostra tempo, record, <strong>«Aiuti usati: N»</strong> e la regola («★★★: veloce e con al massimo 1 aiuto»).</li>
+<li>Si salva solo se migliora (<code>stars</code> non scende mai; <code>best</code> = tempo minimo). Vincere il livello <code>n</code> sblocca <code>n+1</code> (sequenziale). Il livello 20 mostra il finale «Campione assoluto» con 👑.</li>
+</ul>
+<h3>5.7 Annulla e rimescolo (regola di coerenza)</h3>
+<p>Dopo <strong>Mescola</strong> o dopo un <strong>rimescolo automatico</strong>: <code>history = []</code> e <code>shufBarrier = true</code>.</p>
+<ul>
+<li>Perché: tornare a una mossa precedente al rimescolo rimetterebbe in gioco due tessere col <em>vecchio</em> disegno mentre le altre hanno cambiato disegno → stato non più garantito risolvibile.</li>
+<li>Annulla di mosse fatte <strong>dopo</strong> il rimescolo funziona normalmente: riporta a uno stato già visitato, che era risolvibile.</li>
+<li>Se la cronologia è vuota, il messaggio dipende da <code>shufBarrier</code>: «Impossible d'annuler avant un mélange» (barriera attiva) oppure «Rien à annuler».</li>
+</ul>
+<hr>
+<h2>6. Generazione &quot;sempre risolvibile&quot; (<code>assign</code>)</h2>
+<p>È la parte più delicata: <strong>non modificarla senza rifare i test del §14</strong>.</p>
+<h3>6.1 Idea</h3>
+<p>I disegni non si distribuiscono a caso: si <strong>simula una partita al contrario</strong>. Si tolgono gruppi di tessere che in quel momento sono libere e a ciascun gruppo si assegna lo stesso disegno. Se il gioco rimuove i gruppi nello stesso ordine, la partita finisce. Poiché togliere tessere non può mai bloccarne altre, l'ordine resta valido.</p>
+<h3>6.2 Gruppi da 4 (e da 2)</h3>
+<ul>
+<li>Le tessere sono assegnate in <strong>gruppi da 4 identiche</strong> (due coppie), più qualche gruppo da 2.</li>
+<li>Perché: la prima versione assegnava una coppia alla volta e dava partite &quot;a catena&quot; (poche mosse, facile restare bloccati). Con i gruppi da 4 ci sono sempre molte mosse disponibili.</li>
+<li><code>makeGroups(n2, K2)</code>: con <code>n2</code> coppie e <code>K2</code> tipi distinti → se <code>2·K2 ≥ n2</code>: <code>q = n2−K2</code> gruppi da 4 e <code>p = 2·K2−n2</code> gruppi da 2; altrimenti solo gruppi da 4 (più uno da 2 se <code>n2</code> è dispari) con tipi che si ripetono.</li>
+<li><code>cfg.n</code> = quanti tipi usare: <strong>più tipi = meno copie = più difficile</strong>.</li>
+</ul>
+<h3>6.3 Stelle</h3>
+<p>Se <code>need = G − unl0 &gt; 0</code> (ci sono gruppi da sbloccare):</p>
+<ul>
+<li>il tipo <code>STAR_IDX</code> è <strong>escluso</strong> dai tipi normali;</li>
+<li>si creano gruppi di stelle finché le coppie di stelle coprono <code>need</code> (gruppo da 4 = 2 coppie);</li>
+<li>il <strong>primo</strong> gruppo della simulazione è sempre di stelle → una coppia di stelle è libera <strong>già alla prima mossa</strong>;</li>
+<li>gli altri gruppi di stelle sono inseriti a caso nel primo 40 % della sequenza.</li>
+</ul>
+<h3>6.4 Simulazione</h3>
+<p>Per ogni gruppo: <code>free = tessere con (hid ≤ u) &amp;&amp; isFree</code> (u = gruppi sbloccati <em>nella simulazione</em>); se <code>free.length &lt; size</code> il tentativo fallisce; si ordinano per <code>z + random×1,6</code> decrescente (preferenza per i piani alti, ma con mescolanza) e si prendono le prime <code>size</code>; dopo un gruppo di stelle <code>u += size/2</code> (max <code>G</code>).</p>
+<p>Fino a <strong>1500 tentativi</strong>. Se falliscono tutti c'è un <strong>fallback casuale NON garantito</strong> (mai osservato nei test: tenere d'occhio se si cambiano i layout).</p>
+<h3>6.5 Riuso</h3>
+<p><code>assign(list, cfg.n, unl, G())</code> è usata anche da <strong>Mescola</strong> e <strong>rescue</strong>, passando solo le tessere rimaste e <code>unl</code> corrente.</p>
+<h3>6.6 Annulla dopo il rimescolo (risolto in 1.10)</h3>
+<p>Prima di 1.10 un Annulla di una mossa precedente a un rimescolo poteva creare uno stato non risolvibile. Ora la cronologia viene azzerata a ogni rimescolo (§5.7), quindi la risolvibilità resta garantita. Non c'è più un limite noto su questo punto.</p>
+<hr>
+<h2>7. Layout e rendering</h2>
+<h3>7.1 Geometria (<code>layout</code>)</h3>
+<ul>
+<li><code>COLS</code>, <code>ROWS</code>, <code>maxZ</code> si calcolano dalle tessere.</li>
+<li>Margini per i piani: <code>ex = maxZ·4 + 8</code>, <code>ey = maxZ·5 + 8</code>.</li>
+<li>Spazio disponibile: <code>aw = area.clientWidth − 14 − ex</code>, <code>ah = area.clientHeight − 10 − ey</code>.</li>
+<li><strong><code>tw = floor(min(aw/COLS, ah/ROWS/1.3, 64))</code></strong>, <code>th = floor(tw·1.3)</code>; l'elemento è largo <code>tw−3</code> e alto <code>th−3</code>.</li>
+<li>Posizione: <code>left = x·tw + z·(−4) + maxZ·4 + 4</code>, <code>top = y·th + z·(−5) + maxZ·5 + 4</code> (ogni piano è spostato di 4 px a sinistra e 5 in alto per l'effetto 3D).</li>
+<li><code>z-index = z·1000 + round(y·10) + round(x)</code> (piani alti sopra; a pari piano le righe più basse sopra).</li>
+<li>Ridimensionamento finestra: <code>layout()</code> con debounce 80 ms.</li>
+</ul>
+<h3>7.2 Aspetto delle tessere (CSS)</h3>
+<table>
+<thead>
+<tr>
+<th>Classe</th>
+<th>Significato</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.tile</code></td>
+<td>avorio con bordo, spessore 3D tramite <code>box-shadow</code> con <code>--edge</code>/<code>--edge2</code></td>
+</tr>
+<tr>
+<td><code>.blocked</code></td>
+<td>non libera → <code>brightness(.58) saturate(.7)</code></td>
+</tr>
+<tr>
+<td><code>.nodim</code> (sul <code>#board</code>)</td>
+<td>livelli con <code>dim:false</code> → <code>.tile.blocked</code> solo <code>brightness(.66) saturate(.8)</code></td>
+</tr>
+<tr>
+<td><code>.sel</code></td>
+<td>selezionata (alzata, alone <code>--accent</code>)</td>
+</tr>
+<tr>
+<td><code>.hint</code></td>
+<td>pulsa 4 volte (arancio)</td>
+</tr>
+<tr>
+<td><code>.gone</code> / <code>.hidden</code></td>
+<td>animazione di uscita (260 ms) poi <code>display:none</code></td>
+</tr>
+<tr>
+<td><code>.locked</code></td>
+<td>tessera nascosta: viola scuro con bordo dorato; disegno <code>LOCKED</code> (stella tratteggiata, «?», lucchetto)</td>
+</tr>
+<tr>
+<td><code>.unlock</code></td>
+<td>animazione di sblocco (giro + bagliore)</td>
+</tr>
+<tr>
+<td><code>.board-in</code> (sul <code>#board</code>)</td>
+<td>ingresso a cascata a inizio livello (ritardo per <code>z</code>,<code>y</code>,<code>x</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><code>refresh()</code> ricalcola <code>blocked</code>/<code>sel</code>, il contatore coppie e il contatore 🔒; va chiamata dopo ogni cambiamento di stato.</p>
+<h3>7.3 Temi</h3>
+<p><code>applyTheme(cfg)</code> scrive 5 variabili CSS sul <code>&lt;html&gt;</code>: <code>--felt-a</code>, <code>--felt-b</code> (sfondo), <code>--accent</code>, <code>--edge</code>, <code>--edge2</code> (spessore tessere). L'array <code>th</code> è in quest'ordine: <code>[felt-a, felt-b, accent, edge, edge2]</code>. Cambiare tema = cambiare quell'array.</p>
+<hr>
+<h2>8. Grafica delle tessere (SVG)</h2>
+<p>Ogni tessera è un <code>&lt;svg viewBox=&quot;0 0 60 80&quot;&gt;</code>. Il contenuto è la stringa <code>TYPES[i]</code> = cerchio pastello (<code>BGS[i]</code>) + riflesso + disegno <code>FACES[i]</code>.</p>
+<h3>8.1 Helper</h3>
+<table>
+<thead>
+<tr>
+<th>Helper</th>
+<th>Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>E(cx,cy,rx,ry,fill,stroke,transform)</code> / <code>C(cx,cy,r,fill,stroke)</code></td>
+<td>ellisse / cerchio (con contorno scuro <code>O</code>; <code>stroke=false</code> = senza)</td>
+</tr>
+<tr>
+<td><code>P(d, fill, stroke)</code></td>
+<td>path</td>
+</tr>
+<tr>
+<td><code>L(d, w)</code></td>
+<td>linea/curva senza riempimento</td>
+</tr>
+<tr>
+<td><code>eye(x,y,color,k)</code></td>
+<td>occhio manga con riflessi; <code>k</code> = scala (default 1)</td>
+</tr>
+<tr>
+<td><code>blush(x,y,color)</code></td>
+<td>guancia rosa</td>
+</tr>
+<tr>
+<td><code>omega(x,y)</code></td>
+<td>bocca &quot;ω&quot;</td>
+</tr>
+<tr>
+<td><code>glyph(testo,colore)</code></td>
+<td>lettera/numero grosso con ombra e stellina</td>
+</tr>
+<tr>
+<td><code>starPath</code>, <code>spark</code>, <code>lionMane</code>, <code>sunRays</code></td>
+<td>forme speciali</td>
+</tr>
+</tbody>
+</table>
+<p>Stile comune: contorno <code>#3a2a3d</code> spesso 1,6, occhi grandi con due riflessi bianchi, guance rosa.</p>
+<h3>8.2 Indice dei 30 tipi</h3>
+<table>
+<thead>
+<tr>
+<th>0 gatto</th>
+<th>1 cane</th>
+<th>2 coniglio</th>
+<th>3 volpe</th>
+<th>4 panda</th>
+<th>5 rana</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>6 tigre</strong></td>
+<td><strong>7 scimmia</strong></td>
+<td><strong>8 pinguino</strong></td>
+<td><strong>9 maialino</strong></td>
+<td><strong>10 koala</strong></td>
+<td><strong>11 polpo</strong></td>
+</tr>
+<tr>
+<td><strong>12 A</strong></td>
+<td><strong>13 M</strong></td>
+<td><strong>14 7</strong></td>
+<td><strong>15 3</strong></td>
+<td><strong>16 pulcino</strong></td>
+<td><strong>17 leone</strong></td>
+</tr>
+<tr>
+<td><strong>18 orso</strong></td>
+<td><strong>19 mucca</strong></td>
+<td><strong>20 gufo</strong></td>
+<td><strong>21 balena</strong></td>
+<td><strong>22 K</strong></td>
+<td><strong>23 Z</strong></td>
+</tr>
+<tr>
+<td><strong>24 5</strong></td>
+<td><strong>25 9</strong></td>
+<td><strong>26 STELLA ⭐</strong> (anello dorato tratteggiato)</td>
+<td><strong>27 sole</strong></td>
+<td><strong>28 luna</strong></td>
+<td><strong>29 mare</strong></td>
+</tr>
+</tbody>
+</table>
+<p><code>STAR_IDX = 26</code> è speciale: sblocca le tessere nascoste. Il suo anello tratteggiato è aggiunto in <code>TYPES</code> solo per <code>i === STAR_IDX</code>.</p>
+<h3>8.3 Aggiungere un nuovo tipo di tessera</h3>
+<ol>
+<li>Aggiungere il disegno <strong>in coda</strong> a <code>FACES</code> (con <code>FACES.push(...)</code>), così gli indici esistenti non cambiano.</li>
+<li>Aggiungere il colore di sfondo <strong>in coda</strong> a <code>BGS</code> (stessa lunghezza di <code>FACES</code>).</li>
+<li>Verificare che <code>cfg.n</code> dei livelli sia ancora sensato (i tipi usati sono scelti a caso tra tutti).</li>
+<li>Aggiornare la tabella del §8.2 e il registro modifiche.</li>
+</ol>
+<blockquote>
+<p>Non inserire tipi <em>in mezzo</em> e non cambiare <code>STAR_IDX</code> senza rivedere <code>assign</code>.</p>
+</blockquote>
+<hr>
+<h2>9. Livelli</h2>
+<h3>9.1 Tabella (stato attuale)</h3>
+<p><code>Piani</code> = numero di piani. <code>Hid</code> = gruppi di tessere nascoste. <code>Dim</code> = tessere bloccate molto scure (sì) o più chiare (no).</p>
+<table>
+<thead>
+<tr>
+<th>Lv</th>
+<th>Nome</th>
+<th>Tess.</th>
+<th>Tavola</th>
+<th>Piani</th>
+<th>Tipi</th>
+<th>Aiuti</th>
+<th>Mesc.</th>
+<th>Annulla</th>
+<th>Dim</th>
+<th>Hid</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Giada</td>
+<td>16</td>
+<td>4×4</td>
+<td>1</td>
+<td>6</td>
+<td>∞</td>
+<td>∞</td>
+<td>∞</td>
+<td>sì</td>
+<td>—</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Oceano</td>
+<td>20</td>
+<td>5×4</td>
+<td>1</td>
+<td>8</td>
+<td>∞</td>
+<td>9</td>
+<td>∞</td>
+<td>sì</td>
+<td>—</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Ciliegio</td>
+<td>26</td>
+<td>6×5</td>
+<td>1</td>
+<td>10</td>
+<td>9</td>
+<td>6</td>
+<td>∞</td>
+<td>sì</td>
+<td>—</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Tramonto</td>
+<td>36</td>
+<td>6×6</td>
+<td>2</td>
+<td>12</td>
+<td>8</td>
+<td>5</td>
+<td>∞</td>
+<td>sì</td>
+<td>—</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Notte viola</td>
+<td>48</td>
+<td>6×7</td>
+<td>2</td>
+<td>14</td>
+<td>6</td>
+<td>4</td>
+<td>∞</td>
+<td>sì</td>
+<td>—</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Lacca rossa</td>
+<td>54</td>
+<td>6×7</td>
+<td>2</td>
+<td>16</td>
+<td>5</td>
+<td>3</td>
+<td>∞</td>
+<td>sì</td>
+<td>—</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Ghiaccio</td>
+<td>62</td>
+<td>6×7</td>
+<td>2</td>
+<td>16</td>
+<td>4</td>
+<td>3</td>
+<td>∞</td>
+<td>sì</td>
+<td>—</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Oro</td>
+<td>68</td>
+<td>6×7</td>
+<td>3</td>
+<td>16</td>
+<td>3</td>
+<td>2</td>
+<td>10</td>
+<td>no</td>
+<td>—</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Mezzanotte</td>
+<td>70</td>
+<td>6×7</td>
+<td>4</td>
+<td>17</td>
+<td>3</td>
+<td>1</td>
+<td>6</td>
+<td>no</td>
+<td>—</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Cosmo</td>
+<td>76</td>
+<td>6×7</td>
+<td>4</td>
+<td>18</td>
+<td>2</td>
+<td>1</td>
+<td>4</td>
+<td>no</td>
+<td>—</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Menta</td>
+<td>58</td>
+<td>6×7</td>
+<td>2</td>
+<td>16</td>
+<td>3</td>
+<td>2</td>
+<td>8</td>
+<td>no</td>
+<td>6</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Corallo</td>
+<td>62</td>
+<td>6×7</td>
+<td>2</td>
+<td>17</td>
+<td>3</td>
+<td>2</td>
+<td>6</td>
+<td>no</td>
+<td>8</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Zaffiro</td>
+<td>68</td>
+<td>6×7</td>
+<td>3</td>
+<td>18</td>
+<td>2</td>
+<td>2</td>
+<td>6</td>
+<td>no</td>
+<td>4+4</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Limone</td>
+<td>74</td>
+<td>6×7</td>
+<td>3</td>
+<td>18</td>
+<td>2</td>
+<td>2</td>
+<td>5</td>
+<td>no</td>
+<td>6+6</td>
+</tr>
+<tr>
+<td>15</td>
+<td>Ametista</td>
+<td>76</td>
+<td>6×7</td>
+<td>4</td>
+<td>19</td>
+<td>2</td>
+<td>2</td>
+<td>5</td>
+<td>no</td>
+<td>8+8</td>
+</tr>
+<tr>
+<td>16</td>
+<td>Deserto</td>
+<td>76</td>
+<td>6×7</td>
+<td>4</td>
+<td>20</td>
+<td>2</td>
+<td>2</td>
+<td>4</td>
+<td>no</td>
+<td>4+4+4</td>
+</tr>
+<tr>
+<td>17</td>
+<td>Tempesta</td>
+<td>80</td>
+<td>6×7</td>
+<td>4</td>
+<td>20</td>
+<td>1</td>
+<td>2</td>
+<td>4</td>
+<td>no</td>
+<td>6+6+6</td>
+</tr>
+<tr>
+<td>18</td>
+<td>Bronzo</td>
+<td>82</td>
+<td>6×7</td>
+<td>5</td>
+<td>22</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>no</td>
+<td>8+8+8</td>
+</tr>
+<tr>
+<td>19</td>
+<td>Stellata</td>
+<td>88</td>
+<td>6×7</td>
+<td>4</td>
+<td>22</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>no</td>
+<td>6+6+6+6</td>
+</tr>
+<tr>
+<td>20</td>
+<td>Alba</td>
+<td>96</td>
+<td>6×7</td>
+<td>5</td>
+<td>24</td>
+<td>2</td>
+<td>2</td>
+<td>3</td>
+<td>no</td>
+<td>8+8+8+8</td>
+</tr>
+</tbody>
+</table>
+<p>Temi (felt-a / felt-b / accent / edge / edge2) sono in <code>LEVELS[i].th</code>.</p>
+<h3>9.2 Aggiungere o modificare un livello</h3>
+<ol>
+<li>Aggiungere/modificare la voce in <code>LEVELS</code> (campi del §4.2).</li>
+<li><strong>Il numero di tessere deve essere pari.</strong> Ogni piano superiore deve stare <em>dentro</em> il piano sotto (nessuna tessera &quot;sospesa&quot;).</li>
+<li>Restare entro 6×7 per mantenere le tessere di taglia media.</li>
+<li>Se si aggiungono livelli oltre il 20 <strong>aggiornare tutti gli array indicizzati per livello</strong>: <code>ROOTS</code> (audio), colori, testi del menu (<code>n===1||n===11</code> per le intestazioni), <code>grand = (lv===LEVELS.length)</code> è già automatico. <em>Bug storico: <code>ROOTS</code> aveva 10 note → dal livello 11 il suono lanciava un errore.</em></li>
+<li>Rieseguire i test del §14 su <strong>tutti</strong> i livelli.</li>
+</ol>
+<hr>
+<h2>10. Flusso di una partita</h2>
+<pre><code>openMenu → (tocco su livello sbloccato) → startLevel(n)
+startLevel:  cfg=LEVELS[n-1] · tema · build layout · markHidden (se hid) · unl=0
+             azzera contatori aiuti e shufBarrier · assign(...) · crea i div .tile · paintTile · layout · refresh · SND.start
+             se needIntro(n) → showIntro (timer fermo finché non si preme «Compris») · altrimenti timer subito
+tap(t):      locked? → messaggio | non libera? → messaggio | selezione/abbinamento
+             se coppia uguale:
+                 se tipo stella e unl&lt;G → unl++, g=unl
+                 history.push([a,b,g]) · suono · vibrazione · animazione uscita
+                 se g → unlockGroup(g)
+                 refresh · afterMove
+afterMove:   nessuna tessera → win (dopo 350 ms) | nessuna mossa → rescue
+rescue:      avviso · dopo 1,1 s se ancora senza mosse → assign() sulle rimaste · history=[] · shufBarrier=true (gratis)
+win:         calcStars(tempo, coppie, aiuti) · salva progressi · scheda vittoria (con aiuti usati) · fuochi + coriandoli
+</code></pre>
+<p><code>findMove()</code> ritorna una coppia di tessere selezionabili e uguali (preferendo le stelle se ci sono 🔒), oppure <code>null</code>.</p>
+<hr>
+<h2>11. Menu, lingue e modale delle novità</h2>
+<ul>
+<li>Il menu (<code>#menu</code>) si apre all'avvio e dal pulsante in alto a sinistra (che mostra «Livello N / Nome»). Durante la partita mette in pausa il timer; il pulsante ✕ riprende.</li>
+<li>In alto nel menu ci sono i <strong>pulsanti della lingua</strong> (<code>#langs</code>: 🇫🇷 FR · 🇬🇧 EN · 🇮🇹 IT).</li>
+<li><code>buildMenu</code> crea una scheda per livello (colori del suo tema, stelle ottenute, record o numero di coppie/🔒, lucchetto se bloccato). Intestazioni di sezione prima dei livelli 1 e 11.</li>
+<li><strong>Sblocco sequenziale:</strong> il livello <code>n+1</code> si sblocca vincendo <code>n</code>.</li>
+<li><strong>Azzera progressi:</strong> pulsante in fondo al menu, a due tocchi (il primo cambia testo in «Tocca di nuovo per confermare», timeout 3,5 s). Reimposta <code>prog</code> (compreso <code>seen</code>, quindi le modali riappaiono) e rifà il menu. <strong>Non</strong> cambia la lingua.</li>
+<li>Pulsanti in basso: Aiuto, Annulla, Mescola, Ricomincia (con contatori ∞ o numero residuo).</li>
+</ul>
+<h3>11.1 Lingue (francese predefinita, inglese, italiano)</h3>
+<ul>
+<li>Tutti i testi stanno in <code>I18N = { fr:{…}, en:{…}, it:{…} }</code>. Per ogni lingua: etichette, messaggi (<code>t…</code>), testi della scheda di vittoria, <code>names</code> (i 20 nomi dei livelli) e <code>intro</code> (modali, §11.2).</li>
+<li><code>tx(chiave, {parametri})</code> restituisce il testo nella lingua corrente sostituendo <code>{nome}</code>; se manca in quella lingua usa il francese, poi la chiave stessa. <code>lname(n)</code> = nome del livello <code>n</code>.</li>
+<li><code>lang</code> parte da <code>'fr'</code>; se in <code>localStorage</code> (<code>mj_lang</code>) c'è una lingua valida, usa quella. <strong>Non</strong> si segue la lingua del browser.</li>
+<li><code>applyLang()</code> aggiorna i testi statici (per <code>id</code>: <code>pairsLbl</code>, <code>timeLbl</code>, <code>lblHint</code>, <code>lblUndo</code>, <code>lblShuf</code>, <code>lblNew</code>, <code>menuSub</code>, <code>bAgain</code>, <code>bMenu</code>, etichette <code>aria-label</code>), il nome del livello in alto, il pulsante di reset, l'evidenziazione del bottone della lingua e ricostruisce il menu se aperto. I testi dinamici (messaggi, scheda di vittoria, schede del menu) si traducono al momento in cui vengono creati con <code>tx()</code>.</li>
+<li>Il nome del gioco («Majoa Mahjong») non si traduce.</li>
+<li><strong>Aggiungere una lingua:</strong> aggiungere un blocco in <code>I18N</code> con <strong>tutte</strong> le chiavi (incluse <code>names</code> con 20 voci e <code>intro</code>), un bottone in <code>#langs</code> con <code>data-l</code>, e controllare in un browser che nessun testo resti in un'altra lingua.</li>
+<li><strong>Aggiungere un testo:</strong> aggiungere la chiave in <strong>tutte e tre</strong> le lingue; mai testo fisso nel codice.</li>
+</ul>
+<h3>11.2 Modale delle novità del livello</h3>
+<ul>
+<li>Appare la <strong>prima volta</strong> che si entra in un livello con novità e poi non più (<code>prog.seen[n]</code>, salvato quando si preme «Compris»). Resettare i progressi la fa riapparire.</li>
+<li>Mentre è aperta il <strong>timer è fermo</strong> (parte nel callback di <code>showIntro</code>) e il resto dello schermo è bloccato dall'overlay <code>#intro</code>.</li>
+<li>Livelli con modale: <strong>1</strong> benvenuto e regole · <strong>3</strong> aiuti limitati · <strong>4</strong> tessere sovrapposte · <strong>8</strong> Annulla limitato · <strong>11</strong> tessere nascoste e stelle · <strong>13</strong> due gruppi nascosti · <strong>16</strong> tre gruppi · <strong>19</strong> quattro gruppi.</li>
+<li>Ogni modale ha icona (<code>INTRO_ICON</code>), una piccola illustrazione fatta con mini-tessere reali (<code>INTRO_VIS</code>: numeri = indice di <code>TYPES</code>, <code>'L'</code> = tessera bloccata, <code>'S'</code> = tessere sovrapposte, altre stringhe = testo/emoji), titolo e 2–3 frasi (<code>I18N[lang].intro[n] = {t, l:[…]}</code>).</li>
+<li>Se il livello ha tessere nascoste e la modale è stata già vista, all'avvio compare invece un breve messaggio (<code>tHiddenStart</code>).</li>
+<li><strong>Aggiungere una novità a un livello:</strong> inserire <code>n</code> in <code>INTRO_VIS</code> e <code>INTRO_ICON</code> e il testo <code>intro[n]</code> in <strong>tutte le lingue</strong>; nessun'altra modifica. Elementi HTML: <code>#intro</code>, <code>#introIcon</code>, <code>#introTitle</code>, <code>#introSub</code>, <code>#introVis</code>, <code>#introList</code>, <code>#bIntroOk</code>.</li>
+</ul>
+<hr>
+<h2>12. Audio (WebAudio, nessun file)</h2>
+<ul>
+<li><code>AudioContext</code> creato al <strong>primo tocco</strong> (<code>pointerdown</code> una volta) o al primo click utile.</li>
+<li><code>tone(f, t0, dur, type, vol, to)</code> e <code>noise(t0, dur, vol, type, freq)</code> sono <strong>avvolte in <code>try/catch</code></strong>: qualsiasi errore audio viene ignorato. <code>toneRaw</code> scarta frequenze non finite.</li>
+<li>Nota base per livello: <code>ROOTS[(lv−1) % 20]</code> (20 note); <code>SCALE</code> = rapporti della scala per salire di tono nelle combo.</li>
+<li>Effetti (<code>SND</code>): <code>select</code>, <code>match(k)</code> (più coppie entro 4,5 s → <code>k</code> cresce → tono più alto), <code>blocked</code>, <code>hint</code>, <code>undo</code>, <code>shuffle</code>, <code>stuck</code>, <code>start</code>, <code>star(k)</code>, <code>win</code>, <code>boom</code>, <code>unlock</code>, <code>pop</code>.</li>
+<li>Sblocco stelle = <code>SND.match(4)</code> + <code>SND.unlock()</code>.</li>
+<li>Pulsante 🔊/🔇 in alto a destra; preferenza in <code>mj_mute</code>. <code>buzz(14)</code> = vibrazione breve (se disponibile e non muto).</li>
+</ul>
+<blockquote>
+<p><strong>Regola:</strong> ogni nuovo suono passa da <code>tone</code>/<code>noise</code> o è avvolto in <code>try/catch</code>.</p>
+</blockquote>
+<hr>
+<h2>13. Effetti di vittoria</h2>
+<ul>
+<li>Canvas <code>#fw</code> dentro l'overlay <code>#win</code>, ridimensionato con <code>devicePixelRatio</code>.</li>
+<li><strong>Fuochi:</strong> razzi che salgono e scoppiano in scintille con gravità e dissolvenza; intervallo di lancio <code>max(.16, .6 − fwLevel·.045) + random·.3</code>; scintille <code>50 + fwLevel·9</code> (26 se movimento ridotto). <code>fwLevel = min(livello, 12)</code> per non appesantire i telefoni.</li>
+<li><strong>Coriandoli:</strong> pioggia iniziale + flusso continuo per 5 s (9 s al livello 20).</li>
+<li>Scheda vittoria con rimbalzo, coppa 🏆 (👑 al livello 20) che dondola, stelle ★ che compaiono una per volta con suono.</li>
+<li>Rispetta <code>prefers-reduced-motion</code> (meno scintille, niente coriandoli, animazioni CSS spente).</li>
+<li><code>stopFx()</code> viene chiamata a ogni nuovo livello.</li>
+</ul>
+<hr>
+<h2>14. Test e verifica</h2>
+<p><strong>Principio:</strong> non basta che il codice sia sintatticamente corretto. Va provato in un <strong>browser vero, con suono attivo, con click reali</strong>. Un test senza <code>AudioContext</code> non vide l'errore audio che bloccava i livelli 11–20.</p>
+<h3>14.1 Controllo sintassi</h3>
+<pre><code class="language-bash">node -e &#34;const s=require(&#39;fs&#39;).readFileSync(&#39;mahjong.html&#39;,&#39;utf8&#39;);
+new Function(s.split(&#39;&lt;script&gt;&#39;)[1].split(&#39;&lt;/script&gt;&#39;)[0]);console.log(&#39;ok&#39;)&#34;
+</code></pre>
+<h3>14.2 Test di logica (senza browser)</h3>
+<p>Si estraggono dal file le sezioni <code>LIVELLI</code> e <code>LOGICA</code> con <code>js.slice(js.indexOf(...), js.indexOf(...))</code> e si eseguono con <code>new Function</code>. Controllare, per ogni livello e per decine di partite:</p>
+<ul>
+<li><code>assign</code> non va in fallback;</li>
+<li>una coppia di stelle libera alla prima mossa (livelli 11–20);</li>
+<li>giocando a caso con preferenza alle stelle, le partite non si bloccano (obiettivo: quasi nessun blocco);</li>
+<li>dopo ~18 mosse casuali, <code>assign</code> sulle rimaste lascia almeno una mossa.</li>
+</ul>
+<h3>14.3 Test nel browser reale (Playwright + Chromium)</h3>
+<p>Playwright è installato globalmente e Chromium è in <code>/opt/pw-browsers</code>.</p>
+<pre><code class="language-js">const { chromium } = require(require(&#39;child_process&#39;).execSync(&#39;npm root -g&#39;).toString().trim()+&#39;/playwright&#39;);
+const b = await chromium.launch();
+const ctx = await b.newContext({viewport:{width:390,height:780},deviceScaleFactor:2,hasTouch:true,isMobile:true});
+const page = await ctx.newPage();
+await page.addInitScript(()=&gt;localStorage.setItem(&#39;mj_prog3&#39;,JSON.stringify({unlocked:20,stars:{},best:{}})));
+await page.goto(&#39;file:///tmp/test.html&#39;);
+</code></pre>
+<p><code>test.html</code> è una <strong>copia di prova</strong> del gioco con un gancio di debug aggiunto in fondo alla IIFE (sostituendo l'ultimo <code>openMenu();})();</code>):</p>
+<pre><code class="language-js">openMenu(); window.__dbg={get tiles(){return tiles}, tap, findMove, get over(){return over},
+                          startLevel, get unl(){return unl}, G};
+</code></pre>
+<p>Da lì: <code>startLevel(L)</code>, poi in ciclo <code>findMove()</code> → click veri con <code>page.mouse.click</code> sul centro di <code>tiles[i].el.getBoundingClientRect()</code>, controllando <code>over</code>, tessere rimaste, classi <code>locked</code>, <code>unl</code>, errori <code>pageerror</code>/<code>console</code>. Fare screenshot (<code>page.screenshot</code>) di menu e di livelli 11/16/20 e <strong>guardarli</strong>.</p>
+<h3>14.4 Checklist prima di ogni pubblicazione</h3>
+<ul>
+<li><input disabled="" type="checkbox"> sintassi ok</li>
+<li><input disabled="" type="checkbox"> tutti i 20 livelli completati con click reali, <strong>0 errori di pagina</strong></li>
+<li><input disabled="" type="checkbox"> livelli con 🔒: la coppia di stelle sblocca (anche rigiocando lo stesso livello più volte)</li>
+<li><input disabled="" type="checkbox"> screenshot controllati (menu, un livello normale, uno con 🔒, una modale delle novità, la scheda di vittoria)</li>
+<li><input disabled="" type="checkbox"> <strong>lingue:</strong> francese predefinita a pagina nuova; passando a EN/IT cambiano tutti i testi e la scelta resta dopo il ricaricamento</li>
+<li><input disabled="" type="checkbox"> <strong>modali:</strong> appaiono una sola volta nei livelli 1, 3, 4, 8, 11, 13, 16, 19 e il timer resta fermo finché è aperta</li>
+<li><input disabled="" type="checkbox"> <strong>Annulla dopo rimescolo:</strong> cronologia azzerata, messaggio corretto, Annulla di una mossa fatta dopo il rimescolo funziona e la partita si finisce</li>
+<li><input disabled="" type="checkbox"> <strong>stelle:</strong> senza aiuti e veloce → 3★; con molti aiuti → 1★ e «Aiuti usati» corretto</li>
+<li><input disabled="" type="checkbox"> tessere di taglia media (larghezza ≤ 64 px, tavola ≤ 6×7)</li>
+<li><input disabled="" type="checkbox"> manuale aggiornato (sezioni + registro modifiche)</li>
+<li><input disabled="" type="checkbox"> ripubblicato sullo <strong>stesso link</strong></li>
+</ul>
+<hr>
+<h2>15. Convenzioni di lavoro</h2>
+<ol>
+<li><strong>Una modifica alla volta</strong>: proporre → far approvare → sviluppare → testare → documentare → pubblicare.</li>
+<li>Non cambiare ordine o semantica di <code>FACES</code>, <code>STAR_IDX</code>, chiavi di <code>localStorage</code> senza una decisione esplicita (e aggiornare il manuale).</li>
+<li>Dati per livello sempre in <code>LEVELS</code>; niente numeri &quot;magici&quot; sparsi.</li>
+<li>Ogni accesso a <code>localStorage</code> e ogni audio in <code>try/catch</code>.</li>
+<li>Dopo ogni cambiamento di stato che tocca le tessere: <code>paintTile</code> (se cambia lo stato nascosto/disegno) e <code>refresh()</code>.</li>
+<li>Mantenere i testi UI in italiano.</li>
+<li>Per ogni nuova funzione: dire dove si inserisce nell'ordine del §3.</li>
+</ol>
+<hr>
+<h2>16. Debiti tecnici e limiti noti</h2>
+<ul>
+<li>Il disegno delle tessere è in codice (stringhe SVG): modificare un animale richiede di toccare <code>FACES</code>.</li>
+<li>Dopo un rimescolo non si può tornare indietro (scelta voluta, §5.7): si perde la possibilità di annullare mosse precedenti.</li>
+<li>Il fallback di <code>assign</code> dopo 1500 tentativi non è garantito (mai visto).</li>
+<li>Il timer continua se la scheda del browser va in background (nessuna pausa automatica).</li>
+<li>Nessuna etichetta di accessibilità sulle singole tessere.</li>
+<li>Suoni: su alcuni dispositivi il primo suono può arrivare dopo il primo tocco (limite dei browser).</li>
+<li>Le soglie delle stelle (<code>calcStars</code>) sono state scelte a stima: da rivedere con il feedback dei giocatori.</li>
+<li>Le traduzioni in francese e inglese vanno riviste da un madrelingua.</li>
+</ul>
+<hr>
+<h2>17. Backlog (idee discusse; le voci segnate «fatto» sono già sviluppate, le altre no)</h2>
+<p>Ogni voce passa dalla procedura del §19 (approvazione → sviluppo → test → manuale → pubblicazione). Regola generale: <strong>le novità che toccano le tessere passano dal generatore <code>assign</code></strong> (§6) e vanno provate nel browser su tutti i livelli, così la partita resta sempre risolvibile.</p>
+<h3>17.0 Impostazioni ⚙️ e Modalità comoda (direzione scelta dall'utente; dettagli da definire)</h3>
+<p><strong>Idea approvata come direzione:</strong> un <strong>unico pulsante ⚙️ «Impostazioni»</strong> che raccoglie tutte le personalizzazioni, invece di tanti pulsanti sparsi. Nessun codice ancora scritto.</p>
+<p><strong>Contenuto previsto</strong></p>
+<table>
+<thead>
+<tr>
+<th>Gruppo</th>
+<th>Voci</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Aspetto</strong></td>
+<td>sfondo (6–8 palette pronte, oppure il tema dell'isola/livello), colore dello spessore delle tessere (6–8 palette), forse la forma degli angoli</td>
+</tr>
+<tr>
+<td><strong>Comfort</strong> (<em>Modalità comoda</em>, pensata per i senior)</td>
+<td>tessere più grandi, testi e pulsanti più grandi, contrasto alto, niente cronometro né pressione delle stelle</td>
+</tr>
+<tr>
+<td><strong>Suoni</strong></td>
+<td>volume, vibrazione sì/no (oggi esiste solo acceso/spento, §12)</td>
+</tr>
+<tr>
+<td><strong>Gioco</strong></td>
+<td>lingua (§17.4) e difficoltà (§17.3)</td>
+</tr>
+<tr>
+<td><strong>Fondo pagina</strong></td>
+<td>«Ripristina predefiniti»</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Principi di progetto</strong></p>
+<ol>
+<li><strong>Palette già pronte</strong>, non selettore libero: più semplice e niente combinazioni illeggibili.</li>
+<li><strong>Segnali di gioco non personalizzabili:</strong> le tessere bloccate restano <strong>sempre scure</strong> e le nascoste 🔒 <strong>sempre viola</strong>, qualunque tema si scelga.</li>
+<li><strong>Anteprima dal vivo</strong> mentre si sceglie.</li>
+<li>Il tema scelto si può applicare a tutti i livelli oppure lasciare quello di ogni livello.</li>
+<li>Poche opzioni al primo rilascio: <strong>sfondo, colore tessere, dimensione tessere, volume</strong>. Le altre arrivano dopo.</li>
+<li>Temi e colori possono diventare <strong>premi</strong> (monete/stelle, §17.9): le Impostazioni diventano anche una piccola collezione.</li>
+</ol>
+<p><strong>Tecnica (indicazioni per lo sviluppo)</strong></p>
+<ul>
+<li>I colori sono già variabili CSS (<code>--felt-a</code>, <code>--felt-b</code>, <code>--accent</code>, <code>--edge</code>, <code>--edge2</code>, §7.3): le palette si applicano con la stessa logica di <code>applyTheme</code>, con una priorità chiara tra tema del livello e scelta dell'utente.</li>
+<li>Salvare in una <strong>chiave separata dai progressi</strong> (es. <code>mj_set1</code>, oggetto con le scelte), sempre in <code>try/catch</code>, applicata all'avvio. <code>mj_mute</code> verrà assorbita nelle impostazioni (mantenere la lettura del vecchio valore per compatibilità).</li>
+<li>Il pulsante 🔊 attuale in alto a destra può restare come scorciatoia, oppure diventare il ⚙️.</li>
+</ul>
+<p><strong>Tessere più grandi (Modalità comoda)</strong></p>
+<p>Il limite è fisico: la dimensione dipende dalla larghezza dello schermo. Oggi le tavole sono larghe 6 tessere (<code>COLS=6</code>) e con il tetto di 64 px (§7.1) su un telefono tipico ogni tessera misura circa 55–60 px. Per i senior ne servono circa <strong>70 o più</strong>. Tre strade:</p>
+<ol>
+<li><strong>Tavole da 5 colonne</strong> in Modalità comoda → tessere circa 72 px. Ci sono meno tessere per piano, quindi i livelli userebbero <strong>più piani sovrapposti</strong> per mantenere il numero di tessere. Richiede layout alternativi a 5 colonne (e nuovi test di risolvibilità, §14).</li>
+<li><strong>Zoom</strong> della tavola con scorrimento col dito: mantiene tutti i layout attuali ma obbliga a scorrere.</li>
+<li><strong>Telefono in orizzontale / tablet:</strong> adattare <code>layout()</code> per usare tutto lo spazio.</li>
+</ol>
+<p>Orientamento: <strong>1 + 3</strong>, e la 2 solo se serve. Conseguenze sul codice: il tetto di <code>64</code> in <code>layout()</code> diventa un parametro (<code>tileMax</code>) legato alla Modalità comoda; il vincolo «tavola ≤ 6×7» del §1 vale per la modalità normale.</p>
+<p><strong>Tessere bloccate sempre ben riconoscibili</strong></p>
+<ul>
+<li>Rendere lo scurimento delle tessere bloccate <strong>uguale in tutti i livelli</strong> (oggi dal livello 8 è più leggero: <code>dim:false</code>, §7.2); il flag <code>dim</code> resterebbe solo se la futura difficoltà lo userà.</li>
+<li>Aggiungere un <strong>secondo segnale che non dipende dal colore</strong>: bordo sottile sulle bloccate e leggero alone chiaro sulle libere (utile con vista debole o daltonismo).</li>
+</ul>
+<p><strong>Altre opzioni «senior» (tutte opzionali, attivabili con la Modalità comoda)</strong></p>
+<p>pulsanti e testi più grandi · niente cronometro · aiuto automatico che fa pulsare la coppia dopo qualche secondo (§17.7) · le tessere uguali si illuminano al tocco (§17.7) · tocchi più tolleranti · tutorial semplice con le regole (§17.2).</p>
+<p><strong>Da decidere:</strong> quali palette di sfondo e di tessere; se il tema dell'utente prevale su quello del livello; se i temi diventano premi; primo passo di sviluppo (tessere da 5 colonne oppure doppio segnale per le bloccate).</p>
+<h3>17.1 Ordine di lavoro suggerito</h3>
+<ol>
+<li><strong>Impostazioni ⚙️ + Modalità comoda</strong> (§17.0) — priorità sentita dall'utente, da confermare</li>
+<li>Evidenzia le uguali + aiuto automatico (piccoli, si notano subito)</li>
+<li>Salvataggio partita + pausa</li>
+<li>Menù di difficoltà (le lingue sono già fatte, §11.1)</li>
+<li>Isola dei Dolci come isola pilota</li>
+<li>Rompicapo bonus</li>
+<li>Le altre isole</li>
+</ol>
+<h3>17.2 Migliorie al gioco</h3>
+<ul>
+<li>Salvataggio della partita in corso (tessere, tempo, contatori) per riprendere dopo essere usciti.</li>
+<li>Pausa: pulsante e pausa automatica quando la pagina va in background (oggi il timer continua e falsa le stelle).</li>
+<li>Volume e vibrazione regolabili (oggi solo acceso/spento).</li>
+<li>Statistiche (partite, tempo totale, serie di vittorie).</li>
+<li>Accessibilità: tessere più contrastate, tema chiaro, etichette sulle tessere.</li>
+<li><del>Correggere Annulla dopo un rimescolo e far dipendere le stelle dagli aiuti</del> → <strong>fatto in 1.10</strong> (§5.6, §5.7).</li>
+<li>Tutorial iniziale: <strong>fatto in parte</strong> con la modale del livello 1 (§11.2); resta l'idea di un pulsante «?» per rivederla.</li>
+</ul>
+<h3>17.3 Menù di difficoltà</h3>
+<p>Separare la <strong>difficoltà</strong> dal <strong>numero del livello</strong>: si sceglie prima la difficoltà, poi il livello.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Facile</th>
+<th>Normale</th>
+<th>Difficile</th>
+<th>Esperto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Aiuti / Annulla</td>
+<td>illimitati</td>
+<td>come oggi</td>
+<td>ridotti</td>
+<td>pochissimi</td>
+</tr>
+<tr>
+<td>Scurimento tessere bloccate</td>
+<td>forte</td>
+<td>come oggi</td>
+<td>leggero</td>
+<td>nessuno</td>
+</tr>
+<tr>
+<td>Tipi di disegno (<code>n</code>)</td>
+<td>meno</td>
+<td>come oggi</td>
+<td>più</td>
+<td>più</td>
+</tr>
+<tr>
+<td>Rimescolo automatico</td>
+<td>sì</td>
+<td>sì</td>
+<td>1 volta</td>
+<td>no</td>
+</tr>
+<tr>
+<td>Tempi per ★★★</td>
+<td>larghi</td>
+<td>come oggi</td>
+<td>stretti</td>
+<td>molto stretti</td>
+</tr>
+</tbody>
+</table>
+<p>Da decidere: 3 o 4 difficoltà; stelle e record separati per difficoltà (probabile chiave <code>mj_prog4</code> con struttura per difficoltà, vedi §4.4); se la difficoltà moltiplica i valori dei livelli o li sostituisce.</p>
+<h3>17.4 Lingue</h3>
+<p><strong>Fatto in 1.10</strong> (§11.1): francese (predefinita), inglese, italiano. Restano: revisione delle traduzioni da parte di madrelingua, eventuale scelta della lingua anche dalle Impostazioni ⚙️ (§17.0), altre lingue.</p>
+<h3>17.5 Isole a tema</h3>
+<ul>
+<li>Isole: <strong>Animali</strong> (già fatta), <strong>Dolci</strong>, <strong>Arte</strong> (tavolozza, pennelli, cavalletto, cornice), <strong>Beauty case</strong> (rossetto, specchio, profumo, smalto), poi Mare, Spazio, Fiori. Solo oggetti generici, niente marchi.</li>
+<li>Ogni isola: 16–20 disegni propri (i livelli ne usano al massimo 24), 10 livelli, colori e suoni propri, sfondo/atmosfera propri.</li>
+<li><strong>Tessera di sblocco propria</strong> al posto della stella (es. ciliegina sulla torta nei Dolci): oggi <code>STAR_IDX</code> è unico, andrà reso un parametro dell'isola.</li>
+<li>Mappa delle isole nel menu; isole sbloccate con un certo numero di stelle totali.</li>
+<li>Difficoltà scelta dopo l'isola (isole × difficoltà), senza serie di livelli separate.</li>
+<li>Livelli bonus per isola con un rompicapo come ricompensa.</li>
+<li><strong>Isola pilota: Dolci</strong> (10 livelli). Richiede una revisione del codice: oggi esiste un solo insieme di tessere (<code>FACES</code>/<code>TYPES</code>) e un solo elenco di livelli (<code>LEVELS</code>); servono set di tessere per isola e dati per isola.</li>
+<li>Peso del file: con 5–6 isole circa 150–200 KB, ancora in un file unico; oltre conviene spezzarlo.</li>
+</ul>
+<h3>17.6 Più varietà nelle partite</h3>
+<ul>
+<li>Layout <strong>specchiati e ruotati</strong> (orizzontale/verticale): 4 aspetti per layout senza lavoro extra.</li>
+<li>Più forme per livello (3–4 layout con stesso numero di tessere e piani, scelti a caso).</li>
+<li>Generatore di forme simmetriche entro 6×7 per una <strong>modalità infinita</strong>.</li>
+<li><strong>Sfida del giorno</strong> uguale per tutti (forma e disegni decisi dalla data, generatore con seme).</li>
+</ul>
+<h3>17.7 Aiuti che non rovinano la giocabilità</h3>
+<ul>
+<li><strong>Evidenzia le uguali</strong>: toccando una tessera si illuminano le altre libere identiche.</li>
+<li><strong>Aiuto automatico</strong>: se il giocatore resta fermo qualche secondo, la coppia giusta pulsa piano.</li>
+<li>Contatore delle mosse possibili (opzionale, spento di default).</li>
+<li><strong>Modalità rilassata</strong>: senza tempo né stelle da inseguire.</li>
+<li>Le funzioni opzionali partono spente e si attivano dalle impostazioni.</li>
+</ul>
+<h3>17.8 Livelli bonus e rompicapo (menu dei rompicapo)</h3>
+<p><strong>Come entrano nel gioco:</strong> nel menu compaiono schede con un «?» (sala dei rompicapo), sbloccate per es. ogni 5 livelli vinti o con un certo numero di stelle. Un paio di rompicapo <strong>per isola</strong>, a tema dell'isola (§17.5). Premio: aiuti extra, monete o un nuovo tema (§17.9). Ogni rompicapo è un mini-gioco <strong>indipendente</strong> dal mahjong (modulo con avvio e chiusura propri), così non tocca <code>assign</code> né le regole del §5.</p>
+<p><strong>Criteri per scegliere un rompicapo</strong> (devono stare nel progetto):</p>
+<ol>
+<li>si gioca con il <strong>tocco</strong>, con elementi grandi (taglia media / Modalità comoda, §17.0);</li>
+<li><strong>sempre risolvibile</strong>, perché il livello si genera partendo dalla soluzione e scombinando;</li>
+<li><strong>nessun obbligo di tempo</strong>;</li>
+<li>riusa i disegni e i temi esistenti (<code>TYPES</code>, isole);</li>
+<li>codice contenuto: niente librerie esterne (§2).</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Rompicapo</th>
+<th>Idea</th>
+<th>Sforzo</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Sudoku a tema isola</strong></td>
+<td>griglia 4×4 (facile) e 6×6 (difficile); al posto dei numeri i disegni delle tessere dell'isola</td>
+<td>basso–medio</td>
+<td>riusa <code>TYPES</code>; generatore con backtracking e controllo di unicità; tastiera di simboli grandi</td>
+</tr>
+<tr>
+<td><strong>Trova il pezzo mancante</strong></td>
+<td>un disegno manga con un pezzo tolto, 4 pezzi tra cui scegliere</td>
+<td>basso</td>
+<td>usa i disegni esistenti</td>
+</tr>
+<tr>
+<td><strong>Memory</strong></td>
+<td>carte con i disegni da accoppiare</td>
+<td>basso</td>
+<td>il più semplice</td>
+</tr>
+<tr>
+<td><strong>Puzzle scorrevole</strong></td>
+<td>un disegno diviso in 9 o 16 pezzi da rimettere in ordine</td>
+<td>basso–medio</td>
+<td>si parte dalla soluzione e si scombina con mosse valide</td>
+</tr>
+<tr>
+<td><strong>Labirinto</strong></td>
+<td>si traccia col dito il percorso del personaggio fino al suo premio (gatto → pesce, ape → fiore…)</td>
+<td>basso</td>
+<td>generatore di labirinti semplice, sempre risolvibile; corridoi larghi per il tocco</td>
+</tr>
+<tr>
+<td><strong>Trova le differenze</strong></td>
+<td>due scene affiancate con 3–6 differenze da toccare</td>
+<td>basso–medio</td>
+<td>scene composte con i disegni esistenti (una tessera cambiata, un dettaglio tolto o ricolorato); le differenze si decidono nel codice, quindi sono note</td>
+</tr>
+<tr>
+<td><strong>Smista i barattoli</strong></td>
+<td>più barattoli con oggetti mescolati (caramelle, fiori…): si spostano finché ogni barattolo ha un solo tipo</td>
+<td>medio</td>
+<td>si genera partendo dalla soluzione con mosse al contrario → risolvibile; tocco sul barattolo di partenza e su quello di arrivo; annulla illimitato</td>
+</tr>
+<tr>
+<td><strong>Collega le coppie</strong></td>
+<td>su una griglia si uniscono con un percorso i due animali uguali senza incroci</td>
+<td>medio</td>
+<td>generatore di percorsi non banale; griglie piccole (5×5) all'inizio</td>
+</tr>
+<tr>
+<td><strong>Cerca parole</strong></td>
+<td>si trovano nomi di animali, dolci, ecc. in una griglia di lettere</td>
+<td>medio</td>
+<td>si lega alle lingue (§17.4): una lista di parole per lingua; parole in orizzontale/verticale per i livelli facili</td>
+</tr>
+<tr>
+<td><strong>Unisci i puntini</strong></td>
+<td>puntini numerati da toccare (o seguire col dito) in ordine 1, 2, 3…: appare il contorno di un animale o di un oggetto dell'isola e, alla fine, si colora e prende vita con il vero disegno manga</td>
+<td>basso</td>
+<td>il contorno si disegna con segmenti definiti nel codice (pochi punti per le forme semplici, più punti per le difficili); puntini grandi e distanti per il tocco; nessun errore possibile, solo suggerimento se si salta un numero; animazione finale e suono</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Scartati:</strong> <em>Anelli girevoli</em> (ispirato a «Rotate Rings») e <em>Disegna e unisci</em> (ispirato a «Brain Dots», richiede un motore fisico e livelli provati uno a uno): giudicati troppo difficili da realizzare e da giocare. Non riproporli senza una nuova decisione.</p>
+<p><strong>Note di progetto</strong></p>
+<ul>
+<li>Ci si ispira alle <strong>meccaniche</strong>, non ai nomi, alla grafica o ai livelli delle app esistenti.</li>
+<li>Ordine di sviluppo consigliato: <strong>Sudoku a tema</strong> → pezzo mancante / memory → labirinto → unisci i puntini → trova le differenze → puzzle scorrevole → smista i barattoli → cerca parole → collega le coppie.</li>
+<li>Progressi dei bonus in una struttura a parte (es. <code>prog.bonus</code>), con migrazione/chiave nuova se cambia la struttura (§4.4).</li>
+</ul>
+<h3>17.9 Per tornare a giocare</h3>
+<ul>
+<li>Monete e premi da spendere per aiuti extra o temi.</li>
+<li>Serie giornaliera con premio crescente; missioni del giorno (es. «vinci senza aiuti»).</li>
+<li>Album delle tessere collezionate (premio al completamento di un'isola); obiettivi e adesivi.</li>
+<li>Condividere il risultato con un breve messaggio.</li>
+<li>Stile delle tessere (colore/forma) sbloccabile con i premi.</li>
+</ul>
+<h3>17.10 Più vita</h3>
+<ul>
+<li>Una mascotte che incoraggia e reagisce alle combo.</li>
+<li>Atmosfera diversa per ogni isola (coriandoli sui Dolci, bolle sul Mare…).</li>
+<li>Tessere speciali con regole proprie: <strong>jolly</strong>, <strong>tessera di ghiaccio</strong> da abbinare due volte. Ogni regola nuova va integrata in <code>isFree</code>/<code>tap</code>/<code>assign</code> e nei test.</li>
+</ul>
+<hr>
+<h2>18. Registro modifiche</h2>
+<table>
+<thead>
+<tr>
+<th>Ver.</th>
+<th>Cosa è cambiato</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.0</td>
+<td>Primo gioco: 48 tessere, simboli mahjong classici (萬, cerchi, bambù, draghi), un solo livello, Aiuto/Annulla/Mescola/Nuova, record in localStorage</td>
+</tr>
+<tr>
+<td>1.1</td>
+<td>Disegni sostituiti con animali emoji su sfondo colorato</td>
+</tr>
+<tr>
+<td>1.2</td>
+<td>Animali ridisegnati in SVG stile manga (12 tipi) con sfondi pastello</td>
+</tr>
+<tr>
+<td>1.3</td>
+<td>Aggiunte lettere/numeri (A, M, 7, 3) → 16 tipi; fuochi d'artificio alla vittoria</td>
+</tr>
+<tr>
+<td>1.4</td>
+<td><strong>10 livelli</strong> con temi di colore, menu livelli, suoni sintetizzati, vibrazione, coriandoli, stelle di valutazione, limiti di aiuti, progressi salvati</td>
+</tr>
+<tr>
+<td>1.5</td>
+<td><strong>20 livelli</strong>, tessere nascoste 🔒 sbloccate da coppie di stelle, +14 tipi (pulcino, leone, orso, mucca, gufo, balena, K, Z, 5, 9, stella, sole, luna, mare → 30 tipi), tessere di taglia media (max 64 px, tavola ≤ 6×7)</td>
+</tr>
+<tr>
+<td>1.6</td>
+<td><strong>Generatore riscritto</strong>: gruppi da 4 tessere uguali, stelle sempre libere alla prima mossa, rimescolo automatico gratuito se senza mosse; scurimento leggero anche nei livelli 8+</td>
+</tr>
+<tr>
+<td>1.7</td>
+<td>Chiave di salvataggio <code>mj_prog3</code> (ripartenza da zero per tutti) e pulsante «Azzera tutti i progressi» a due tocchi</td>
+</tr>
+<tr>
+<td>1.8</td>
+<td><strong>Bug fix</strong>: <code>ROOTS</code> copriva solo 10 livelli → dal livello 11 il suono lanciava un errore che bloccava abbinamento e sblocco; esteso a 20 note e audio avvolto in <code>try/catch</code>. Tessere bloccate molto più scure (<code>.58</code> / <code>.66</code>)</td>
+</tr>
+<tr>
+<td>1.9</td>
+<td>Aggiunto questo manuale</td>
+</tr>
+<tr>
+<td>1.9.1</td>
+<td>Solo manuale: backlog (§17) riscritto con tutte le idee discusse (difficoltà, lingue, isole a tema, varietà, aiuti, bonus, premi); il gioco non è cambiato</td>
+</tr>
+<tr>
+<td>1.9.2</td>
+<td>Solo manuale: aggiunto §17.0 «Impostazioni ⚙️ e Modalità comoda» (pulsante unico di personalizzazione, tessere più grandi per i senior, tessere bloccate sempre scure con doppio segnale); aggiornato l'ordine di lavoro; il gioco non è cambiato</td>
+</tr>
+<tr>
+<td>1.9.3</td>
+<td>Il gioco si chiamava <strong>Majoa Majong</strong> (poi corretto in 1.9.4) (titolo della pagina <code>&lt;title&gt;</code> e titolo del menu <code>&lt;h2&gt;</code>; nome dell'artifact). Nessun altro cambiamento: link, chiavi <code>localStorage</code> (<code>mj_*</code>) e progressi restano invariati</td>
+</tr>
+<tr>
+<td>1.9.4</td>
+<td>Nome corretto in <strong>Majoa Mahjong</strong> (con la «h»), nel titolo della pagina, nel titolo del menu e in questo manuale. Nessun altro cambiamento</td>
+</tr>
+<tr>
+<td>1.9.5</td>
+<td>Solo manuale: §17.8 ampliato con le idee per il menu dei rompicapo (sudoku a tema per isola, anelli girevoli, disegna e unisci, oltre a pezzo mancante, memory, puzzle scorrevole), con sforzo stimato e note di progetto. Il gioco non è cambiato</td>
+</tr>
+<tr>
+<td>1.9.6</td>
+<td>Solo manuale: scartati gli «Anelli girevoli»; §17.8 riscritto con criteri di scelta dei rompicapo e nuove proposte (labirinto, trova le differenze, smista i barattoli, collega le coppie, cerca parole). Il gioco non è cambiato</td>
+</tr>
+<tr>
+<td>1.9.7</td>
+<td>Solo manuale: scartato anche «Disegna e unisci»; al suo posto aggiunto «Unisci i puntini» (§17.8). Gli altri rompicapo restano invariati. Il gioco non è cambiato</td>
+</tr>
+<tr>
+<td>1.10</td>
+<td><strong>Funzioni nuove:</strong> (1) interfaccia in <strong>francese (predefinita), inglese e italiano</strong>, scelta dal menu e salvata (<code>mj_lang</code>); (2) <strong>modale delle novità</strong> nei livelli 1, 3, 4, 8, 11, 13, 16, 19 (una sola volta, <code>prog.seen</code>, timer fermo mentre è aperta); (3) <strong>Annulla dopo rimescolo corretto</strong>: la cronologia si azzera a ogni rimescolo (manuale o automatico) così la partita resta risolvibile; (4) <strong>stelle di valutazione = minimo tra tempo e aiuti usati</strong>, con «Aiuti usati» nella scheda di vittoria. Provato in Chromium mobile: tutti i 20 livelli completati con click reali nelle tre lingue, 0 errori di pagina</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2>19. Procedura per ogni nuova modifica (promemoria)</h2>
+<ol>
+<li>Descrivere la modifica e <strong>farla approvare</strong>.</li>
+<li>Implementare nel file <code>mahjong.html</code>.</li>
+<li>Eseguire la checklist del §14.4 (browser reale, tutti i livelli, screenshot).</li>
+<li>Aggiornare <strong>questo manuale</strong>: sezioni toccate, tabelle (§8.2, §9.1), registro modifiche (§18), versione in testa.</li>
+<li>Ripubblicare il gioco <strong>e</strong> il manuale sui link esistenti.</li>
+<li>Riassumere all'utente cosa è cambiato, cosa è stato provato e cosa no.</li>
+</ol>
+
+</body></html>

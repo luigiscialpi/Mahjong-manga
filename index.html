@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Mahjong Manga</title>
+<title>Majoa Mahjong</title>
 <style>
 :root{
   box-sizing:border-box;
@@ -129,6 +129,23 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 @keyframes cardIn{from{transform:scale(.3) rotate(-8deg);opacity:0}to{transform:none;opacity:1}}
 @keyframes trophy{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-8px) rotate(6deg) scale(1.1)}}
 @keyframes starpop{0%{opacity:0;transform:scale(0) rotate(-90deg)}70%{opacity:1;transform:scale(1.5) rotate(15deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+.lv small{max-width:118px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.langs{display:flex;justify-content:center;gap:8px;margin:0 0 14px}
+.langs button{min-height:42px;padding:4px 14px;font-size:14px;flex-direction:row;gap:6px;background:var(--panel);color:var(--ink);box-shadow:none;border:2px solid transparent;border-radius:12px}
+.langs button.on{border-color:var(--accent);background:rgba(255,255,255,.16)}
+#intro{z-index:8500;background:rgba(5,15,12,.8);align-items:center;justify-content:center;padding:18px}
+#intro .card{max-height:92%;overflow-y:auto}
+#intro ul{text-align:left;margin:6px 0 4px;padding-left:20px;font-size:15.5px;line-height:1.38}
+#intro li{margin:6px 0}
+.vis{display:flex;align-items:center;justify-content:center;gap:8px;margin:10px 0 6px;min-height:76px;flex-wrap:wrap}
+.vis .vt{font-size:34px;font-weight:700;color:#7a6a4a;line-height:1}
+.mt{width:50px;height:65px;border-radius:9px;background:linear-gradient(145deg,#fffdf3,#f6edd2 60%,#eadcb4);padding:3px 4px;flex-shrink:0;
+  box-shadow:inset 0 0 0 1.5px rgba(120,95,40,.35),inset 0 2px 3px rgba(255,255,255,.9),3px 4px 0 var(--edge),3px 4px 0 1px var(--edge2)}
+.mt.locked{background:linear-gradient(145deg,#4f4a82,#2a2552 70%,#1f1b40);box-shadow:inset 0 0 0 1.5px rgba(255,207,90,.55),3px 4px 0 var(--edge),3px 4px 0 1px var(--edge2)}
+.mt svg{width:100%;height:100%;display:block}
+.stackvis{position:relative;width:90px;height:96px}
+.stackvis .mt{position:absolute}
+.card .small{font-size:13px;color:#7a6a4a;margin:0 0 4px}
 @media (prefers-reduced-motion: reduce){
   .tile,#toast{transition:none}.tile.hint{animation:none;outline:4px solid #ff6a3d}
   .card,.card .trophy,.board-in .tile{animation:none}.card .st.on{animation:none;opacity:1}
@@ -137,29 +154,41 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 </head>
 <body>
 <header>
-  <button class="lv" id="bLevel" aria-label="Scegli livello"><span id="lvNum">Livello 1</span><small id="lvName">Giada</small></button>
+  <button class="lv" id="bLevel" aria-label="Choisir un niveau"><span id="lvNum">Niveau 1</span><small id="lvName">Jade</small></button>
   <div class="stats">
-    <div class="stat"><b id="pairs">0</b><span>coppie</span></div>
-    <div class="stat"><b id="time">0:00</b><span>tempo</span></div>
+    <div class="stat"><b id="pairs">0</b><span id="pairsLbl">paires</span></div>
+    <div class="stat"><b id="time">0:00</b><span id="timeLbl">temps</span></div>
     <div class="stat" id="lockStat" style="display:none"><b id="locks">0</b><span>🔒</span></div>
-    <button class="mute" id="bMute" aria-label="Suono">🔊</button>
+    <button class="mute" id="bMute" aria-label="Son">🔊</button>
   </div>
 </header>
 <div id="area"><div id="board"></div><div id="toast"></div></div>
 <nav>
-  <button id="bHint"><i>💡</i>Aiuto<em id="cHint">∞</em></button>
-  <button id="bUndo"><i>↩️</i>Annulla<em id="cUndo">∞</em></button>
-  <button id="bShuf"><i>🔀</i>Mescola<em id="cShuf">∞</em></button>
-  <button id="bNew"><i>🔄</i>Ricomincia<em>&nbsp;</em></button>
+  <button id="bHint"><i>💡</i><span id="lblHint">Aide</span><em id="cHint">∞</em></button>
+  <button id="bUndo"><i>↩️</i><span id="lblUndo">Annuler</span><em id="cUndo">∞</em></button>
+  <button id="bShuf"><i>🔀</i><span id="lblShuf">Mélanger</span><em id="cShuf">∞</em></button>
+  <button id="bNew"><i>🔄</i><span id="lblNew">Recommencer</span><em>&nbsp;</em></button>
 </nav>
 
 <div id="menu" class="ov">
-  <button id="close" aria-label="Chiudi">✕</button>
-  <h2>Mahjong Manga</h2>
-  <p>Scegli un livello · 20 sfide</p>
+  <button id="close" aria-label="Fermer">✕</button>
+  <h2>Majoa Mahjong</h2>
+  <p id="menuSub">Choisis un niveau · 20 défis</p>
+  <div class="langs" id="langs">
+    <button data-l="fr">🇫🇷 FR</button><button data-l="en">🇬🇧 EN</button><button data-l="it">🇮🇹 IT</button>
+  </div>
   <div class="grid" id="grid"></div>
-  <button class="reset" id="bReset">🗑️ Azzera tutti i progressi</button>
+  <button class="reset" id="bReset">🗑️ Effacer toute la progression</button>
 </div>
+
+<div id="intro" class="ov"><div class="card">
+  <div class="trophy" id="introIcon">✨</div>
+  <h3 id="introTitle"></h3>
+  <div class="sub" id="introSub"></div>
+  <div class="vis" id="introVis"></div>
+  <ul id="introList"></ul>
+  <button class="pri" id="bIntroOk">Compris !</button>
+</div></div>
 
 <div id="win" class="ov"><canvas id="fw"></canvas>
   <div class="card">
@@ -168,10 +197,11 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
     <div class="sub" id="winSub"></div>
     <div class="starrow" id="winStars"></div>
     <p id="winInfo"></p>
+    <div class="small" id="winRule"></div>
     <button class="pri" id="bNext">Livello successivo ▶</button>
     <div class="row">
-      <button id="bAgain">Rigioca</button>
-      <button id="bMenu">Livelli</button>
+      <button id="bAgain">Rejouer</button>
+      <button id="bMenu">Niveaux</button>
     </div>
   </div>
 </div>
@@ -418,10 +448,104 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
   }
 
   // ================= PROGRESSI =================
-  var prog={unlocked:1,stars:{},best:{}}, muted=false;
+  var prog={unlocked:1,stars:{},best:{},seen:{}}, muted=false;
   try{localStorage.removeItem('mj_prog2');}catch(e){}
   try{var pj=localStorage.getItem('mj_prog3'); if(pj)prog=JSON.parse(pj); muted=localStorage.getItem('mj_mute')==='1';}catch(e){}
+  prog.seen=prog.seen||{};
   function saveProg(){try{localStorage.setItem('mj_prog3',JSON.stringify(prog));}catch(e){}}
+
+  // ================= LINGUE =================
+  var I18N={
+    fr:{
+      level:'Niveau {n}', pairs:'paires', time:'temps', hint:'Aide', undo:'Annuler', shuffle:'Mélanger', restart:'Recommencer',
+      chooseLevel:'Choisis un niveau · 20 défis', secClassic:'Niveaux classiques',
+      secHidden:'Tuiles cachées 🔒 · associe deux ⭐ pour les débloquer',
+      record:'Record {t}', lockedLv:'Verrouillé', pairsInfo:'{n} paires',
+      reset:'🗑️ Effacer toute la progression', resetConfirm:'⚠️ Touche encore pour confirmer', resetDone:'✅ Progression effacée',
+      winLevelDone:'Niveau {n} réussi !', winGrand:'Champion absolu !', winGrandSub:'Tu as terminé les {n} niveaux',
+      winTime:'Temps : {t}', winAids:'Aides utilisées : {n}', winNewRecord:'Nouveau record !', winRecord:'Record : {t}',
+      starsRule:'★★★ : rapide, avec 1 aide au maximum', nextLevel:'Niveau {n} ▶', again:'Rejouer', levels:'Niveaux',
+      tBlockedTile:'Cette tuile est bloquée', tLockedTile:'🔒 Associe deux ⭐ pour la débloquer !',
+      tUnlocked:'🔓 Tuiles débloquées !', tRescue:'Plus de coups : je mélange les tuiles pour toi ! 🔀',
+      tNoHints:'Plus d\'aides !', tNoUndoHist:'Rien à annuler', tNoUndoShuffle:'On ne peut pas annuler avant un mélange',
+      tNoUndo:'Plus d\'annulations !', tNoShuf:'Plus de mélanges !', tShuffled:'Tuiles mélangées !',
+      tHiddenStart:'🔒 Il y a des tuiles cachées : associe deux ⭐ pour les débloquer !',
+      ok:'Compris !', newIn:'Nouveauté du niveau {n}', sound:'Son', close:'Fermer', chooseAria:'Choisir un niveau',
+      names:['Jade','Océan','Cerisier','Crépuscule','Nuit violette','Laque rouge','Glace','Or','Minuit','Cosmos','Menthe','Corail','Saphir','Citron','Améthyste','Désert','Tempête','Bronze','Étoilée','Aube'],
+      intro:{
+        1:{t:'Bienvenue !',l:['Touche deux tuiles identiques et libres pour les retirer.','Une tuile est libre si rien ne la recouvre et si son côté gauche ou droit est dégagé.','Joue vite et avec peu d\'aides pour gagner 3 étoiles ★.']},
+        3:{t:'Aides limitées',l:['Aide 💡 et Mélanger 🔀 sont désormais en nombre limité : le chiffre est sur le bouton.','Chaque aide utilisée, même Annuler ↩️, réduit tes chances d\'obtenir 3 étoiles.']},
+        4:{t:'Tuiles empilées',l:['Les tuiles sont maintenant sur plusieurs étages.','Une tuile recouverte par une autre n\'est pas libre : retire d\'abord celle du dessus.']},
+        8:{t:'Annuler limité',l:['Annuler ↩️ est désormais en nombre limité : le chiffre est sur le bouton.','Réfléchis avant de jouer : chaque annulation compte pour les étoiles.']},
+        11:{t:'Tuiles cachées',l:['Certaines tuiles sont verrouillées 🔒 : tu ne peux pas les toucher.','Associe une paire d\'étoiles ⭐ pour les déverrouiller.','Même verrouillées, elles bloquent les tuiles voisines.']},
+        13:{t:'Deux groupes cachés',l:['Il y a maintenant deux groupes de tuiles verrouillées.','Chaque paire d\'étoiles ⭐ n\'en débloque qu\'un seul : il t\'en faut deux.']},
+        16:{t:'Trois groupes cachés',l:['Trois groupes de tuiles verrouillées : il faut trois paires d\'étoiles ⭐.','Le compteur 🔒 en haut indique combien de tuiles restent cachées.']},
+        19:{t:'Quatre groupes cachés',l:['Quatre groupes de tuiles verrouillées : il faut quatre paires d\'étoiles ⭐.','Cherche les étoiles en premier : elles ouvrent la voie.']}
+      }
+    },
+    en:{
+      level:'Level {n}', pairs:'pairs', time:'time', hint:'Hint', undo:'Undo', shuffle:'Shuffle', restart:'Restart',
+      chooseLevel:'Choose a level · 20 challenges', secClassic:'Classic levels',
+      secHidden:'Hidden tiles 🔒 · match two ⭐ to unlock them',
+      record:'Best {t}', lockedLv:'Locked', pairsInfo:'{n} pairs',
+      reset:'🗑️ Erase all progress', resetConfirm:'⚠️ Tap again to confirm', resetDone:'✅ Progress erased',
+      winLevelDone:'Level {n} complete!', winGrand:'Ultimate champion!', winGrandSub:'You completed all {n} levels',
+      winTime:'Time: {t}', winAids:'Aids used: {n}', winNewRecord:'New record!', winRecord:'Best: {t}',
+      starsRule:'★★★: fast, with at most 1 aid', nextLevel:'Level {n} ▶', again:'Play again', levels:'Levels',
+      tBlockedTile:'This tile is blocked', tLockedTile:'🔒 Match two ⭐ to unlock it!',
+      tUnlocked:'🔓 Tiles unlocked!', tRescue:'No moves left: shuffling the tiles for you! 🔀',
+      tNoHints:'No hints left!', tNoUndoHist:'Nothing to undo', tNoUndoShuffle:'You can\'t undo past a shuffle',
+      tNoUndo:'No undos left!', tNoShuf:'No shuffles left!', tShuffled:'Tiles shuffled!',
+      tHiddenStart:'🔒 Some tiles are hidden: match two ⭐ to unlock them!',
+      ok:'Got it!', newIn:'New in level {n}', sound:'Sound', close:'Close', chooseAria:'Choose a level',
+      names:['Jade','Ocean','Cherry','Sunset','Violet night','Red lacquer','Ice','Gold','Midnight','Cosmos','Mint','Coral','Sapphire','Lemon','Amethyst','Desert','Storm','Bronze','Starry','Dawn'],
+      intro:{
+        1:{t:'Welcome!',l:['Tap two identical, free tiles to remove them.','A tile is free when nothing covers it and its left or right side is open.','Play fast and with few aids to earn 3 stars ★.']},
+        3:{t:'Limited aids',l:['Hint 💡 and Shuffle 🔀 are now limited: the number is on the button.','Every aid you use, even Undo ↩️, lowers your chance of earning 3 stars.']},
+        4:{t:'Stacked tiles',l:['Tiles are now stacked in several layers.','A tile covered by another one is not free: remove the one on top first.']},
+        8:{t:'Limited undo',l:['Undo ↩️ is now limited: the number is on the button.','Think before you play: every undo counts toward your stars.']},
+        11:{t:'Hidden tiles',l:['Some tiles are locked 🔒: you can\'t tap them.','Match a pair of stars ⭐ to unlock them.','Even while locked, they still block the tiles next to them.']},
+        13:{t:'Two hidden groups',l:['There are now two groups of locked tiles.','Each pair of stars ⭐ unlocks only one group: you need two pairs.']},
+        16:{t:'Three hidden groups',l:['Three groups of locked tiles: you need three pairs of stars ⭐.','The 🔒 counter at the top shows how many tiles are still hidden.']},
+        19:{t:'Four hidden groups',l:['Four groups of locked tiles: you need four pairs of stars ⭐.','Look for the stars first: they open the way.']}
+      }
+    },
+    it:{
+      level:'Livello {n}', pairs:'coppie', time:'tempo', hint:'Aiuto', undo:'Annulla', shuffle:'Mescola', restart:'Ricomincia',
+      chooseLevel:'Scegli un livello · 20 sfide', secClassic:'Livelli classici',
+      secHidden:'Tessere nascoste 🔒 · abbina due ⭐ per sbloccarle',
+      record:'Record {t}', lockedLv:'Bloccato', pairsInfo:'{n} coppie',
+      reset:'🗑️ Azzera tutti i progressi', resetConfirm:'⚠️ Tocca di nuovo per confermare', resetDone:'✅ Progressi azzerati',
+      winLevelDone:'Livello {n} superato!', winGrand:'Campione assoluto!', winGrandSub:'Hai completato tutti i {n} livelli',
+      winTime:'Tempo: {t}', winAids:'Aiuti usati: {n}', winNewRecord:'Nuovo record!', winRecord:'Record: {t}',
+      starsRule:'★★★: veloce e con al massimo 1 aiuto', nextLevel:'Livello {n} ▶', again:'Rigioca', levels:'Livelli',
+      tBlockedTile:'Questa tessera è bloccata', tLockedTile:'🔒 Abbina due ⭐ per sbloccarla!',
+      tUnlocked:'🔓 Tessere sbloccate!', tRescue:'Nessuna mossa: rimescolo le tessere per te! 🔀',
+      tNoHints:'Aiuti finiti!', tNoUndoHist:'Niente da annullare', tNoUndoShuffle:'Non si può annullare prima di un rimescolo',
+      tNoUndo:'Annulla finiti!', tNoShuf:'Mescolate finite!', tShuffled:'Tessere mescolate!',
+      tHiddenStart:'🔒 Ci sono tessere nascoste: abbina due ⭐ per sbloccarle!',
+      ok:'Ho capito!', newIn:'Novità del livello {n}', sound:'Suono', close:'Chiudi', chooseAria:'Scegli livello',
+      names:['Giada','Oceano','Ciliegio','Tramonto','Notte viola','Lacca rossa','Ghiaccio','Oro','Mezzanotte','Cosmo','Menta','Corallo','Zaffiro','Limone','Ametista','Deserto','Tempesta','Bronzo','Stellata','Alba'],
+      intro:{
+        1:{t:'Benvenuto!',l:['Tocca due tessere uguali e libere per toglierle.','Una tessera è libera se nulla la copre e il suo lato sinistro o destro è libero.','Gioca veloce e con pochi aiuti per ottenere 3 stelle ★.']},
+        3:{t:'Aiuti limitati',l:['Aiuto 💡 e Mescola 🔀 ora sono in numero limitato: il numero è sul pulsante.','Ogni aiuto usato, anche Annulla ↩️, riduce la possibilità di ottenere 3 stelle.']},
+        4:{t:'Tessere sovrapposte',l:['Le tessere ora sono su più piani.','Una tessera coperta da un\'altra non è libera: togli prima quella sopra.']},
+        8:{t:'Annulla limitato',l:['Annulla ↩️ ora è in numero limitato: il numero è sul pulsante.','Pensa prima di giocare: ogni annullamento conta per le stelle.']},
+        11:{t:'Tessere nascoste',l:['Alcune tessere sono bloccate 🔒: non puoi toccarle.','Abbina una coppia di stelle ⭐ per sbloccarle.','Anche bloccate, ostacolano le tessere vicine.']},
+        13:{t:'Due gruppi nascosti',l:['Ora ci sono due gruppi di tessere bloccate.','Ogni coppia di stelle ⭐ ne sblocca uno solo: te ne servono due.']},
+        16:{t:'Tre gruppi nascosti',l:['Tre gruppi di tessere bloccate: servono tre coppie di stelle ⭐.','Il contatore 🔒 in alto mostra quante tessere restano nascoste.']},
+        19:{t:'Quattro gruppi nascosti',l:['Quattro gruppi di tessere bloccate: servono quattro coppie di stelle ⭐.','Cerca prima le stelle: aprono la strada.']}
+      }
+    }
+  };
+  var lang='fr';
+  try{var sl=localStorage.getItem('mj_lang'); if(sl&&I18N[sl])lang=sl;}catch(e){}
+  function tx(key,p){
+    var s=I18N[lang][key]; if(s===undefined)s=I18N.fr[key]; if(s===undefined)return key;
+    if(p)for(var k in p)s=s.split('{'+k+'}').join(p[k]);
+    return s;
+  }
+  function lname(n){return I18N[lang].names[n-1]||('#'+n);}
 
   // ================= AUDIO =================
   var AC=null, NB=null;
@@ -552,6 +676,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
   var tiles=[], tw=50, th=65, COLS=4, ROWS=4, LAYER_DX=-4, LAYER_DY=-5, maxZ=0;
   var sel=null, history=[], secs=0, timer=null, over=false, started=false, unl=0;
   var hintsLeft=0, shufLeft=0, undoLeft=0, combo=0, lastMatch=0;
+  var hintsUsed=0, undosUsed=0, shufUsed=0, shufBarrier=false;
 
   function G(){return cfg.hid?cfg.hid.length:0;}
   function isLocked(t){return (t.hid||0)>unl;}
@@ -625,8 +750,8 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
   function tap(t){
     if(over||t.gone)return;
     var al=alive();
-    if(isLocked(t)){SND.blocked();toast('🔒 Abbina due ⭐ per sbloccarla!');return;}
-    if(!isFree(t,al)){SND.blocked();toast('Questa tessera è bloccata');return;}
+    if(isLocked(t)){SND.blocked();toast(tx('tLockedTile'));return;}
+    if(!isFree(t,al)){SND.blocked();toast(tx('tBlockedTile'));return;}
     if(sel===t){sel=null;refresh();return;}
     if(!sel){sel=t;SND.select();refresh();return;}
     if(sel.type===t.type){
@@ -652,16 +777,16 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
       }
     });
     setTimeout(function(){tiles.forEach(function(t){t.el.classList.remove('unlock');});},1000);
-    toast('🔓 Tessere sbloccate!',2600);
+    toast(tx('tUnlocked'),2600);
   }
   function rescue(){
     if(over)return;
     var al=alive(); if(al.length<2)return;
-    SND.stuck(); toast('Nessuna mossa: rimescolo le tessere per te! 🔀',2400);
+    SND.stuck(); toast(tx('tRescue'),2400);
     clearTimeout(rescue.t);
     rescue.t=setTimeout(function(){
       if(over||findMove())return;
-      var a2=alive(); assign(a2,cfg.n,unl,G()); sel=null; a2.forEach(paintTile); refresh(); SND.shuffle();
+      var a2=alive(); assign(a2,cfg.n,unl,G()); sel=null; history=[]; shufBarrier=true; a2.forEach(paintTile); refresh(); SND.shuffle();
     },1100);
   }
   function afterMove(){
@@ -739,10 +864,15 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
   function stopFx(){fwRun=false;fx.clearRect(0,0,fwW,fwH);}
   window.addEventListener('resize',function(){if(fwRun)fwSize();});
 
+  function calcStars(sec,pairs,aids){
+    var byTime=sec<=pairs*5?3:(sec<=pairs*10?2:1);
+    var cap=aids<=1?3:(aids<=Math.max(3,Math.ceil(pairs/6))?2:1);
+    return Math.min(byTime,cap);
+  }
   function win(){
     over=true; clearInterval(timer);
-    var pairsTotal=tiles.length/2;
-    var stars=secs<=pairsTotal*5?3:(secs<=pairsTotal*10?2:1);
+    var pairsTotal=tiles.length/2, aids=hintsUsed+undosUsed+shufUsed;
+    var stars=calcStars(secs,pairsTotal,aids);
     var oldBest=prog.best[lv];
     if((prog.stars[lv]||0)<stars)prog.stars[lv]=stars;
     var rec=false;
@@ -751,18 +881,57 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
     if(!grand&&prog.unlocked<lv+1)prog.unlocked=lv+1;
     saveProg();
     document.getElementById('winIcon').textContent=grand?'👑':'🏆';
-    document.getElementById('winTitle').textContent=grand?'Campione assoluto!':'Livello '+lv+' superato!';
-    document.getElementById('winSub').textContent=grand?'Hai completato tutti i '+LEVELS.length+' livelli':cfg.name;
+    document.getElementById('winTitle').textContent=grand?tx('winGrand'):tx('winLevelDone',{n:lv});
+    document.getElementById('winSub').textContent=grand?tx('winGrandSub',{n:LEVELS.length}):lname(lv);
     var h='',i; for(i=0;i<3;i++)h+='<span class="st'+(i<stars?' on':'')+'" style="animation-delay:'+(.5+i*.4)+'s">★</span>';
     document.getElementById('winStars').innerHTML=h;
     for(i=0;i<stars;i++)(function(k){setTimeout(function(){SND.star(k);},500+k*400);})(i);
-    document.getElementById('winInfo').textContent='Tempo: '+fmt(secs)+(rec?'  ·  Nuovo record!':(oldBest?'  ·  Record: '+fmt(Math.min(oldBest,secs)):''));
+    var l1=tx('winTime',{t:fmt(secs)})+(rec?'  ·  '+tx('winNewRecord'):(oldBest?'  ·  '+tx('winRecord',{t:fmt(Math.min(oldBest,secs))}):''));
+    document.getElementById('winInfo').innerHTML=l1+'<br>'+tx('winAids',{n:aids});
+    document.getElementById('winRule').textContent=tx('starsRule');
     document.getElementById('bNext').style.display=grand?'none':'';
-    document.getElementById('bNext').textContent='Livello '+(lv+1)+' ▶';
+    document.getElementById('bNext').textContent=tx('nextLevel',{n:lv+1});
     document.getElementById('win').classList.remove('show'); void document.getElementById('win').offsetWidth;
     document.getElementById('win').classList.add('show');
     SND.win(); startFx(lv,grand);
     if(grand)setTimeout(function(){SND.win();},1600);
+  }
+
+  // ================= MODALE NOVITA' DEL LIVELLO =================
+  var INTRO_VIS={1:[0,'=',0],3:['💡','🔀','↩️'],4:['S'],8:['↩️'],11:[26,26,'➜','L'],13:['2×',26,26,'➜','L'],16:['3×',26,26,'➜','L'],19:['4×',26,26,'➜','L']};
+  var INTRO_ICON={1:'👋',3:'💡',4:'🧱',8:'↩️',11:'🔒',13:'🔒',16:'🔒',19:'🔒'};
+  function miniTile(idx){
+    var d=document.createElement('div'); d.className='mt'+(idx==='L'?' locked':'');
+    d.innerHTML='<svg viewBox="0 0 60 80">'+(idx==='L'?LOCKED:TYPES[idx])+'</svg>'; return d;
+  }
+  function buildVis(n){
+    var box=document.getElementById('introVis'); box.innerHTML='';
+    (INTRO_VIS[n]||[]).forEach(function(it){
+      var e;
+      if(it==='S'){
+        e=document.createElement('div'); e.className='stackvis';
+        var b=miniTile(1), tp=miniTile(0);
+        b.style.left='26px'; b.style.top='22px'; tp.style.left='4px'; tp.style.top='2px';
+        e.appendChild(b); e.appendChild(tp);
+      } else if(typeof it==='number'||it==='L'){ e=miniTile(it); }
+      else { e=document.createElement('span'); e.className='vt'; e.textContent=it; }
+      box.appendChild(e);
+    });
+  }
+  function needIntro(n){return !!(INTRO_VIS[n]&&!prog.seen[n]);}
+  function showIntro(n,cb){
+    var d=I18N[lang].intro[n]||I18N.fr.intro[n];
+    document.getElementById('introIcon').textContent=INTRO_ICON[n]||'✨';
+    document.getElementById('introTitle').textContent=d.t;
+    document.getElementById('introSub').textContent=tx('newIn',{n:n});
+    document.getElementById('introList').innerHTML=d.l.map(function(x){return '<li>'+x+'</li>';}).join('');
+    document.getElementById('bIntroOk').textContent=tx('ok');
+    buildVis(n);
+    var ov=document.getElementById('intro');
+    ov.classList.remove('show'); void ov.offsetWidth; ov.classList.add('show');
+    document.getElementById('bIntroOk').onclick=function(){
+      prog.seen[n]=true; saveProg(); ov.classList.remove('show'); if(cb)cb();
+    };
   }
 
   // ================= AVVIO LIVELLO =================
@@ -770,15 +939,17 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
     lv=n; cfg=LEVELS[n-1];
     stopFx(); closeMenu(true);
     document.getElementById('win').classList.remove('show');
+    document.getElementById('intro').classList.remove('show');
     applyTheme(cfg);
-    document.getElementById('lvNum').textContent='Livello '+n;
-    document.getElementById('lvName').textContent=cfg.name;
+    document.getElementById('lvNum').textContent=tx('level',{n:n});
+    document.getElementById('lvName').textContent=lname(n);
     var list=[]; cfg.build(list);
     tiles=list; tiles.forEach(function(t){t.gone=false;t.hid=0;});
     if(cfg.hid)markHidden(tiles,cfg.hid);
     unl=0;
     assign(tiles,cfg.n,0,G());
     over=false; started=true; sel=null; history=[]; secs=0; combo=0; lastMatch=0;
+    hintsUsed=0; undosUsed=0; shufUsed=0; shufBarrier=false;
     hintsLeft=cfg.hints; shufLeft=cfg.shuf; undoLeft=cfg.undo; counts();
     timeEl.textContent='0:00';
     board.innerHTML=''; board.classList.toggle('nodim',!cfg.dim);
@@ -790,8 +961,14 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
     });
     layout(); refresh();
     void board.offsetWidth; board.classList.add('board-in');
-    SND.start(); startTimer();
-    if(cfg.hid)toast('🔒 Ci sono tessere nascoste: abbina due ⭐ per sbloccarle!',4200);
+    SND.start();
+    clearInterval(timer);
+    if(needIntro(n)){
+      showIntro(n,function(){startTimer();});
+    } else {
+      startTimer();
+      if(cfg.hid)toast(tx('tHiddenStart'),4200);
+    }
     setTimeout(function(){board.classList.remove('board-in');},1800);
   }
 
@@ -803,7 +980,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
       var n=i+1;
       if(n===1||n===11){
         var h=document.createElement('div'); h.className='sec';
-        h.textContent=n===1?'Livelli classici':'Tessere nascoste 🔒 · abbina due ⭐ per sbloccarle';
+        h.textContent=n===1?tx('secClassic'):tx('secHidden');
         g.appendChild(h);
       }
       var b=document.createElement('button'), st=prog.stars[n]||0, locked=n>prog.unlocked;
@@ -811,8 +988,8 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
       b.style.background='linear-gradient(145deg,'+L.th[0]+','+L.th[1]+')';
       b.style.borderColor=L.th[2];
       var s=''; for(var k=0;k<3;k++)s+=(k<st?'★':'<s>★</s>');
-      b.innerHTML='<b>'+n+'</b><span>'+L.name+'</span><div class="stars">'+s+'</div>'+
-        '<small>'+(prog.best[n]?'Record '+fmt(prog.best[n]):(locked?'Bloccato':fmtInfo(L)))+'</small>';
+      b.innerHTML='<b>'+n+'</b><span>'+lname(n)+'</span><div class="stars">'+s+'</div>'+
+        '<small>'+(prog.best[n]?tx('record',{t:fmt(prog.best[n])}):(locked?tx('lockedLv'):fmtInfo(L)))+'</small>';
       b.addEventListener('click',function(){
         if(locked){SND.blocked();return;} ac(); startLevel(n);
       });
@@ -820,8 +997,8 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
     });
   }
   function fmtInfo(L){
-    var t=[];L.build(t);
-    return t.length/2+' coppie'+(L.hid?' · 🔒'+L.hid.reduce(function(a,b){return a+b;},0):'');
+    var a=[];L.build(a);
+    return tx('pairsInfo',{n:a.length/2})+(L.hid?' · 🔒'+L.hid.reduce(function(x,y){return x+y;},0):'');
   }
   function openMenu(){
     clearInterval(timer); buildMenu();
@@ -830,7 +1007,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
   }
   function closeMenu(silent){
     menu.classList.remove('show');
-    if(!silent&&started&&!over)startTimer();
+    if(!silent&&started&&!over&&!document.getElementById('intro').classList.contains('show'))startTimer();
   }
 
   // ================= PULSANTI =================
@@ -851,18 +1028,18 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
   muteUI();
   document.getElementById('bHint').onclick=function(){
     if(over)return;
-    if(hintsLeft!==null&&hintsLeft<=0){toast('Aiuti finiti!');SND.blocked();return;}
+    if(hintsLeft!==null&&hintsLeft<=0){toast(tx('tNoHints'));SND.blocked();return;}
     var m=findMove();
     if(!m){rescue();return;}
-    if(hintsLeft!==null)hintsLeft--; counts(); SND.hint();
+    if(hintsLeft!==null)hintsLeft--; hintsUsed++; counts(); SND.hint();
     m[0].el.classList.remove('hint'); m[1].el.classList.remove('hint'); void m[0].el.offsetWidth;
     m[0].el.classList.add('hint'); m[1].el.classList.add('hint');
   };
   document.getElementById('bUndo').onclick=function(){
     if(over)return;
-    if(!history.length){toast('Niente da annullare');return;}
-    if(undoLeft!==null&&undoLeft<=0){toast('Annulla finiti!');SND.blocked();return;}
-    if(undoLeft!==null)undoLeft--; counts(); SND.undo();
+    if(!history.length){toast(tx(shufBarrier?'tNoUndoShuffle':'tNoUndoHist'));return;}
+    if(undoLeft!==null&&undoLeft<=0){toast(tx('tNoUndo'));SND.blocked();return;}
+    if(undoLeft!==null)undoLeft--; undosUsed++; counts(); SND.undo();
     var p=history.pop();
     if(p[2]){unl=p[2]-1; tiles.forEach(function(t){if(t.hid===p[2])paintTile(t);});}
     p[0].gone=false;p[1].gone=false;
@@ -871,32 +1048,58 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
   };
   document.getElementById('bShuf').onclick=function(){
     if(over)return;
-    if(shufLeft!==null&&shufLeft<=0){toast('Mescolate finite!');SND.blocked();return;}
+    if(shufLeft!==null&&shufLeft<=0){toast(tx('tNoShuf'));SND.blocked();return;}
     var al=alive(); if(al.length<2)return;
-    if(shufLeft!==null)shufLeft--; counts();
-    assign(al,cfg.n,unl,G()); sel=null; al.forEach(paintTile); refresh();
-    SND.shuffle(); toast('Tessere mescolate!');
+    if(shufLeft!==null)shufLeft--; shufUsed++; counts();
+    assign(al,cfg.n,unl,G()); sel=null;
+    history=[]; shufBarrier=true;   // dopo un rimescolo non si torna indietro: la partita resta risolvibile
+    al.forEach(paintTile); refresh();
+    SND.shuffle(); toast(tx('tShuffled'));
   };
   var rsArm=false, rsT;
   var resetB=document.getElementById('bReset');
-  function resetLabel(){rsArm=false;resetB.textContent='🗑️ Azzera tutti i progressi';}
+  function resetLabel(){rsArm=false;resetB.textContent=tx('reset');}
   resetB.onclick=function(){
     if(!rsArm){
-      rsArm=true; resetB.textContent='⚠️ Tocca di nuovo per confermare';
+      rsArm=true; resetB.textContent=tx('resetConfirm');
       clearTimeout(rsT); rsT=setTimeout(resetLabel,3500); return;
     }
     clearTimeout(rsT);
-    prog={unlocked:1,stars:{},best:{}}; saveProg();
+    prog={unlocked:1,stars:{},best:{},seen:{}}; saveProg();
     try{localStorage.removeItem('mj_prog2');}catch(e){}
     SND.start(); buildMenu();
-    rsArm=false; resetB.textContent='✅ Progressi azzerati';
+    rsArm=false; resetB.textContent=tx('resetDone');
     rsT=setTimeout(resetLabel,2200);
   };
+  // ---------- lingua ----------
+  function setTxt(id,key){document.getElementById(id).textContent=tx(key);}
+  function applyLang(){
+    document.documentElement.lang=lang;
+    setTxt('pairsLbl','pairs'); setTxt('timeLbl','time');
+    setTxt('lblHint','hint'); setTxt('lblUndo','undo'); setTxt('lblShuf','shuffle'); setTxt('lblNew','restart');
+    setTxt('menuSub','chooseLevel'); setTxt('bAgain','again'); setTxt('bMenu','levels');
+    muteB.setAttribute('aria-label',tx('sound'));
+    document.getElementById('close').setAttribute('aria-label',tx('close'));
+    document.getElementById('bLevel').setAttribute('aria-label',tx('chooseAria'));
+    document.getElementById('lvNum').textContent=tx('level',{n:lv});
+    document.getElementById('lvName').textContent=lname(lv);
+    if(!rsArm)resetLabel();
+    Array.prototype.forEach.call(document.querySelectorAll('#langs button'),function(b){b.classList.toggle('on',b.getAttribute('data-l')===lang);});
+    if(menu.classList.contains('show'))buildMenu();
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('#langs button'),function(b){
+    b.addEventListener('click',function(){
+      var l=b.getAttribute('data-l'); if(!I18N[l])return;
+      lang=l; try{localStorage.setItem('mj_lang',l);}catch(e){}
+      applyLang(); SND.select();
+    });
+  });
   var rz;
   window.addEventListener('resize',function(){clearTimeout(rz);rz=setTimeout(layout,80);});
 
   // avvio: mostra il menu dei livelli
   applyTheme(LEVELS[0]);
+  applyLang();
   tiles=[]; counts(); pairsEl.textContent='0';
   openMenu();
 })();

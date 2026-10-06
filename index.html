@@ -146,6 +146,29 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .stackvis{position:relative;width:90px;height:96px}
 .stackvis .mt{position:absolute}
 .card .small{font-size:13px;color:#7a6a4a;margin:0 0 4px}
+header{gap:6px}
+.stats{gap:5px}
+.stat{min-width:42px;padding:4px 6px}
+.stat.clk{cursor:pointer}
+.stat.clk span{white-space:nowrap}
+.lv{min-width:0;flex:1 1 auto;max-width:150px;padding:2px 8px;font-size:15px;overflow:hidden}
+.lv span{white-space:nowrap}
+.mute{width:40px;min-height:44px;flex-shrink:0;font-size:19px}
+.resumebtn{width:100%;margin:0 0 14px;border:3px solid;border-radius:18px;color:#fff;min-height:78px;padding:12px 14px;align-items:flex-start;text-align:left;gap:3px;box-shadow:0 5px 0 rgba(0,0,0,.35)}
+.resumebtn b{font-size:20px;text-shadow:0 2px 0 rgba(0,0,0,.35)}
+.resumebtn span{font-size:14px;font-weight:600;opacity:.95}
+#pause{z-index:8600;background:var(--felt-b);background-image:radial-gradient(ellipse at 50% 35%,var(--felt-a),var(--felt-b) 80%);align-items:center;justify-content:center;padding:20px}
+#guide{z-index:8400;flex-direction:column;padding:calc(14px + env(safe-area-inset-top,0px)) 14px calc(14px + env(safe-area-inset-bottom,0px));background:var(--felt-b);background-image:radial-gradient(ellipse at 50% 20%,var(--felt-a),var(--felt-b) 80%)}
+#guide h2{margin:6px 0 2px;text-align:center;font-family:Georgia,"Times New Roman",serif;font-size:28px;color:var(--accent)}
+#guide p{margin:0 0 10px;text-align:center;color:var(--ink-soft);font-size:14px}
+#guideList{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:12px;padding:2px 2px 10px}
+.gitem{background:linear-gradient(145deg,#fffdf3,#f1e5c0);color:var(--btn-ink);border-radius:18px;padding:14px 16px;border-top:6px solid var(--accent);box-shadow:4px 6px 0 var(--edge2);flex-shrink:0}
+.gitem h4{margin:0;font-family:Georgia,serif;font-size:20px}
+.gitem .sub{font-size:13px;color:#7a6a4a;margin:2px 0 4px}
+.gitem ul{text-align:left;margin:6px 0 2px;padding-left:20px;font-size:15px;line-height:1.38}
+.gitem li{margin:5px 0}
+.gitem.lockedg{opacity:.55}
+.okbtn{width:100%;background:var(--edge2);color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.45);min-height:52px;font-size:17px;margin-top:8px;flex-shrink:0}
 @media (prefers-reduced-motion: reduce){
   .tile,#toast{transition:none}.tile.hint{animation:none;outline:4px solid #ff6a3d}
   .card,.card .trophy,.board-in .tile{animation:none}.card .st.on{animation:none;opacity:1}
@@ -154,11 +177,12 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 </head>
 <body>
 <header>
-  <button class="lv" id="bLevel" aria-label="Choisir un niveau"><span id="lvNum">Niveau 1</span><small id="lvName">Jade</small></button>
+  <button class="lv" id="bLevel" aria-label="Choisir un niveau"><span id="lvNum">Niv. 1</span><small id="lvName">Jade</small></button>
   <div class="stats">
     <div class="stat"><b id="pairs">0</b><span id="pairsLbl">paires</span></div>
-    <div class="stat"><b id="time">0:00</b><span id="timeLbl">temps</span></div>
+    <div class="stat clk" id="bPause" role="button" tabindex="0" aria-label="Mettre en pause"><b id="time">0:00</b><span id="timeLbl">⏸️ temps</span></div>
     <div class="stat" id="lockStat" style="display:none"><b id="locks">0</b><span>🔒</span></div>
+    <button class="mute" id="bGuide" aria-label="Guide du jeu">?</button>
     <button class="mute" id="bMute" aria-label="Son">🔊</button>
   </div>
 </header>
@@ -174,10 +198,12 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
   <button id="close" aria-label="Fermer">✕</button>
   <h2>Majoa Mahjong</h2>
   <p id="menuSub">Choisis un niveau · 20 défis</p>
+  <div id="resumeBox"></div>
   <div class="langs" id="langs">
     <button data-l="fr">🇫🇷 FR</button><button data-l="en">🇬🇧 EN</button><button data-l="it">🇮🇹 IT</button>
   </div>
   <div class="grid" id="grid"></div>
+  <button class="reset" id="bGuideMenu">📖 Guide du jeu</button>
   <button class="reset" id="bReset">🗑️ Effacer toute la progression</button>
 </div>
 
@@ -188,6 +214,20 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
   <div class="vis" id="introVis"></div>
   <ul id="introList"></ul>
   <button class="pri" id="bIntroOk">Compris !</button>
+</div></div>
+
+<div id="guide" class="ov">
+  <h2 id="guideTitle">Guide du jeu</h2>
+  <p id="guideSub"></p>
+  <div id="guideList"></div>
+  <button class="okbtn" id="bGuideOk">Compris !</button>
+</div>
+
+<div id="pause" class="ov"><div class="card">
+  <div class="trophy">⏸️</div>
+  <h3 id="pauseTitle">Pause</h3>
+  <p id="pauseSub"></p>
+  <button class="pri" id="bResume">▶ Reprendre</button>
 </div></div>
 
 <div id="win" class="ov"><canvas id="fw"></canvas>
@@ -471,6 +511,10 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
       tNoUndo:'Plus d\'annulations !', tNoShuf:'Plus de mélanges !', tShuffled:'Tuiles mélangées !',
       tHiddenStart:'🔒 Il y a des tuiles cachées : associe deux ⭐ pour les débloquer !',
       ok:'Compris !', newIn:'Nouveauté du niveau {n}', sound:'Son', close:'Fermer', chooseAria:'Choisir un niveau',
+      lvShort:'Niv. {n}',
+      pauseTitle:'Pause', pauseSub:'Ta partie est en pause.', resumeBtn:'▶ Reprendre', pauseAria:'Mettre en pause',
+      guideAria:'Guide du jeu', guideTitle:'Guide du jeu', guideSub:'Les règles et nouveautés des niveaux déjà atteints', guideBtn:'📖 Guide du jeu', guideLocked:'🔒 À découvrir au niveau {n}',
+      continueGame:'▶ Reprendre la partie', continueInfo:'Niveau {n} · {name} · {t} · {p} paires',
       names:['Jade','Océan','Cerisier','Crépuscule','Nuit violette','Laque rouge','Glace','Or','Minuit','Cosmos','Menthe','Corail','Saphir','Citron','Améthyste','Désert','Tempête','Bronze','Étoilée','Aube'],
       intro:{
         1:{t:'Bienvenue !',l:['Touche deux tuiles identiques et libres pour les retirer.','Une tuile est libre si rien ne la recouvre et si son côté gauche ou droit est dégagé.','Joue vite et avec peu d\'aides pour gagner 3 étoiles ★.']},
@@ -498,6 +542,10 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
       tNoUndo:'No undos left!', tNoShuf:'No shuffles left!', tShuffled:'Tiles shuffled!',
       tHiddenStart:'🔒 Some tiles are hidden: match two ⭐ to unlock them!',
       ok:'Got it!', newIn:'New in level {n}', sound:'Sound', close:'Close', chooseAria:'Choose a level',
+      lvShort:'Lv {n}',
+      pauseTitle:'Paused', pauseSub:'Your game is paused.', resumeBtn:'▶ Resume', pauseAria:'Pause',
+      guideAria:'Game guide', guideTitle:'Game guide', guideSub:'Rules and news from the levels you have reached', guideBtn:'📖 Game guide', guideLocked:'🔒 Discover it at level {n}',
+      continueGame:'▶ Continue game', continueInfo:'Level {n} · {name} · {t} · {p} pairs',
       names:['Jade','Ocean','Cherry','Sunset','Violet night','Red lacquer','Ice','Gold','Midnight','Cosmos','Mint','Coral','Sapphire','Lemon','Amethyst','Desert','Storm','Bronze','Starry','Dawn'],
       intro:{
         1:{t:'Welcome!',l:['Tap two identical, free tiles to remove them.','A tile is free when nothing covers it and its left or right side is open.','Play fast and with few aids to earn 3 stars ★.']},
@@ -525,6 +573,10 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
       tNoUndo:'Annulla finiti!', tNoShuf:'Mescolate finite!', tShuffled:'Tessere mescolate!',
       tHiddenStart:'🔒 Ci sono tessere nascoste: abbina due ⭐ per sbloccarle!',
       ok:'Ho capito!', newIn:'Novità del livello {n}', sound:'Suono', close:'Chiudi', chooseAria:'Scegli livello',
+      lvShort:'Liv. {n}',
+      pauseTitle:'Pausa', pauseSub:'La partita è in pausa.', resumeBtn:'▶ Riprendi', pauseAria:'Pausa',
+      guideAria:'Guida al gioco', guideTitle:'Guida al gioco', guideSub:'Regole e novità dei livelli già raggiunti', guideBtn:'📖 Guida al gioco', guideLocked:'🔒 Da scoprire al livello {n}',
+      continueGame:'▶ Continua la partita', continueInfo:'Livello {n} · {name} · {t} · {p} coppie',
       names:['Giada','Oceano','Ciliegio','Tramonto','Notte viola','Lacca rossa','Ghiaccio','Oro','Mezzanotte','Cosmo','Menta','Corallo','Zaffiro','Limone','Ametista','Deserto','Tempesta','Bronzo','Stellata','Alba'],
       intro:{
         1:{t:'Benvenuto!',l:['Tocca due tessere uguali e libere per toglierle.','Una tessera è libera se nulla la copre e il suo lato sinistro o destro è libero.','Gioca veloce e con pochi aiuti per ottenere 3 stelle ★.']},
@@ -745,7 +797,43 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
     }
     return all[0];
   }
-  function startTimer(){clearInterval(timer);timer=setInterval(function(){secs++;timeEl.textContent=fmt(secs);},1000);}
+  var timerOn=false;
+  function startTimer(){clearInterval(timer);timerOn=true;timer=setInterval(function(){secs++;timeEl.textContent=fmt(secs);if(secs%10===0)saveGame();},1000);}
+  function stopTimer(){clearInterval(timer);timerOn=false;}
+
+  // ---------- salvataggio della partita in corso ----------
+  var SAVE_KEY='mj_save1';
+  function saveGame(){
+    if(!started||over||!tiles.length)return;
+    try{
+      localStorage.setItem(SAVE_KEY,JSON.stringify({v:1,lv:lv,secs:secs,unl:unl,hl:hintsLeft,sl:shufLeft,ul:undoLeft,
+        hu:hintsUsed,uu:undosUsed,su:shufUsed,sb:shufBarrier,
+        t:tiles.map(function(t){return [t.type,t.hid||0,t.gone?1:0];}),
+        h:history.map(function(p){return [tiles.indexOf(p[0]),tiles.indexOf(p[1]),p[2]];}),at:Date.now()}));
+    }catch(e){}
+  }
+  function clearSave(){try{localStorage.removeItem(SAVE_KEY);}catch(e){}}
+  function readSave(){
+    try{
+      var j=localStorage.getItem(SAVE_KEY); if(!j)return null;
+      var sv=JSON.parse(j); if(!sv||sv.v!==1||!LEVELS[sv.lv-1])return null;
+      var tmp=[]; LEVELS[sv.lv-1].build(tmp);
+      if(tmp.length!==sv.t.length)return null;
+      if(!sv.t.some(function(r){return !r[2];}))return null;
+      return sv;
+    }catch(e){return null;}
+  }
+
+  // ---------- pausa ----------
+  function pauseGame(){
+    if(!started||over||!timerOn)return;
+    stopTimer(); saveGame();
+    document.getElementById('pause').classList.add('show');
+  }
+  function unpause(){
+    document.getElementById('pause').classList.remove('show');
+    if(started&&!over)startTimer();
+  }
 
   function tap(t){
     if(over||t.gone)return;
@@ -786,12 +874,13 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
     clearTimeout(rescue.t);
     rescue.t=setTimeout(function(){
       if(over||findMove())return;
-      var a2=alive(); assign(a2,cfg.n,unl,G()); sel=null; history=[]; shufBarrier=true; a2.forEach(paintTile); refresh(); SND.shuffle();
+      var a2=alive(); assign(a2,cfg.n,unl,G()); sel=null; history=[]; shufBarrier=true; a2.forEach(paintTile); refresh(); SND.shuffle(); saveGame();
     },1100);
   }
   function afterMove(){
     var al=alive();
     if(al.length===0){setTimeout(win,350);return;}
+    saveGame();
     if(!findMove())rescue();
   }
 
@@ -870,7 +959,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
     return Math.min(byTime,cap);
   }
   function win(){
-    over=true; clearInterval(timer);
+    over=true; stopTimer(); clearSave();
     var pairsTotal=tiles.length/2, aids=hintsUsed+undosUsed+shufUsed;
     var stars=calcStars(secs,pairsTotal,aids);
     var oldBest=prog.best[lv];
@@ -904,8 +993,8 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
     var d=document.createElement('div'); d.className='mt'+(idx==='L'?' locked':'');
     d.innerHTML='<svg viewBox="0 0 60 80">'+(idx==='L'?LOCKED:TYPES[idx])+'</svg>'; return d;
   }
-  function buildVis(n){
-    var box=document.getElementById('introVis'); box.innerHTML='';
+  function buildVis(n,box){
+    box=box||document.getElementById('introVis'); box.innerHTML='';
     (INTRO_VIS[n]||[]).forEach(function(it){
       var e;
       if(it==='S'){
@@ -935,46 +1024,73 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
   }
 
   // ================= AVVIO LIVELLO =================
-  function startLevel(n){
+  function startLevel(n,saved){
     lv=n; cfg=LEVELS[n-1];
     stopFx(); closeMenu(true);
     document.getElementById('win').classList.remove('show');
     document.getElementById('intro').classList.remove('show');
+    document.getElementById('pause').classList.remove('show');
+    document.getElementById('guide').classList.remove('show');
     applyTheme(cfg);
-    document.getElementById('lvNum').textContent=tx('level',{n:n});
+    document.getElementById('lvNum').textContent=tx('lvShort',{n:n});
     document.getElementById('lvName').textContent=lname(n);
     var list=[]; cfg.build(list);
     tiles=list; tiles.forEach(function(t){t.gone=false;t.hid=0;});
-    if(cfg.hid)markHidden(tiles,cfg.hid);
-    unl=0;
-    assign(tiles,cfg.n,0,G());
-    over=false; started=true; sel=null; history=[]; secs=0; combo=0; lastMatch=0;
-    hintsUsed=0; undosUsed=0; shufUsed=0; shufBarrier=false;
-    hintsLeft=cfg.hints; shufLeft=cfg.shuf; undoLeft=cfg.undo; counts();
-    timeEl.textContent='0:00';
+    if(saved){
+      saved.t.forEach(function(r,i){var t=tiles[i]; t.type=r[0]; t.hid=r[1]; t.gone=!!r[2];});
+      unl=saved.unl||0;
+    } else {
+      if(cfg.hid)markHidden(tiles,cfg.hid);
+      unl=0;
+      assign(tiles,cfg.n,0,G());
+    }
+    over=false; started=true; sel=null; combo=0; lastMatch=0;
+    if(saved){
+      secs=saved.secs||0; hintsUsed=saved.hu||0; undosUsed=saved.uu||0; shufUsed=saved.su||0; shufBarrier=!!saved.sb;
+      hintsLeft=saved.hl; shufLeft=saved.sl; undoLeft=saved.ul;
+      history=(saved.h||[]).map(function(r){return [tiles[r[0]],tiles[r[1]],r[2]];}).filter(function(p){return p[0]&&p[1];});
+    } else {
+      history=[]; secs=0;
+      hintsUsed=0; undosUsed=0; shufUsed=0; shufBarrier=false;
+      hintsLeft=cfg.hints; shufLeft=cfg.shuf; undoLeft=cfg.undo;
+    }
+    counts();
+    timeEl.textContent=fmt(secs);
     board.innerHTML=''; board.classList.toggle('nodim',!cfg.dim);
     board.classList.remove('board-in');
     tiles.forEach(function(t){
-      var d=document.createElement('div'); d.className='tile'; t.el=d;
+      var d=document.createElement('div'); d.className='tile'+(t.gone?' gone hidden':''); t.el=d;
       d.addEventListener('click',function(){tap(t);});
       paintTile(t); board.appendChild(d);
     });
     layout(); refresh();
     void board.offsetWidth; board.classList.add('board-in');
     SND.start();
-    clearInterval(timer);
+    stopTimer();
     if(needIntro(n)){
       showIntro(n,function(){startTimer();});
     } else {
       startTimer();
-      if(cfg.hid)toast(tx('tHiddenStart'),4200);
+      if(cfg.hid&&!saved)toast(tx('tHiddenStart'),4200);
     }
     setTimeout(function(){board.classList.remove('board-in');},1800);
+    saveGame();
+    if(saved&&alive().length&&!findMove())rescue();
   }
 
   // ================= MENU =================
   var menu=document.getElementById('menu');
   function buildMenu(){
+    var rb=document.getElementById('resumeBox'); rb.innerHTML='';
+    var sv=(!started)?readSave():null;
+    if(sv){
+      var cs=LEVELS[sv.lv-1], left=sv.t.filter(function(r){return !r[2];}).length/2;
+      var rbtn=document.createElement('button'); rbtn.className='resumebtn';
+      rbtn.style.background='linear-gradient(145deg,'+cs.th[0]+','+cs.th[1]+')'; rbtn.style.borderColor=cs.th[2];
+      rbtn.innerHTML='<b>'+tx('continueGame')+'</b><span>'+tx('continueInfo',{n:sv.lv,name:lname(sv.lv),t:fmt(sv.secs||0),p:left})+'</span>';
+      rbtn.addEventListener('click',function(){ac();startLevel(sv.lv,sv);});
+      rb.appendChild(rbtn);
+    }
     var g=document.getElementById('grid'); g.innerHTML='';
     LEVELS.forEach(function(L,i){
       var n=i+1;
@@ -1001,13 +1117,13 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
     return tx('pairsInfo',{n:a.length/2})+(L.hid?' · 🔒'+L.hid.reduce(function(x,y){return x+y;},0):'');
   }
   function openMenu(){
-    clearInterval(timer); buildMenu();
+    stopTimer(); buildMenu();
     document.getElementById('close').style.display=started&&!over?'':'none';
     menu.classList.add('show');
   }
   function closeMenu(silent){
     menu.classList.remove('show');
-    if(!silent&&started&&!over&&!document.getElementById('intro').classList.contains('show'))startTimer();
+    if(!silent&&started&&!over&&!document.getElementById('intro').classList.contains('show')&&!document.getElementById('guide').classList.contains('show'))startTimer();
   }
 
   // ================= PULSANTI =================
@@ -1031,7 +1147,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
     if(hintsLeft!==null&&hintsLeft<=0){toast(tx('tNoHints'));SND.blocked();return;}
     var m=findMove();
     if(!m){rescue();return;}
-    if(hintsLeft!==null)hintsLeft--; hintsUsed++; counts(); SND.hint();
+    if(hintsLeft!==null)hintsLeft--; hintsUsed++; counts(); SND.hint(); saveGame();
     m[0].el.classList.remove('hint'); m[1].el.classList.remove('hint'); void m[0].el.offsetWidth;
     m[0].el.classList.add('hint'); m[1].el.classList.add('hint');
   };
@@ -1044,7 +1160,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
     if(p[2]){unl=p[2]-1; tiles.forEach(function(t){if(t.hid===p[2])paintTile(t);});}
     p[0].gone=false;p[1].gone=false;
     [p[0],p[1]].forEach(function(t){t.el.classList.remove('gone','hidden');});
-    sel=null; refresh();
+    sel=null; refresh(); saveGame();
   };
   document.getElementById('bShuf').onclick=function(){
     if(over)return;
@@ -1054,7 +1170,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
     assign(al,cfg.n,unl,G()); sel=null;
     history=[]; shufBarrier=true;   // dopo un rimescolo non si torna indietro: la partita resta risolvibile
     al.forEach(paintTile); refresh();
-    SND.shuffle(); toast(tx('tShuffled'));
+    SND.shuffle(); toast(tx('tShuffled')); saveGame();
   };
   var rsArm=false, rsT;
   var resetB=document.getElementById('bReset');
@@ -1065,23 +1181,66 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
       clearTimeout(rsT); rsT=setTimeout(resetLabel,3500); return;
     }
     clearTimeout(rsT);
-    prog={unlocked:1,stars:{},best:{},seen:{}}; saveProg();
+    prog={unlocked:1,stars:{},best:{},seen:{}}; saveProg(); clearSave();
     try{localStorage.removeItem('mj_prog2');}catch(e){}
     SND.start(); buildMenu();
     rsArm=false; resetB.textContent=tx('resetDone');
     rsT=setTimeout(resetLabel,2200);
   };
+  // ---------- guida ----------
+  var guideWasOn=false;
+  function openGuide(){
+    guideWasOn=timerOn; stopTimer();
+    var list=document.getElementById('guideList'); list.innerHTML='';
+    var ns=Object.keys(INTRO_VIS).map(Number).sort(function(a,b){return a-b;});
+    var reach=Math.max(prog.unlocked, started?lv:1), cur=started?lv:reach, target=null;
+    ns.forEach(function(n){
+      var d=document.createElement('div'); d.className='gitem'; d.setAttribute('data-n',n);
+      if(n>reach){ d.className+=' lockedg'; d.innerHTML='<h4>'+tx('guideLocked',{n:n})+'</h4>'; }
+      else {
+        var it=I18N[lang].intro[n]||I18N.fr.intro[n];
+        d.innerHTML='<h4>'+(INTRO_ICON[n]||'✨')+' '+it.t+'</h4><div class="sub">'+tx('newIn',{n:n})+'</div><div class="vis"></div><ul>'+
+          it.l.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>';
+        buildVis(n,d.querySelector('.vis'));
+        if(n<=cur)target=d;
+      }
+      list.appendChild(d);
+    });
+    setTxt('guideTitle','guideTitle'); setTxt('guideSub','guideSub'); setTxt('bGuideOk','ok');
+    document.getElementById('guide').classList.add('show');
+    if(target)setTimeout(function(){try{list.scrollTop=target.offsetTop-list.offsetTop-4;}catch(e){}},30);
+  }
+  function closeGuide(){
+    document.getElementById('guide').classList.remove('show');
+    if(guideWasOn&&started&&!over&&!menu.classList.contains('show'))startTimer();
+    guideWasOn=false;
+  }
+  document.getElementById('bGuide').onclick=openGuide;
+  document.getElementById('bGuideMenu').onclick=openGuide;
+  document.getElementById('bGuideOk').onclick=closeGuide;
+  // ---------- pausa / salvataggio automatico ----------
+  var pauseB=document.getElementById('bPause');
+  pauseB.onclick=pauseGame;
+  pauseB.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();pauseGame();}});
+  document.getElementById('bResume').onclick=unpause;
+  document.addEventListener('visibilitychange',function(){if(document.hidden){pauseGame();saveGame();}});
+  window.addEventListener('pagehide',function(){saveGame();});
   // ---------- lingua ----------
   function setTxt(id,key){document.getElementById(id).textContent=tx(key);}
   function applyLang(){
     document.documentElement.lang=lang;
-    setTxt('pairsLbl','pairs'); setTxt('timeLbl','time');
+    setTxt('pairsLbl','pairs'); document.getElementById('timeLbl').textContent='⏸\uFE0F '+tx('time');
     setTxt('lblHint','hint'); setTxt('lblUndo','undo'); setTxt('lblShuf','shuffle'); setTxt('lblNew','restart');
     setTxt('menuSub','chooseLevel'); setTxt('bAgain','again'); setTxt('bMenu','levels');
     muteB.setAttribute('aria-label',tx('sound'));
     document.getElementById('close').setAttribute('aria-label',tx('close'));
     document.getElementById('bLevel').setAttribute('aria-label',tx('chooseAria'));
-    document.getElementById('lvNum').textContent=tx('level',{n:lv});
+    document.getElementById('bPause').setAttribute('aria-label',tx('pauseAria'));
+    document.getElementById('bGuide').setAttribute('aria-label',tx('guideAria'));
+    setTxt('bGuideMenu','guideBtn'); setTxt('pauseTitle','pauseTitle'); setTxt('pauseSub','pauseSub'); setTxt('bResume','resumeBtn');
+    setTxt('guideTitle','guideTitle'); setTxt('guideSub','guideSub'); setTxt('bGuideOk','ok');
+    if(document.getElementById('guide').classList.contains('show'))openGuide();
+    document.getElementById('lvNum').textContent=tx('lvShort',{n:lv});
     document.getElementById('lvName').textContent=lname(lv);
     if(!rsArm)resetLabel();
     Array.prototype.forEach.call(document.querySelectorAll('#langs button'),function(b){b.classList.toggle('on',b.getAttribute('data-l')===lang);});

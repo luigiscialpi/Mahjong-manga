@@ -233,9 +233,31 @@ header{gap:6px}
 .cb .tile.match,.hc .tile.match{box-shadow:inset 0 0 0 4px #000,0 0 0 4px #fff,0 0 0 8px #000,0 0 26px 10px rgba(255,255,255,.7),3px 4px 0 var(--edge)}
 .cb .tile.match::before,.hc .tile.match::before{background:#000;border-radius:7px;box-shadow:0 0 0 3px #fff}
 .tile.fade{filter:brightness(.8) saturate(.75)}
+#map{z-index:7900;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(14px + env(safe-area-inset-top,0px)) 14px calc(18px + env(safe-area-inset-bottom,0px));
+  background:linear-gradient(180deg,#0f4a6b 0%,#146b7a 45%,#1d8a6a 100%)}
+#map h2{margin:6px 0 2px;text-align:center;font-family:Georgia,"Times New Roman",serif;font-size:30px;color:#ffe9a8}
+#map>p{margin:0 0 12px;text-align:center;color:#d6f1ff;font-size:15px}
+#mapClose{position:absolute;right:12px;top:calc(10px + env(safe-area-inset-top,0px));width:46px;min-height:46px;font-size:20px;background:rgba(0,0,0,.3);color:#fff;box-shadow:none;border-radius:50%}
+#mapPath{display:flex;flex-direction:column;align-items:center;padding:8px 0 4px}
+.isl{display:flex;flex-direction:column;align-items:center;width:100%}
+.isl.left{padding-right:70px}.isl.right{padding-left:70px}
+.islbtn{width:108px;min-height:108px;height:108px;padding:0;border-radius:50%;border:4px solid rgba(255,255,255,.9);font-size:50px;color:#fff;box-shadow:0 7px 0 rgba(0,0,0,.28),0 0 24px rgba(255,255,255,.25);flex-direction:row}
+.islname{margin-top:8px;font-weight:800;color:#fff;font-size:17px;text-shadow:0 2px 0 rgba(0,0,0,.35);text-align:center}
+.islsub{font-size:13px;color:#e4f6ff;margin-top:1px}
+.isl.locked .islbtn{filter:grayscale(.85) brightness(.7);box-shadow:0 5px 0 rgba(0,0,0,.25)}
+.isl.locked .islname{opacity:.8}
+.isl.locked .islbtn::after{content:"🔒";position:absolute;font-size:24px;right:-4px;top:-2px}
+.islbtn{position:relative}
+.isl.shake{animation:shake .45s ease-in-out}
+.conn{width:6px;height:30px;border-radius:3px;margin:2px 0;background:repeating-linear-gradient(180deg,rgba(255,255,255,.75) 0 6px,transparent 6px 12px)}
+.mapfoot{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.mapfoot .reset{margin:0}
+.menutop{display:flex;align-items:center;min-height:46px;margin-bottom:2px}
+.mapback{min-height:44px;padding:4px 16px;background:var(--panel);color:var(--ink);box-shadow:none;border-radius:22px;flex-direction:row;font-size:15px}
+#islTitle{margin:2px 0 0;text-align:center;font-size:19px;font-weight:800;color:var(--ink)}
 @media (prefers-reduced-motion: reduce){
   .tile,#toast{transition:none}.tile.hint{animation:none;outline:4px solid #ff6a3d}
-  .tile.blocker,.tile.target,.tile.match{animation:none}
+  .tile.blocker,.tile.target,.tile.match,.isl.shake{animation:none}
   .card,.card .trophy,.board-in .tile{animation:none}.card .st.on{animation:none;opacity:1}
 }
 </style>
@@ -264,9 +286,26 @@ header{gap:6px}
   <button id="bNew"><i>🔄</i><span id="lblNew">Refaire</span><em>&nbsp;</em></button>
 </nav>
 
+<div id="map" class="ov">
+  <button id="mapClose" aria-label="Fermer">✕</button>
+  <h2 id="mapTitle">Le voyage</h2>
+  <p id="mapSub">Choisis une île</p>
+  <div id="resumeBoxMap"></div>
+  <div class="langs" id="langsMap">
+    <button data-l="fr">🇫🇷 FR</button><button data-l="en">🇬🇧 EN</button><button data-l="it">🇮🇹 IT</button>
+  </div>
+  <div id="mapPath"></div>
+  <div class="mapfoot">
+    <button class="reset" id="bSetMap">⚙️ Réglages</button>
+    <button class="reset" id="bGuideMap">📖 Guide du jeu</button>
+  </div>
+</div>
+
 <div id="menu" class="ov">
   <button id="close" aria-label="Fermer">✕</button>
+  <div class="menutop"><button class="mapback" id="bMapBack">🗺️ Les îles</button></div>
   <h2>Majoa Mahjong</h2>
+  <div id="islTitle">🐾 Île des animaux</div>
   <p id="menuSub">Choisis un niveau · 20 défis</p>
   <div id="resumeBox"></div>
   <div class="langs" id="langs">
@@ -486,11 +525,72 @@ header{gap:6px}
     C(14,32,2,'#cfeeff',false)+C(46,30,1.6,'#cfeeff',false)+
     eye(23.5,62,'#103a6e',.62)+eye(36.5,62,'#103a6e',.62)+L('M27 67.5 q3 2.5 6 0',1.2)+blush(17,66)+blush(43,66)
   );
+  // ---- nuovi animali carini per l'Isola degli animali (indici 30-39): cani, gatti di razza, pappagalli ----
+  FACES.push(
+    // 30 Shiba Inu
+    P('M9 34 L11 11 L26 25Z','#f0a050')+P('M51 34 L49 11 L34 25Z','#f0a050')+
+    P('M13.5 28 L14 18 L21 24Z','#ffd9b0',false)+P('M46.5 28 L46 18 L39 24Z','#ffd9b0',false)+
+    E(30,45,22,19,'#f0a050')+P('M8 51 Q14 41 30 48 Q46 41 52 51 Q50 64 30 66 Q10 64 8 51Z','#fff6ea',false)+
+    C(21,35,2.2,'#fff6ea',false)+C(39,35,2.2,'#fff6ea',false)+
+    eye(21.5,44,'#4a2a14',.85)+eye(38.5,44,'#4a2a14',.85)+E(30,52,2.8,2,O,false)+omega(30,56.5)+blush(14.5,54)+blush(45.5,54),
+    // 31 Husky
+    P('M9 34 L11 10 L25 24Z','#6f7a8a')+P('M51 34 L49 10 L35 24Z','#6f7a8a')+
+    P('M13.5 28 L14 17 L21 23Z','#f3c9c9',false)+P('M46.5 28 L46 17 L39 23Z','#f3c9c9',false)+
+    E(30,45,22,19,'#6f7a8a')+P('M30 28 Q26 36 17 44 Q13 58 30 66 Q47 58 43 44 Q34 36 30 28Z','#fff',false)+
+    E(22,36,2.2,1.4,'#d8dde6',false)+E(38,36,2.2,1.4,'#d8dde6',false)+
+    eye(22,45,'#46b6ff',.95)+eye(38,45,'#46b6ff',.95)+E(30,54,3,2.2,O,false)+
+    L('M30 56.5 q-2.5 3 -5 .5 M30 56.5 q2.5 3 5 .5')+P('M27.5 59 q2.5 5 5 0Z','#ff7f9c')+blush(15,53)+blush(45,53),
+    // 32 Dalmata
+    E(8.5,42,6,13,'#2b2b33',true,'rotate(12 8.5 42)')+E(51.5,42,6,13,'#2b2b33',true,'rotate(-12 51.5 42)')+
+    E(30,45,21,19,'#fff')+E(38.5,42.5,7,6.5,'#2b2b33',false)+
+    C(18,33,3,'#2b2b33',false)+C(30,31,2.2,'#2b2b33',false)+C(46,54,2.4,'#2b2b33',false)+C(14.5,53,2.1,'#2b2b33',false)+
+    eye(21,44,'#7a4a24',.95)+eye(38.5,43,'#8fd0ff',.9)+E(30,52,3.2,2.4,O,false)+C(29,51,.9,'#fff',false)+
+    L('M30 54.5 v2')+L('M30 56.5 q-3 3 -6 0 M30 56.5 q3 3 6 0')+P('M27.5 59 q2.5 5 5 0Z','#ff7f9c')+blush(13,52)+blush(47,52),
+    // 33 Golden retriever
+    E(8.5,40,7.5,14,'#d49a45',true,'rotate(14 8.5 40)')+E(51.5,40,7.5,14,'#d49a45',true,'rotate(-14 51.5 40)')+
+    E(30,45,21,19,'#f1c470')+L('M29 27 q-3 4 0 8 M34 28 q3 3 1 7',1.4).replace(O,'#d49a45')+E(30,56,10,7.5,'#fbe6bd',false)+
+    eye(21,43,'#5a3a18',.95)+eye(39,43,'#5a3a18',.95)+E(30,51.5,4,3,O,false)+C(29,50.5,1,'#fff',false)+
+    L('M30 54.5 v2')+L('M30 56.5 q-3 3 -6 0 M30 56.5 q3 3 6 0')+P('M27.5 59 q2.5 5 5 0Z','#ff7f9c')+blush(13,52)+blush(47,52),
+    // 34 Siamese
+    P('M9 34 L11 11 L26 25Z','#7a5a48')+P('M51 34 L49 11 L34 25Z','#7a5a48')+
+    P('M13.5 28 L14 18 L21 24Z','#e8b8b8',false)+P('M46.5 28 L46 18 L39 24Z','#e8b8b8',false)+
+    E(30,45,22,19,'#f6ead3')+E(30,52,10.5,11,'#a2826e',false)+
+    eye(21,44,'#3fa6ff',1)+eye(39,44,'#3fa6ff',1)+P('M28.2 50.5 h3.6 l-1.8 2.1Z','#ff9fb0',false)+omega(30,54.5)+
+    L('M5 47 l9 2 M5 54 l9 -1 M55 47 l-9 2 M55 54 l-9 -1',1)+blush(13,53)+blush(47,53),
+    // 35 Gatto nero
+    P('M9 34 L10 11 L26 25Z','#34344a')+P('M51 34 L50 11 L34 25Z','#34344a')+
+    P('M13.5 28 L13.5 18 L21 24Z','#e89ab0',false)+P('M46.5 28 L46.5 18 L39 24Z','#e89ab0',false)+
+    E(30,45,22,19,'#34344a')+eye(21,44,'#ffd93a',1.05)+eye(39,44,'#ffd93a',1.05)+
+    P('M28.2 51 h3.6 l-1.8 2.1Z','#ff8fb0',false)+L('M26.5 54.5 q1.75 2.8 3.5 0 q1.75 2.8 3.5 0',1.3).replace(O,'#ff8fb0')+
+    L('M5 47 l9 2 M5 54 l9 -1 M55 47 l-9 2 M55 54 l-9 -1',1).replace(O,'#d9d9ee')+blush(13,53,'#ff8fb0')+blush(47,53,'#ff8fb0'),
+    // 36 Persiano
+    P('M10 34 L12 13 L26 26Z','#fff3e2')+P('M50 34 L48 13 L34 26Z','#fff3e2')+
+    P('M14 29 L14.5 19 L21.5 25Z','#f5b5c5',false)+P('M46 29 L45.5 19 L38.5 25Z','#f5b5c5',false)+
+    C(10,52,8,'#fff3e2')+C(50,52,8,'#fff3e2')+E(30,46,22,19,'#fff3e2')+E(30,46,20.5,17.5,'#fff3e2',false)+
+    eye(21,44,'#e0903a',1.05)+eye(39,44,'#e0903a',1.05)+E(30,50.5,3,2.2,'#ff9fb8')+L('M30 52.5 v1.5')+
+    L('M30 54 q-3 2.5 -6 .3 M30 54 q3 2.5 6 .3')+L('M26 29 q4 3 8 0',1.2)+blush(13,52)+blush(47,52),
+    // 37 Ara (pappagallo)
+    P('M22 25 Q16 10 27 12 Q26 18 29 25Z','#1e88e5')+P('M38 25 Q44 10 33 12 Q34 18 31 25Z','#ffc928')+P('M27 24 Q30 6 33 24Z','#e53935')+
+    E(30,46,21,19,'#e53935')+E(30,48,15,13,'#fff2e0',false)+L('M19 44 q4 -2 8 0 M33 44 q4 -2 8 0 M21 54 q4 1 6 0 M33 54 q4 1 6 0',1).replace(O,'#e57373')+
+    eye(22.5,44,'#2a1a10',.8)+eye(37.5,44,'#2a1a10',.8)+
+    P('M23 51 Q30 44 37 51 Q35 57 30 58 Q25 57 23 51Z','#f1e7cf')+P('M25 58 Q30 60 35 58 Q34 64 30 65 Q26 64 25 58Z','#3a3a44')+blush(12,54,'#ff8a65')+blush(48,54,'#ff8a65'),
+    // 38 Cocorita (parrocchetto ondulato)
+    E(30,45,21,19,'#a6e04a')+P('M10 42 Q14 24 30 22 Q46 24 50 42 Q40 36 30 36 Q20 36 10 42Z','#ffe94a',false)+
+    L('M18 30 q3 -3 6 0 q3 3 6 0 q3 -3 6 0 q3 3 6 0',1.3)+L('M20 35 q3 -3 6 0 q3 3 6 0 q3 -3 6 0',1.2)+
+    C(20,52,2.6,'#7e57c2',false)+C(40,52,2.6,'#7e57c2',false)+C(22,43,6,'#fff',false)+C(38,43,6,'#fff',false)+
+    eye(22,43,'#2a1a10',.75)+eye(38,43,'#2a1a10',.75)+P('M26 48 Q30 44 34 48 Q30 56 26 48Z','#f5a02e')+E(30,46.6,3.2,1.5,'#4aa3ff',false)+
+    blush(13.5,55)+blush(46.5,55),
+    // 39 Calopsitta
+    P('M25 26 Q19 12 28 10 Q26 16 29 25Z','#c9ced6')+P('M29 25 Q21 5 37 3 Q31 12 36 23Z','#ffe066')+
+    E(30,46,21,19,'#ffe066')+C(17,51,5.5,'#ff8a3d',false)+C(43,51,5.5,'#ff8a3d',false)+
+    eye(23,44,'#2a1a10',.85)+eye(37,44,'#2a1a10',.85)+P('M26.5 48 Q30 44.5 33.5 48 Q30 55 26.5 48Z','#9aa3b0')+L('M30 56 q-2 2 -4 .3 M30 56 q2 2 4 .3',1.2)
+  );
   var BGS = ['#ffe9c7','#ffeccf','#ffe0ea','#ffddc2','#e4eef3','#dff5d4','#fff0c4','#f1e0cb','#d9ecfb','#ffe0e6','#e7ebf1','#eddcf7',
     '#ffe0ea','#dcebfb','#fff3c4','#d8f5ec',
     '#fff2a8','#ffe0a0','#ead3b8','#e7ecf2','#e8d6bd','#cfe9fb',
     '#ffe9d0','#e9ddf9','#ffe0e6','#dcebfb',
-    '#fff3b0','#ffe6b0','#e3e6ff','#d6f1fb'];
+    '#fff3b0','#ffe6b0','#e3e6ff','#d6f1fb',
+    '#ffe6cc','#e3ecf7','#eef0f4','#fff0cf','#f3e9dc','#e5e0f0','#fff7ec','#ffd9d0','#e4f5c9','#fff5b8'];
   var STAR_IDX=26;
   var TYPES = FACES.map(function(f,i){
     return '<circle cx="30" cy="40" r="29" fill="'+BGS[i]+'"/>'+
@@ -498,6 +598,24 @@ header{gap:6px}
            '<path d="M8 28 Q10 18 20 11" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" opacity=".8"/>'+f;
   });
   var NT = TYPES.length;
+
+  // ================= ISOLE (il viaggio) =================
+  // Ogni isola ha un proprio gruppo di tessere ("pool"). I 20 livelli esistenti sono l'Isola degli animali (la prima tappa).
+  var ANIMAL_TYPES=[0,1,2,3,4,5,6,7,8,9,10,11,16,17,18,19,20,21,30,31,32,33,34,35,36,37,38,39];
+  var ALL_ORIG=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29];   // i 30 tipi originali
+  var BASE_LV=20;   // i 20 livelli base (id 1-20 = «livelli iniziali»; id 21-40 = gli stessi layout per l'Isola degli animali)
+  var ISLANDS=[
+    {id:'prologue',icon:'🌱',levels:[1,20],pool:ALL_ORIG,th:['#2a8a62','#12503b','#ffe9a8']},
+    {id:'animals',icon:'🐾',levels:[21,40],pool:ANIMAL_TYPES.concat([STAR_IDX]),th:['#1f6b57','#134536','#e8b43a']},
+    {id:'sweets',icon:'🍰',th:['#c25a8a','#5a1f3a','#ffd1e3']},
+    {id:'art',icon:'🎨',th:['#6038a6','#2a1757','#dcbcff']},
+    {id:'science',icon:'🔬',th:['#2a56b0','#0c1f55','#a8c8ff']},
+    {id:'sea',icon:'🌊',th:['#1f6f94','#0d3350','#7fe0ff']},
+    {id:'flowers',icon:'🌸',th:['#b0476f','#5c1f3b','#ffd1e3']}
+  ];
+  function islandOf(n){return n<=BASE_LV?ISLANDS[0]:ISLANDS[1];}
+  function localLv(n){return n-islandOf(n).levels[0]+1;}   // numero del livello dentro il suo mondo (1-20)
+  function poolOf(n){return islandOf(n).pool;}
 
   // ================= LIVELLI =================
   function rect(a,x0,y0,w,h,z,corners){
@@ -585,10 +703,14 @@ header{gap:6px}
   ];
   function layoutList(n,comfort){
     var a=[];
-    if(comfort&&COMFORT[n-1]){COMFORT[n-1](a); if(a.length%2)a.pop();}
-    else LEVELS[n-1].build(a);
+    var b=(n-1)%BASE_LV;
+    if(comfort&&COMFORT[b]){COMFORT[b](a); if(a.length%2)a.pop();}
+    else LEVELS[b].build(a);
     return a;
   }
+  // i 20 livelli base servono sia ai «livelli iniziali» (id 1-20) sia all'Isola degli animali (id 21-40: stessi layout, regole e limiti)
+  (function(){var i,k,c,base=LEVELS.length; for(i=0;i<base;i++){LEVELS[i].world='prologue';}
+    for(i=0;i<base;i++){c={}; for(k in LEVELS[i])c[k]=LEVELS[i][k]; c.world='animals'; LEVELS.push(c);} })();
   function markHidden(list,sizes){
     var idx=shuffleArr(list.map(function(_,i){return i;})), p=0;
     sizes.forEach(function(sz,g){for(var k=0;k<sz;k++)list[idx[p++]].hid=g+1;});
@@ -652,10 +774,12 @@ header{gap:6px}
       sgHelp:'Aides au jeu', setEq:'Illuminer les tuiles identiques', setEqHint:'Quand tu touches une tuile, les tuiles libres identiques s\'entourent de vert avec un ✔ et les autres s\'assombrissent un peu',
       setAuto:'Aide automatique', setAutoHint:'Si tu ne joues pas pendant 2 minutes, une paire possible clignote (ne compte pas comme aide)',
       setReset:'Rétablir les réglages par défaut', starsRuleNT:'★★★ : avec 1 aide au maximum (le temps ne compte pas)', tnHidden:'Tuile cachée',
-      tn:['Chat','Chien','Lapin','Renard','Panda','Grenouille','Tigre','Singe','Pingouin','Cochon','Koala','Poulpe','Lettre A','Lettre M','Chiffre 7','Chiffre 3','Poussin','Lion','Ours','Vache','Hibou','Baleine','Lettre K','Lettre Z','Chiffre 5','Chiffre 9','Étoile','Soleil','Lune','Mer'],
+      tn:['Chat','Chien','Lapin','Renard','Panda','Grenouille','Tigre','Singe','Pingouin','Cochon','Koala','Poulpe','Lettre A','Lettre M','Chiffre 7','Chiffre 3','Poussin','Lion','Ours','Vache','Hibou','Baleine','Lettre K','Lettre Z','Chiffre 5','Chiffre 9','Étoile','Soleil','Lune','Mer','Shiba','Husky','Dalmatien','Golden retriever','Siamois','Chat noir','Persan','Ara','Perruche','Calopsitte'],
       tBlockTop:'Retire d\'abord les tuiles du dessus (mises en évidence)', tBlockSides:'Libère un côté, gauche ou droite (tuiles mises en évidence)', tBlockBoth:'Bloquée par le dessus et par les deux côtés (tuiles mises en évidence)',
       setCf:'Mode confort (seniors)', setCfHint:'Tuiles plus grandes (5 colonnes), textes grands, sans chrono, aides illimitées, tuiles identiques en surbrillance, aide automatique. S\'applique à la prochaine partie.',
       pauseShort:'Pause', tNoMatchFree:'Aucune tuile identique n\'est libre pour le moment',
+      mapTitle:'Le voyage', mapSub:'Choisis une île', mapBack:'🗺️ Les îles', isl_animals:'Île des animaux', isl_sweets:'Île des douceurs', isl_art:'Île de l\'art', isl_science:'Île des sciences', isl_sea:'Île de la mer', isl_flowers:'Île des fleurs', mapProgress:'{a}/{b} ★', mapSoon:'Bientôt', mapAria:'Carte du voyage',
+      isl_prologue:'Niveaux de départ', mapNeedPrologue:'Termine les niveaux de départ', winPrologue:'Niveaux de départ terminés !', winPrologueSub:'Le voyage commence : l\'Île des animaux t\'attend', toMap:'🗺️ Vers le voyage',
       names:['Jade','Océan','Cerisier','Crépuscule','Nuit violette','Laque rouge','Glace','Or','Minuit','Cosmos','Menthe','Corail','Saphir','Citron','Améthyste','Désert','Tempête','Bronze','Étoilée','Aube'],
       intro:{
         1:{t:'Bienvenue !',l:['Touche deux tuiles identiques et libres pour les retirer.','Une tuile est libre si rien ne la recouvre et si son côté gauche ou droit est dégagé.','Joue vite et avec peu d\'aides pour gagner 3 étoiles ★.']},
@@ -697,10 +821,12 @@ header{gap:6px}
       sgHelp:'Play helpers', setEq:'Highlight matching tiles', setEqHint:'When you touch a tile, the free matching tiles get a green ring with a ✔ and the others dim a little',
       setAuto:'Automatic hint', setAutoHint:'If you do not play for 2 minutes, a possible pair flashes (does not count as an aid)',
       setReset:'Restore default settings', starsRuleNT:'★★★: with at most 1 aid (time does not count)', tnHidden:'Hidden tile',
-      tn:['Cat','Dog','Rabbit','Fox','Panda','Frog','Tiger','Monkey','Penguin','Pig','Koala','Octopus','Letter A','Letter M','Number 7','Number 3','Chick','Lion','Bear','Cow','Owl','Whale','Letter K','Letter Z','Number 5','Number 9','Star','Sun','Moon','Sea'],
+      tn:['Cat','Dog','Rabbit','Fox','Panda','Frog','Tiger','Monkey','Penguin','Pig','Koala','Octopus','Letter A','Letter M','Number 7','Number 3','Chick','Lion','Bear','Cow','Owl','Whale','Letter K','Letter Z','Number 5','Number 9','Star','Sun','Moon','Sea','Shiba Inu','Husky','Dalmatian','Golden retriever','Siamese cat','Black cat','Persian cat','Macaw','Budgie','Cockatiel'],
       tBlockTop:'Remove the tiles on top first (highlighted)', tBlockSides:'Free one side, left or right (tiles highlighted)', tBlockBoth:'Blocked from above and on both sides (tiles highlighted)',
       setCf:'Comfort mode (seniors)', setCfHint:'Bigger tiles (5 columns), larger text, no timer, unlimited aids, matching tiles highlighted, automatic hint. Applies to the next game.',
       pauseShort:'Pause', tNoMatchFree:'No identical tile is free right now',
+      mapTitle:'The journey', mapSub:'Choose an island', mapBack:'🗺️ Islands', isl_animals:'Animal island', isl_sweets:'Sweets island', isl_art:'Art island', isl_science:'Science island', isl_sea:'Sea island', isl_flowers:'Flower island', mapProgress:'{a}/{b} ★', mapSoon:'Coming soon', mapAria:'Journey map',
+      isl_prologue:'Starting levels', mapNeedPrologue:'Finish the starting levels', winPrologue:'Starting levels complete!', winPrologueSub:'The journey begins: the Animal island awaits', toMap:'🗺️ To the journey',
       names:['Jade','Ocean','Cherry','Sunset','Violet night','Red lacquer','Ice','Gold','Midnight','Cosmos','Mint','Coral','Sapphire','Lemon','Amethyst','Desert','Storm','Bronze','Starry','Dawn'],
       intro:{
         1:{t:'Welcome!',l:['Tap two identical, free tiles to remove them.','A tile is free when nothing covers it and its left or right side is open.','Play fast and with few aids to earn 3 stars ★.']},
@@ -742,10 +868,12 @@ header{gap:6px}
       sgHelp:'Aiuti di gioco', setEq:'Illumina le tessere uguali', setEqHint:'Quando tocchi una tessera, quelle libere uguali si circondano di verde con un ✔ e le altre si scuriscono un poco',
       setAuto:'Aiuto automatico', setAutoHint:'Se non giochi per 2 minuti, una coppia possibile lampeggia (non conta come aiuto)',
       setReset:'Ripristina predefiniti', starsRuleNT:'★★★: con al massimo 1 aiuto (il tempo non conta)', tnHidden:'Tessera nascosta',
-      tn:['Gatto','Cane','Coniglio','Volpe','Panda','Rana','Tigre','Scimmia','Pinguino','Maialino','Koala','Polpo','Lettera A','Lettera M','Numero 7','Numero 3','Pulcino','Leone','Orso','Mucca','Gufo','Balena','Lettera K','Lettera Z','Numero 5','Numero 9','Stella','Sole','Luna','Mare'],
+      tn:['Gatto','Cane','Coniglio','Volpe','Panda','Rana','Tigre','Scimmia','Pinguino','Maialino','Koala','Polpo','Lettera A','Lettera M','Numero 7','Numero 3','Pulcino','Leone','Orso','Mucca','Gufo','Balena','Lettera K','Lettera Z','Numero 5','Numero 9','Stella','Sole','Luna','Mare','Shiba','Husky','Dalmata','Golden retriever','Siamese','Gatto nero','Persiano','Ara','Cocorita','Calopsitta'],
       tBlockTop:'Togli prima le tessere sopra (evidenziate)', tBlockSides:'Libera un lato, sinistro o destro (tessere evidenziate)', tBlockBoth:'Bloccata da sopra e da entrambi i lati (tessere evidenziate)',
       setCf:'Modalità comoda (senior)', setCfHint:'Tessere più grandi (5 colonne), testi grandi, senza cronometro, aiuti illimitati, tessere uguali evidenziate, aiuto automatico. Vale dalla prossima partita.',
       pauseShort:'Pausa', tNoMatchFree:'Nessuna tessera uguale è libera per ora',
+      mapTitle:'Il viaggio', mapSub:'Scegli un\'isola', mapBack:'🗺️ Le isole', isl_animals:'Isola degli animali', isl_sweets:'Isola dei dolci', isl_art:'Isola dell\'arte', isl_science:'Isola della scienza', isl_sea:'Isola del mare', isl_flowers:'Isola dei fiori', mapProgress:'{a}/{b} ★', mapSoon:'Presto', mapAria:'Mappa del viaggio',
+      isl_prologue:'Livelli iniziali', mapNeedPrologue:'Finisci i livelli iniziali', winPrologue:'Livelli iniziali completati!', winPrologueSub:'Il viaggio comincia: ti aspetta l\'Isola degli animali', toMap:'🗺️ Verso il viaggio',
       names:['Giada','Oceano','Ciliegio','Tramonto','Notte viola','Lacca rossa','Ghiaccio','Oro','Mezzanotte','Cosmo','Menta','Corallo','Zaffiro','Limone','Ametista','Deserto','Tempesta','Bronzo','Stellata','Alba'],
       intro:{
         1:{t:'Benvenuto!',l:['Tocca due tessere uguali e libere per toglierle.','Una tessera è libera se nulla la copre e il suo lato sinistro o destro è libero.','Gioca veloce e con pochi aiuti per ottenere 3 stelle ★.']},
@@ -766,7 +894,8 @@ header{gap:6px}
     if(p)for(var k in p)s=s.split('{'+k+'}').join(p[k]);
     return s;
   }
-  function lname(n){return I18N[lang].names[n-1]||('#'+n);}
+  function lname(n){return I18N[lang].names[(n-1)%20]||('#'+n);}
+  function lvTitle(n){return (n>BASE_LV?islandOf(n).icon+' ':'')+lname(n);}
 
   // ================= AUDIO =================
   var AC=null, NB=null;
@@ -853,7 +982,7 @@ header{gap:6px}
   function assign(list,ntypes,unl0,GG){
     unl0=unl0||0; GG=GG||0;
     var n=list.length/2, need=Math.max(0,GG-unl0), attempt, i;
-    var allT=TYPES.map(function(_,k){return k;});
+    var allT=poolOf(lv).slice();
     for(attempt=0;attempt<1500;attempt++){
       var starG=[], pairsLeft=n, c=need, sz;
       while(c>0&&pairsLeft>0){
@@ -1228,12 +1357,12 @@ header{gap:6px}
     if((prog.stars[lv]||0)<stars)prog.stars[lv]=stars;
     var rec=false;
     if(!eff('nt')&&(!oldBest||secs<oldBest)){prog.best[lv]=secs;rec=!!oldBest;}
-    var grand=(lv===LEVELS.length);
+    var grand=(lv===LEVELS.length), prologueEnd=(lv===BASE_LV);
     if(!grand&&prog.unlocked<lv+1)prog.unlocked=lv+1;
     saveProg();
-    document.getElementById('winIcon').textContent=grand?'👑':'🏆';
-    document.getElementById('winTitle').textContent=grand?tx('winGrand'):tx('winLevelDone',{n:lv});
-    document.getElementById('winSub').textContent=grand?tx('winGrandSub',{n:LEVELS.length}):lname(lv);
+    document.getElementById('winIcon').textContent=grand?'👑':(prologueEnd?'🗺️':'🏆');
+    document.getElementById('winTitle').textContent=grand?tx('winGrand'):(prologueEnd?tx('winPrologue'):tx('winLevelDone',{n:localLv(lv)}));
+    document.getElementById('winSub').textContent=grand?tx('winGrandSub',{n:LEVELS.length}):(prologueEnd?tx('winPrologueSub'):lvTitle(lv));
     var h='',i; for(i=0;i<3;i++)h+='<span class="st'+(i<stars?' on':'')+'" style="animation-delay:'+(.5+i*.4)+'s">★</span>';
     document.getElementById('winStars').innerHTML=h;
     for(i=0;i<stars;i++)(function(k){setTimeout(function(){SND.star(k);},500+k*400);})(i);
@@ -1241,11 +1370,11 @@ header{gap:6px}
     document.getElementById('winInfo').innerHTML=eff('nt')?tx('winAids',{n:aids}):(l1+'<br>'+tx('winAids',{n:aids}));
     document.getElementById('winRule').textContent=tx(eff('nt')?'starsRuleNT':'starsRule');
     document.getElementById('bNext').style.display=grand?'none':'';
-    document.getElementById('bNext').textContent=tx('nextLevel',{n:lv+1});
+    document.getElementById('bNext').textContent=prologueEnd?tx('toMap'):tx('nextLevel',{n:localLv(lv)+1});
     document.getElementById('win').classList.remove('show'); void document.getElementById('win').offsetWidth;
     document.getElementById('win').classList.add('show');
-    SND.win(); startFx(lv,grand);
-    if(grand)setTimeout(function(){SND.win();},1600);
+    SND.win(); startFx(lv,grand||prologueEnd);
+    if(grand||prologueEnd)setTimeout(function(){SND.win();},1600);
   }
 
   // ================= MODALE NOVITA' DEL LIVELLO =================
@@ -1288,14 +1417,14 @@ header{gap:6px}
   // ================= AVVIO LIVELLO =================
   function startLevel(n,saved){
     lv=n; cfg=LEVELS[n-1];
-    stopFx(); closeMenu(true);
+    stopFx(); closeMenu(true); closeMap(true);
     document.getElementById('win').classList.remove('show');
     document.getElementById('intro').classList.remove('show');
     document.getElementById('pause').classList.remove('show');
     document.getElementById('guide').classList.remove('show');
     applyTheme(cfg);
-    document.getElementById('lvNum').textContent=tx('lvShort',{n:n});
-    document.getElementById('lvName').textContent=lname(n);
+    document.getElementById('lvNum').textContent=tx('lvShort',{n:localLv(n)});
+    document.getElementById('lvName').textContent=lvTitle(n);
     curCf=saved?!!saved.cm:!!S.cf;
     var list=layoutList(n,curCf);
     tiles=list; tiles.forEach(function(t){t.gone=false;t.hid=0;});
@@ -1343,23 +1472,30 @@ header{gap:6px}
 
   // ================= MENU =================
   var menu=document.getElementById('menu');
-  function buildMenu(){
-    var rb=document.getElementById('resumeBox'); rb.innerHTML='';
+  function buildResume(rb){
+    rb.innerHTML='';
     var sv=(!started)?readSave():null;
     if(sv){
       var cs=LEVELS[sv.lv-1], left=sv.t.filter(function(r){return !r[2];}).length/2;
       var rbtn=document.createElement('button'); rbtn.className='resumebtn';
       rbtn.style.background='linear-gradient(145deg,'+cs.th[0]+','+cs.th[1]+')'; rbtn.style.borderColor=cs.th[2];
-      rbtn.innerHTML='<b>'+tx('continueGame')+'</b><span>'+tx('continueInfo',{n:sv.lv,name:lname(sv.lv),t:fmt(sv.secs||0),p:left})+'</span>';
+      rbtn.innerHTML='<b>'+tx('continueGame')+'</b><span>'+tx('continueInfo',{n:localLv(sv.lv),name:lvTitle(sv.lv),t:fmt(sv.secs||0),p:left})+'</span>';
       rbtn.addEventListener('click',function(){ac();startLevel(sv.lv,sv);});
       rb.appendChild(rbtn);
     }
+  }
+  var curWorld='prologue';
+  function buildMenu(){
+    buildResume(document.getElementById('resumeBox'));
+    var W=ISLANDS.filter(function(x){return x.id===curWorld;})[0]||ISLANDS[0];
+    document.getElementById('islTitle').textContent=W.icon+' '+tx('isl_'+W.id);
     var g=document.getElementById('grid'); g.innerHTML='';
     LEVELS.forEach(function(L,i){
-      var n=i+1;
-      if(n===1||n===11){
+      var n=i+1, loc=n-W.levels[0]+1;
+      if(n<W.levels[0]||n>W.levels[1])return;
+      if(loc===1||loc===11){
         var h=document.createElement('div'); h.className='sec';
-        h.textContent=n===1?tx('secClassic'):tx('secHidden');
+        h.textContent=loc===1?tx('secClassic'):tx('secHidden');
         g.appendChild(h);
       }
       var b=document.createElement('button'), st=prog.stars[n]||0, locked=n>prog.unlocked;
@@ -1367,7 +1503,7 @@ header{gap:6px}
       b.style.background='linear-gradient(145deg,'+L.th[0]+','+L.th[1]+')';
       b.style.borderColor=L.th[2];
       var s=''; for(var k=0;k<3;k++)s+=(k<st?'★':'<s>★</s>');
-      b.innerHTML='<b>'+n+'</b><span>'+lname(n)+'</span><div class="stars">'+s+'</div>'+
+      b.innerHTML='<b>'+loc+'</b><span>'+lname(n)+'</span><div class="stars">'+s+'</div>'+
         '<small>'+(prog.best[n]?tx('record',{t:fmt(prog.best[n])}):(locked?tx('lockedLv'):fmtInfo(L)))+'</small>';
       b.addEventListener('click',function(){
         if(locked){SND.blocked();return;} ac(); startLevel(n);
@@ -1379,23 +1515,67 @@ header{gap:6px}
     var a=layoutList(LEVELS.indexOf(L)+1,!!S.cf);
     return tx('pairsInfo',{n:a.length/2})+(L.hid?' · 🔒'+L.hid.reduce(function(x,y){return x+y;},0):'');
   }
-  function openMenu(){
+
+  // ---------- mappa del viaggio ----------
+  var map=document.getElementById('map');
+  function totalStars(W){var t=0,k,lo=W?W.levels[0]:1,hi=W?W.levels[1]:999;for(k in prog.stars){k=+k; if(k>=lo&&k<=hi)t+=prog.stars[k]||0;}return t;}
+  function worldOpen(I){return I.id==='prologue'||(I.id==='animals'&&prog.unlocked>BASE_LV);}
+  function buildMap(){
+    buildResume(document.getElementById('resumeBoxMap'));
+    var p=document.getElementById('mapPath'); p.innerHTML='';
+    ISLANDS.forEach(function(I,i){
+      if(i>0){var c=document.createElement('div'); c.className='conn'; p.appendChild(c);}
+      var open=worldOpen(I), soon=!I.levels;
+      var d=document.createElement('div'); d.className='isl '+(i%2?'right':'left')+(open?'':' locked'); d.setAttribute('data-id',I.id);
+      var b=document.createElement('button'); b.className='islbtn'; b.id='isl_'+I.id;
+      b.style.background='linear-gradient(145deg,'+I.th[0]+','+I.th[1]+')';
+      var lockTxt=soon?tx('mapSoon'):tx('mapNeedPrologue');
+      b.setAttribute('aria-label',tx('isl_'+I.id)+(open?'':' ('+lockTxt+')'));
+      b.innerHTML='<span>'+I.icon+'</span>';
+      var nm=document.createElement('div'); nm.className='islname'; nm.textContent=tx('isl_'+I.id);
+      var sb=document.createElement('div'); sb.className='islsub';
+      sb.textContent=open?tx('mapProgress',{a:totalStars(I),b:(I.levels[1]-I.levels[0]+1)*3}):lockTxt;
+      b.onclick=function(){
+        if(open){ac();SND.select();openMenu(I.id);}
+        else{SND.blocked();d.classList.remove('shake');void d.offsetWidth;d.classList.add('shake');}
+      };
+      d.appendChild(b); d.appendChild(nm); d.appendChild(sb); p.appendChild(d);
+    });
+  }
+  function openMap(){
+    stopTimer(); buildMap();
+    document.getElementById('mapClose').style.display=started&&!over?'':'none';
+    map.classList.add('show');
+  }
+  function closeMap(silent){
+    map.classList.remove('show');
+    if(!silent&&started&&!over&&!menu.classList.contains('show')&&!document.getElementById('intro').classList.contains('show')&&!document.getElementById('guide').classList.contains('show')&&!document.getElementById('settings').classList.contains('show'))startTimer();
+  }
+  function openMenu(wid){
+    curWorld=wid||(started?islandOf(lv).id:curWorld);
     stopTimer(); buildMenu();
     document.getElementById('close').style.display=started&&!over?'':'none';
     menu.classList.add('show');
   }
   function closeMenu(silent){
     menu.classList.remove('show');
-    if(!silent&&started&&!over&&!document.getElementById('intro').classList.contains('show')&&!document.getElementById('guide').classList.contains('show')&&!document.getElementById('settings').classList.contains('show'))startTimer();
+    if(!silent&&started&&!over&&!map.classList.contains('show')&&!document.getElementById('intro').classList.contains('show')&&!document.getElementById('guide').classList.contains('show')&&!document.getElementById('settings').classList.contains('show'))startTimer();
   }
 
   // ================= PULSANTI =================
   document.addEventListener('pointerdown',function(){ac();},{once:true});
-  document.getElementById('bLevel').onclick=function(){stopFx();document.getElementById('win').classList.remove('show');openMenu();};
+  document.getElementById('bLevel').onclick=function(){stopFx();document.getElementById('win').classList.remove('show');openMenu(started?islandOf(lv).id:undefined);};
+  document.getElementById('bMapBack').onclick=function(){menu.classList.remove('show');buildMap();map.classList.add('show');document.getElementById('mapClose').style.display=started&&!over?'':'none';};
+  document.getElementById('mapClose').onclick=function(){closeMap();};
+  document.getElementById('bSetMap').onclick=function(){openSettings();};
+  document.getElementById('bGuideMap').onclick=function(){openGuide();};
   document.getElementById('close').onclick=function(){closeMenu();};
-  document.getElementById('bMenu').onclick=function(){stopFx();document.getElementById('win').classList.remove('show');openMenu();};
+  document.getElementById('bMenu').onclick=function(){stopFx();document.getElementById('win').classList.remove('show');openMenu(islandOf(lv).id);};
   document.getElementById('bAgain').onclick=function(){startLevel(lv);};
-  document.getElementById('bNext').onclick=function(){startLevel(Math.min(lv+1,LEVELS.length));};
+  document.getElementById('bNext').onclick=function(){
+    if(lv===BASE_LV){stopFx();document.getElementById('win').classList.remove('show');openMap();return;}   // fine dei livelli iniziali: si va al viaggio
+    startLevel(Math.min(lv+1,LEVELS.length));
+  };
   document.getElementById('bNew').onclick=function(){startLevel(lv);};
   document.getElementById('bHint').onclick=function(){
     if(over)return;
@@ -1438,7 +1618,7 @@ header{gap:6px}
     clearTimeout(rsT);
     prog={unlocked:1,stars:{},best:{},seen:{}}; saveProg(); clearSave();
     try{localStorage.removeItem('mj_prog2');}catch(e){}
-    SND.start(); buildMenu();
+    SND.start(); buildMenu(); if(map.classList.contains('show'))buildMap();
     rsArm=false; resetB.textContent=tx('resetDone');
     rsT=setTimeout(resetLabel,2200);
   };
@@ -1580,6 +1760,9 @@ header{gap:6px}
     setTxt('lblHint','hint'); setTxt('lblUndo','undo'); setTxt('lblShuf','shuffle'); setTxt('lblNew','restart');
     setTxt('menuSub','chooseLevel'); setTxt('bAgain','again'); setTxt('bMenu','levels');
     document.getElementById('bSettings').setAttribute('aria-label',tx('setAria')); setTxt('bSetMenu','setBtn');
+    setTxt('mapTitle','mapTitle'); setTxt('mapSub','mapSub'); setTxt('bMapBack','mapBack'); setTxt('bSetMap','setBtn'); setTxt('bGuideMap','guideBtn');
+    if(menu.classList.contains('show'))buildMenu();
+    if(map.classList.contains('show'))buildMap();
     if(document.getElementById('settings').classList.contains('show'))buildSettings();
     document.getElementById('close').setAttribute('aria-label',tx('close'));
     document.getElementById('bLevel').setAttribute('aria-label',tx('chooseAria'));
@@ -1588,13 +1771,13 @@ header{gap:6px}
     setTxt('bGuideMenu','guideBtn'); setTxt('pauseTitle','pauseTitle'); setTxt('pauseSub','pauseSub'); setTxt('bResume','resumeBtn');
     setTxt('guideTitle','guideTitle'); setTxt('guideSub','guideSub'); setTxt('bGuideOk','ok');
     if(document.getElementById('guide').classList.contains('show'))openGuide();
-    document.getElementById('lvNum').textContent=tx('lvShort',{n:lv});
-    document.getElementById('lvName').textContent=lname(lv);
+    document.getElementById('lvNum').textContent=tx('lvShort',{n:localLv(lv)});
+    document.getElementById('lvName').textContent=lvTitle(lv);
     if(!rsArm)resetLabel();
     Array.prototype.forEach.call(document.querySelectorAll('button[data-l]'),function(b){b.classList.toggle('on',b.getAttribute('data-l')===lang);});
     if(menu.classList.contains('show'))buildMenu();
   }
-  Array.prototype.forEach.call(document.querySelectorAll('#langs button'),function(b){
+  Array.prototype.forEach.call(document.querySelectorAll('#langs button, #langsMap button'),function(b){
     b.addEventListener('click',function(){setLang(b.getAttribute('data-l'));});
   });
   var rz;
@@ -1605,7 +1788,7 @@ header{gap:6px}
   applyLang();
   applySettings();
   tiles=[]; counts(); pairsEl.textContent='0';
-  openMenu();
+  openMap();
 })();
 </script>
 </body>

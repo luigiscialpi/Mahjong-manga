@@ -250,6 +250,8 @@ header{gap:6px}
 .islbtn{position:relative}
 .isl.shake{animation:shake .45s ease-in-out}
 .conn{width:6px;height:30px;border-radius:3px;margin:2px 0;background:repeating-linear-gradient(180deg,rgba(255,255,255,.75) 0 6px,transparent 6px 12px)}
+.mapcoins{text-align:center;margin:0 0 6px}
+.mapcoins span{display:inline-block;background:rgba(0,0,0,.3);color:#ffe27a;font-weight:800;font-size:17px;padding:5px 16px;border-radius:18px;border:2px solid rgba(255,226,122,.5)}
 .mapfoot{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
 .mapfoot .reset{margin:0}
 .menutop{display:flex;align-items:center;min-height:46px;margin-bottom:2px}
@@ -271,9 +273,78 @@ header{gap:6px}
 .lcard u.bossb{position:absolute;right:12px;top:24px;text-decoration:none;font-size:17px}
 .lcard.locked u.bossb{display:none}
 .lcard .stars em{font-style:normal;font-size:12px;letter-spacing:0;margin-left:6px;color:#fff3b0}
+.nodim2 .tile.blocked{filter:brightness(.82) saturate(.9)}
+.nodim3 .tile.blocked{filter:none}
+.tile.fog{background:linear-gradient(145deg,#f1f5fa,#c9d6e4 70%,#aebdd0)}
+.hc .tile.fog{background:#dde6ef}
+.tile.reveal{animation:flip .55s cubic-bezier(.2,1.2,.4,1) both}
+.isl.fogged .islbtn{background:radial-gradient(circle at 40% 35%,#e8eff6,#9fb2c6 60%,#6f8399)!important;filter:none!important;box-shadow:0 5px 0 rgba(0,0,0,.25),0 0 30px rgba(255,255,255,.45)!important}
+.isl.fogged .islbtn span{display:inline-block;animation:fogdrift 4s ease-in-out infinite}
+.isl.fogged .islbtn::after{content:""}
+@keyframes fogdrift{50%{transform:translateY(-4px)}}
+.isl.fogged .islname{opacity:.9}
+.isl.revealing .islbtn{animation:fogaway 1.4s ease-out both}
+@keyframes fogaway{0%{filter:brightness(2.2) saturate(0);transform:scale(.6);opacity:.2}60%{transform:scale(1.18);opacity:1}100%{filter:none;transform:scale(1);opacity:1}}
+.difl{display:flex;flex-direction:column;gap:8px;padding:4px 0}
+.difbtn{min-height:0;padding:9px 12px;border-radius:14px;background:rgba(255,255,255,.12);color:var(--ink);box-shadow:none;align-items:flex-start;text-align:left;gap:2px;border:2px solid transparent;flex-direction:column}
+.difbtn b{font-size:16px}
+.difbtn span{font-size:12.5px;font-weight:400;color:var(--ink-soft);line-height:1.3}
+.difbtn i{font-style:normal;font-size:12px;letter-spacing:2px;color:var(--accent)}
+.difbtn.on{background:rgba(255,255,255,.28);border-color:var(--accent)}
+.difnote{font-size:12.5px;color:var(--ink-soft);margin:2px 2px 0;line-height:1.35}
+#gift{z-index:8800;background:rgba(5,15,12,.78);align-items:center;justify-content:center;padding:20px}
+#dead{z-index:8700;background:rgba(5,15,12,.82);align-items:center;justify-content:center;padding:20px}
+.bonusbtn{display:flex;margin:6px auto 12px;min-height:56px;padding:6px 26px;font-size:18px;flex-direction:row;gap:10px;border-radius:28px;background:linear-gradient(145deg,#ffe9a8,#f1c76a);color:#4a3208;box-shadow:0 5px 0 #b8841a}
+#bonus,#puz{z-index:8050;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(14px + env(safe-area-inset-top,0px)) 14px calc(18px + env(safe-area-inset-bottom,0px));
+  background:linear-gradient(180deg,#3a2a6a 0%,#1f3f7a 60%,#14606a 100%)}
+#puz{z-index:8060}
+#bonus h2{margin:6px 0 2px;text-align:center;font-family:Georgia,serif;font-size:30px;color:#ffe9a8}
+#bonus>p{margin:0 0 8px;text-align:center;color:#d6e6ff;font-size:14px}
+#bonusClose{position:absolute;right:12px;top:calc(10px + env(safe-area-inset-top,0px));width:46px;min-height:46px;font-size:20px;background:rgba(0,0,0,.3);color:#fff;box-shadow:none;border-radius:50%}
+.pcard{background:rgba(255,255,255,.14);border-radius:18px;padding:12px 14px;margin:0 0 12px;color:#fff}
+.pcard h4{margin:0;font-size:20px;font-family:Georgia,serif}
+.pcard p{margin:2px 0 8px;font-size:13.5px;color:#e4eeff}
+.prow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pbtn{min-height:62px;padding:4px 2px;border-radius:14px;background:#f3e7c4;color:#3b2a14;font-size:14px;gap:0}
+.pbtn b{font-size:15px}
+.pbtn small{font-size:12px;font-weight:600;color:#7a5a20}
+.pbtn .st{font-size:14px;color:#e0a000;letter-spacing:1px}
+.pbtn .st s{text-decoration:none;color:#d8cfb4}
+.puzbar{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+#puzBack{width:46px;min-height:46px;font-size:20px;background:rgba(0,0,0,.3);color:#fff;box-shadow:none;border-radius:50%;flex-shrink:0}
+.puztitle{flex:1;font-family:Georgia,serif;font-size:21px;color:#ffe9a8;font-weight:700}
+.puzinfo{font-size:14px;color:#fff;background:rgba(0,0,0,.28);padding:5px 12px;border-radius:14px}
+#puzBody{display:flex;flex-direction:column;align-items:center;gap:12px;color:#fff}
+.mgrid{display:grid;gap:8px;width:100%;max-width:380px}
+.mcard{aspect-ratio:3/4;border-radius:12px;padding:0;min-height:0;background:linear-gradient(145deg,#6d5cc9,#3e2f8e);box-shadow:0 4px 0 rgba(0,0,0,.35);font-size:30px;color:#fff;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.mcard svg{width:100%;height:100%;display:none;padding:3px}
+.mcard.up{background:linear-gradient(145deg,#fffdf3,#eadcb4)}
+.mcard.up svg{display:block}.mcard.up .q{display:none}
+.mcard.ok{opacity:.45;box-shadow:none}
+.mcard .q{opacity:.9}
+.qbig{width:min(70vw,260px);aspect-ratio:3/4;background:linear-gradient(145deg,#fffdf3,#eadcb4);border-radius:16px;padding:6px;box-shadow:0 6px 0 rgba(0,0,0,.35)}
+.qbig svg{width:100%;height:100%}
+.opts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;width:100%;max-width:340px}
+.opt{aspect-ratio:1;padding:4px;border-radius:14px;min-height:0;background:linear-gradient(145deg,#fffdf3,#eadcb4);box-shadow:0 4px 0 rgba(0,0,0,.35)}
+.opt svg{width:100%;height:100%}
+.opt.bad{animation:shake .4s;box-shadow:inset 0 0 0 4px #ff5252,0 4px 0 rgba(0,0,0,.35)}
+.opt.good{box-shadow:inset 0 0 0 4px #1fbf5a,0 4px 0 rgba(0,0,0,.35)}
+.sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;width:100%;max-width:320px;background:#fff7dd;padding:6px;border-radius:14px;box-shadow:0 5px 0 rgba(0,0,0,.35)}
+.scell{aspect-ratio:1;padding:2px;min-height:0;border-radius:8px;background:#fffdf3;color:#222;box-shadow:inset 0 0 0 1.5px #c9b98a;font-size:24px}
+.scell svg{width:100%;height:100%}
+.scell.fixed{background:#f1e5c0}
+.scell.sel{box-shadow:inset 0 0 0 4px #ff9a2e}
+.scell.err{box-shadow:inset 0 0 0 4px #ff5252}
+.scell:nth-child(4n+2),.scell:nth-child(4n+3){}
+.sgrid .bx{box-shadow:inset 0 0 0 1.5px #c9b98a,0 0 0 0 #000}
+.spal{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.spal button{width:64px;min-height:72px;height:72px;padding:2px;border-radius:14px;background:linear-gradient(145deg,#fffdf3,#eadcb4);box-shadow:0 4px 0 rgba(0,0,0,.35)}
+.spal button svg{width:100%;height:100%}
+.spal button.era{font-size:26px;color:#7a5a20}
+#puzDone{display:none}
 @media (prefers-reduced-motion: reduce){
   .tile,#toast{transition:none}.tile.hint{animation:none;outline:4px solid #ff6a3d}
-  .tile.blocker,.tile.target,.tile.match,.isl.shake,.gem{animation:none}
+  .tile.blocker,.tile.target,.tile.match,.isl.shake,.gem,.tile.reveal,.isl.fogged .islbtn span,.isl.revealing .islbtn{animation:none}
   .card,.card .trophy,.board-in .tile{animation:none}.card .st.on{animation:none;opacity:1}
 }
 </style>
@@ -314,6 +385,8 @@ header{gap:6px}
   <div class="langs" id="langsMap">
     <button data-l="fr">🇫🇷 FR</button><button data-l="en">🇬🇧 EN</button><button data-l="it">🇮🇹 IT</button>
   </div>
+  <div class="mapcoins" id="mapCoinRow"><span id="mapCoins">✨ 3</span></div>
+  <button class="bonusbtn" id="bBonus">🧩 Casse-têtes</button>
   <div id="mapPath"></div>
   <div class="mapfoot">
     <button class="reset" id="bSetMap">⚙️ Réglages</button>
@@ -351,6 +424,35 @@ header{gap:6px}
   <div id="setBody"></div>
   <button class="okbtn" id="bSetOk">Compris !</button>
 </div>
+
+<div id="bonus" class="ov">
+  <button id="bonusClose" aria-label="Fermer">✕</button>
+  <h2 id="bonusTitle">Casse-têtes</h2>
+  <p id="bonusSub"></p>
+  <div class="mapcoins"><span id="bonusCoins">✨ 3</span></div>
+  <div id="bonusList"></div>
+</div>
+
+<div id="puz" class="ov">
+  <div class="puzbar"><button id="puzBack" aria-label="Retour">✕</button><div class="puztitle" id="puzTitle"></div><div class="puzinfo" id="puzInfo"></div></div>
+  <div id="puzBody"></div>
+  <div id="puzDone"></div>
+</div>
+
+<div id="gift" class="ov"><div class="card">
+  <div class="trophy" id="giftIcon">🎁</div>
+  <h3 id="giftTitle"></h3>
+  <p id="giftText"></p>
+  <button class="pri" id="bGiftOk">Compris !</button>
+</div></div>
+
+<div id="dead" class="ov"><div class="card">
+  <div class="trophy">🧱</div>
+  <h3 id="deadTitle">Bloqué !</h3>
+  <p id="deadText"></p>
+  <button class="pri" id="bDeadRestart">Recommencer</button>
+  <button id="bDeadLevels">Niveaux</button>
+</div></div>
 
 <div id="guide" class="ov">
   <h2 id="guideTitle">Guide du jeu</h2>
@@ -626,12 +728,12 @@ header{gap:6px}
   var BASE_LV=20;   // i 20 livelli base (id 1-20 = «livelli iniziali»; id 21-40 = gli stessi layout per l'Isola degli animali)
   var ISLANDS=[
     {id:'prologue',icon:'🌱',levels:[1,20],pool:ALL_ORIG,th:['#2a8a62','#12503b','#ffe9a8']},
-    {id:'animals',icon:'🐾',levels:[21,40],pool:ANIMAL_TYPES.concat([STAR_IDX]),th:['#1f6b57','#134536','#e8b43a']},
-    {id:'sweets',icon:'🍰',th:['#c25a8a','#5a1f3a','#ffd1e3']},
-    {id:'art',icon:'🎨',th:['#6038a6','#2a1757','#dcbcff']},
-    {id:'science',icon:'🔬',th:['#2a56b0','#0c1f55','#a8c8ff']},
-    {id:'sea',icon:'🌊',th:['#1f6f94','#0d3350','#7fe0ff']},
-    {id:'flowers',icon:'🌸',th:['#b0476f','#5c1f3b','#ffd1e3']}
+    {id:'animals',icon:'🐾',gift:3,levels:[21,40],pool:ANIMAL_TYPES.concat([STAR_IDX]),th:['#1f6b57','#134536','#e8b43a']},
+    {id:'sweets',icon:'🍰',need:100,gift:5,th:['#c25a8a','#5a1f3a','#ffd1e3']},
+    {id:'art',icon:'🎨',need:140,gift:5,th:['#6038a6','#2a1757','#dcbcff']},
+    {id:'science',icon:'🔬',need:180,gift:5,th:['#2a56b0','#0c1f55','#a8c8ff']},
+    {id:'sea',icon:'🌊',need:220,gift:5,th:['#1f6f94','#0d3350','#7fe0ff']},
+    {id:'flowers',icon:'🌸',need:260,gift:5,th:['#b0476f','#5c1f3b','#ffd1e3']}
   ];
   function islandOf(n){return n<=BASE_LV?ISLANDS[0]:ISLANDS[1];}
   function localLv(n){return n-islandOf(n).levels[0]+1;}   // numero del livello dentro il suo mondo (1-20)
@@ -730,6 +832,7 @@ header{gap:6px}
     {n:15,gold:3,diff:3,hid:[6]},{n:16,gold:3,diff:3,hid:[8]},{n:17,gold:4,diff:4,hid:[4,4]},{n:18,gold:4,diff:4,hid:[6,6]},{n:18,gold:5,diff:4,hid:[8,8],boss:true},
     {n:19,gold:5,diff:4,hid:[4,4,4]},{n:20,gold:5,diff:5,hid:[6,6,6]},{n:22,gold:5,diff:5,hid:[8,8,8]},{n:23,gold:6,diff:5,hid:[6,6,6,6]},{n:24,gold:8,diff:5,hid:[8,8,8,8],boss:true}
   ];
+  [0,0,0,0,0,0,0,0,0,0,0,0,4,5,6,6,8,10,12,14].forEach(function(f,i){ISL_CFG[i].fog=f;});   // tessere nebbiose (livelli 13-20 dell'isola)
   // Layout della Modalità comoda: al massimo 5 colonne × 6 righe, così le tessere sono più grandi.
   // Ogni funzione costruisce una tavola; se il numero di tessere è dispari si toglie l'ultima (sempre dell'ultimo piano).
   var COMFORT=[
@@ -765,10 +868,14 @@ header{gap:6px}
   // i 20 livelli base servono sia ai «livelli iniziali» (id 1-20) sia all'Isola degli animali (id 21-40: stessi layout, regole e limiti)
   (function(){var i,k,c,base=LEVELS.length; for(i=0;i<base;i++){LEVELS[i].world='prologue';}
     for(i=0;i<base;i++){c={}; for(k in LEVELS[i])c[k]=LEVELS[i][k]; c.world='animals';
-      var cf=ISL_CFG[i]; c.n=cf.n; c.gold=cf.gold; c.diff=cf.diff; c.boss=!!cf.boss;
+      var cf=ISL_CFG[i]; c.n=cf.n; c.gold=cf.gold; c.fog=cf.fog||0; c.diff=cf.diff; c.boss=!!cf.boss;
       if(cf.hid)c.hid=cf.hid.slice(); else delete c.hid;
       c.build=(function(j){return function(a){ISL_SHAPES[j](a);};})(i);
       LEVELS.push(c);} })();
+  function markFog(list,count){   // nebbia: solo tessere che all'inizio sono bloccate (le libere si scoprirebbero subito)
+    var c=list.filter(function(t){return !(t.hid>0)&&!isFree(t,list);}); shuffleArr(c);
+    for(var i=0;i<count&&i<c.length;i++){c[i].fog=true;c[i].fogOn=true;}
+  }
   function markGold(list,count){
     var c=list.filter(function(t){return !(t.hid>0);}); shuffleArr(c);
     for(var i=0;i<count&&i<c.length;i++)c[i].gold=true;
@@ -783,15 +890,26 @@ header{gap:6px}
   try{localStorage.removeItem('mj_prog2');}catch(e){}
   try{var pj=localStorage.getItem('mj_prog3'); if(pj)prog=JSON.parse(pj); muted=localStorage.getItem('mj_mute')==='1';}catch(e){}
   prog.seen=prog.seen||{};
+  prog.revealed=prog.revealed||{}; prog.dif=prog.dif||{}; prog.puz=prog.puz||{}; prog.gold=prog.gold||{}; prog.goldTot=prog.goldTot||{};
+  if(typeof prog.coins!=='number'){   // regalo di partenza: 3 ✨ + una per ogni stella e tessera d'oro già ottenute
+    var _t=3,_k; for(_k in prog.stars)_t+=prog.stars[_k]||0; for(_k in prog.gold)_t+=prog.gold[_k]||0; prog.coins=_t;
+  }
   function saveProg(){try{localStorage.setItem('mj_prog3',JSON.stringify(prog));}catch(e){}}
 
   // ================= IMPOSTAZIONI (dati) =================
   var SET_KEY='mj_set1';
-  var SDEF={bg:'level',tile:'level',ui:0,hc:0,cb:0,nt:0,bar:0,vol:100,vib:1,eq:0,auto:0,cf:0,fx:1};
+  var SDEF={bg:'level',tile:'level',ui:0,hc:0,cb:0,nt:0,bar:0,vol:100,vib:1,eq:0,auto:0,cf:0,fx:1,dif:1};
   var BGP={jade:['#1f6b57','#134536','#e8b43a'],ocean:['#1f6f94','#0d3350','#7fe0ff'],cherry:['#b0476f','#5c1f3b','#ffd1e3'],sunset:['#bf5d2c','#5e2512','#ffd166'],
     violet:['#6038a6','#2a1757','#dcbcff'],graphite:['#3b3f46','#15171a','#f0c040'],night:['#2a3a73','#0a0e2c','#9bbcff'],sand:['#8a7a55','#3e3520','#fff0b0']};
   var TLP={green:['#2a8a62','#17503b'],blue:['#2a86b8','#154a73'],pink:['#d8628f','#7d2a52'],gold:['#cfa72f','#7a5a0e'],
     violet:['#7f58cc','#412286'],graphite:['#7d838c','#3a3f46'],red:['#d24f58','#7a1c22'],teal:['#36b5ac','#17626c']};
+  // ---- sei difficoltà progressive (Impostazioni): ogni gradino somma le restrizioni di quello prima ----
+  var DIFS=['easy','normal','medium','hard','expert','master'];
+  var DIF_AID=[2,1,.75,.5,.25,0], DIF_AID_NULL=[null,null,10,6,3,0];   // moltiplicatore degli aiuti; valore al posto di «illimitato»
+  var DIF_N=[-2,0,1,2,3,5], DIF_RESC=[null,null,3,2,1,0];                 // tipi di disegno in più/meno; rimescoli automatici gratuiti
+  var DIF_TM=[1.5,1,.9,.8,.7,.6];                                         // soglie di tempo per le stelle
+  var DIF_FOGM=[.5,1,1.25,1.5,2,3], DIF_FOGADD=[0,0,0,1,2,3];             // nebbia: moltiplicatore e tessere in più
+  var DIF_BONUS=[0,0,1,2,3,5];                                            // ✨ in più la prima volta che si vince a quella difficoltà
   var CBP=['#243447','#0e1620','#E69F00','#0072B2','#0b3d62'];   // colori sicuri per il daltonismo (blu/arancio)
   var S={};
   (function(){
@@ -800,6 +918,7 @@ header{gap:6px}
     if(S.bg!=='level'&&!BGP[S.bg])S.bg='level';
     if(S.tile!=='level'&&!TLP[S.tile])S.tile='level';
     S.vol=Math.max(0,Math.min(100,+S.vol||0)); if(isNaN(S.vol))S.vol=100;
+    S.dif=Math.round(+S.dif); if(!(S.dif>=0&&S.dif<=5))S.dif=1;
   })();
   function saveSettings(){try{localStorage.setItem(SET_KEY,JSON.stringify(S));}catch(e){}}
   // la Modalità comoda (S.cf) accende anche testi grandi, senza pressione del tempo, evidenzia-uguali e aiuto automatico
@@ -843,6 +962,23 @@ header{gap:6px}
       mapTitle:'Le voyage', mapSub:'Choisis une île', mapBack:'🗺️ Les îles', isl_animals:'Île des animaux', isl_sweets:'Île des douceurs', isl_art:'Île de l\'art', isl_science:'Île des sciences', isl_sea:'Île de la mer', isl_flowers:'Île des fleurs', mapProgress:'{a}/{b} ★', mapSoon:'Bientôt', mapAria:'Carte du voyage',
       isl_prologue:'Niveaux de départ', mapNeedPrologue:'Termine les niveaux de départ', winPrologue:'Niveaux de départ terminés !', winPrologueSub:'Le voyage commence : l\'Île des animaux t\'attend', toMap:'🗺️ Vers le voyage',
       cmb1:'Bien !', cmb2:'Super !', cmb3:'Génial !', cmb4:'Incroyable !', goldLbl:'Tuiles d\'or {a}/{b}', winGold:'✨ Tuiles d\'or : {a}/{b}', diffLbl:'Difficulté', setFx:'Effets spéciaux', setFxHint:'Étincelles, combos et tuiles d\'or qui brillent',
+      sgDif:'Difficulté', difNote:'Chaque niveau de difficulté s\'ajoute au précédent. Plus la difficulté est haute, plus tu gagnes de ✨ la première fois que tu gagnes un niveau.', difCfNote:'(Le mode confort ignore la difficulté.)',
+      dif_easy:'Facile', difd_easy:'Plus d\'aides, moins de dessins différents, tuiles bloquées bien sombres',
+      dif_normal:'Normal', difd_normal:'Le jeu tel qu\'il est',
+      dif_medium:'Moyen', difd_medium:'Un peu moins d\'aides, un dessin de plus, 3 remises en ordre automatiques',
+      dif_hard:'Difficile', difd_hard:'Moitié moins d\'aides, du brouillard en plus, tuiles bloquées peu sombres, 2 remises en ordre',
+      dif_expert:'Expert', difd_expert:'Très peu d\'aides, beaucoup de brouillard, 1 seule remise en ordre, étoiles plus exigeantes',
+      dif_master:'Maître', difd_master:'Presque aucune aide, aucune remise en ordre automatique, tuiles bloquées non assombries, étoiles très exigeantes',
+      mapFogName:'Île mystérieuse', mapNeed:'{a}/{b} ★ pour la découvrir', giftTitle:'Nouvelle île découverte !',
+      giftAnimals:'L\'Île des animaux apparaît sur la carte. Cadeau : +{n} ✨', giftSoon:'{name} apparaît sur la carte (bientôt disponible). Cadeau : +{n} ✨',
+      tnFog:'Tuile voilée', tFogStart:'Brouillard : des tuiles sont voilées, elles se dévoilent quand elles sont libres',
+      deadTitle:'Bloqué !', deadText:'Plus aucun coup possible et plus d\'aide disponible. Recommence le niveau.', deadRestart:'Recommencer', deadLevels:'Niveaux',
+      tUseShuffle:'Plus de coups : utilise Mélanger 🔀', tUseUndo:'Plus de coups : utilise Annuler ↩️', winCoins:'🎁 +{n} ✨',
+      bonusBtn:'🧩 Casse-têtes', bonusTitle:'Casse-têtes', bonusSub:'Joue avec tes ✨ : un casse-tête coûte 1 ✨. À ta première victoire, tu gagnes 2 ✨ !',
+      pz_memory:'Memory', pzd_memory:'Retrouve les paires d\'animaux', pz_missing:'Pièce manquante', pzd_missing:'Trouve le morceau qui manque au dessin',
+      pz_sudoku:'Sudoku des animaux', pzd_sudoku:'Chaque animal une seule fois par ligne, colonne et carré de 2×2',
+      pzCost:'✨ {n}', pzNoCoins:'Pas assez de ✨ ! Gagne des étoiles et des tuiles d\'or.', pzWinTitle:'Bravo !', pzWinFirst:'Première victoire : +{n} ✨', pzWinAgain:'Encore bravo !',
+      pzInfoMem:'Essais : {n}', pzInfoMis:'Question {a}/{b}', pzInfoSud:'Erreurs : {n}', pzTapCell:'Touche une case, puis un animal',
       names:['Jade','Océan','Cerisier','Crépuscule','Nuit violette','Laque rouge','Glace','Or','Minuit','Cosmos','Menthe','Corail','Saphir','Citron','Améthyste','Désert','Tempête','Bronze','Étoilée','Aube'],
       intro:{
         1:{t:'Bienvenue !',l:['Touche deux tuiles identiques et libres pour les retirer.','Une tuile est libre si rien ne la recouvre et si son côté gauche ou droit est dégagé.','Joue vite et avec peu d\'aides pour gagner 3 étoiles ★.']},
@@ -853,7 +989,8 @@ header{gap:6px}
         13:{t:'Deux groupes cachés',l:['Il y a maintenant deux groupes de tuiles verrouillées.','Chaque paire d\'étoiles ⭐ n\'en débloque qu\'un seul : il t\'en faut deux.']},
         16:{t:'Trois groupes cachés',l:['Trois groupes de tuiles verrouillées : il faut trois paires d\'étoiles ⭐.','Le compteur 🔒 en haut indique combien de tuiles restent cachées.']},
         19:{t:'Quatre groupes cachés',l:['Quatre groupes de tuiles verrouillées : il faut quatre paires d\'étoiles ⭐.','Cherche les étoiles en premier : elles ouvrent la voie.']},
-        23:{t:'Tuiles d\'or et combos',l:['Certaines tuiles brillent en doré ✨ : associe-les pour collecter ce trésor.','Elles ne changent pas les règles, mais comptent : le nombre est affiché en haut.','Enchaîne les paires vite pour faire des combos : plus de combos, plus d\'étincelles !']}
+        23:{t:'Tuiles d\'or et combos',l:['Certaines tuiles brillent en doré ✨ : associe-les pour collecter ce trésor.','Elles ne changent pas les règles, mais comptent : le nombre est affiché en haut.','Enchaîne les paires vite pour faire des combos : plus de combos, plus d\'étincelles !']},
+        33:{t:'Brouillard',l:['Certaines tuiles sont voilées 🌫️ : tu ne vois pas leur dessin.','Elles se dévoilent dès qu\'elles deviennent libres : retiens bien ce que tu vois !','Le brouillard ne change pas les règles, il rend juste le jeu plus malin.']}
       }
     },
     en:{
@@ -892,6 +1029,23 @@ header{gap:6px}
       mapTitle:'The journey', mapSub:'Choose an island', mapBack:'🗺️ Islands', isl_animals:'Animal island', isl_sweets:'Sweets island', isl_art:'Art island', isl_science:'Science island', isl_sea:'Sea island', isl_flowers:'Flower island', mapProgress:'{a}/{b} ★', mapSoon:'Coming soon', mapAria:'Journey map',
       isl_prologue:'Starting levels', mapNeedPrologue:'Finish the starting levels', winPrologue:'Starting levels complete!', winPrologueSub:'The journey begins: the Animal island awaits', toMap:'🗺️ To the journey',
       cmb1:'Nice!', cmb2:'Super!', cmb3:'Great!', cmb4:'Amazing!', goldLbl:'Golden tiles {a}/{b}', winGold:'✨ Golden tiles: {a}/{b}', diffLbl:'Difficulty', setFx:'Special effects', setFxHint:'Sparkles, combos and glowing golden tiles',
+      sgDif:'Difficulty', difNote:'Each difficulty level adds to the previous one. The higher the difficulty, the more ✨ you earn the first time you win a level.', difCfNote:'(Comfort mode ignores difficulty.)',
+      dif_easy:'Easy', difd_easy:'More helpers, fewer different pictures, clearly darkened blocked tiles',
+      dif_normal:'Normal', difd_normal:'The game as it is',
+      dif_medium:'Medium', difd_medium:'Slightly fewer helpers, one more picture, 3 automatic reshuffles',
+      dif_hard:'Hard', difd_hard:'Half the helpers, extra fog, blocked tiles only slightly dimmed, 2 reshuffles',
+      dif_expert:'Expert', difd_expert:'Very few helpers, lots of fog, 1 reshuffle, stricter stars',
+      dif_master:'Master', difd_master:'Almost no helpers, no automatic reshuffle, blocked tiles not dimmed, very strict stars',
+      mapFogName:'Mystery island', mapNeed:'{a}/{b} ★ to discover it', giftTitle:'New island discovered!',
+      giftAnimals:'The Animal island appears on the map. Gift: +{n} ✨', giftSoon:'{name} appears on the map (coming soon). Gift: +{n} ✨',
+      tnFog:'Veiled tile', tFogStart:'Fog: some tiles are veiled and are revealed when they become free',
+      deadTitle:'Stuck!', deadText:'No moves left and no helpers available. Restart the level.', deadRestart:'Restart', deadLevels:'Levels',
+      tUseShuffle:'No moves: use Shuffle 🔀', tUseUndo:'No moves: use Undo ↩️', winCoins:'🎁 +{n} ✨',
+      bonusBtn:'🧩 Brain games', bonusTitle:'Brain games', bonusSub:'Play with your ✨: a puzzle costs 1 ✨. On your first win you earn 2 ✨!',
+      pz_memory:'Memory', pzd_memory:'Find the pairs of animals', pz_missing:'Missing piece', pzd_missing:'Find the piece missing from the picture',
+      pz_sudoku:'Animal sudoku', pzd_sudoku:'Each animal once per row, column and 2×2 box',
+      pzCost:'✨ {n}', pzNoCoins:'Not enough ✨! Earn stars and golden tiles.', pzWinTitle:'Well done!', pzWinFirst:'First win: +{n} ✨', pzWinAgain:'Well done again!',
+      pzInfoMem:'Tries: {n}', pzInfoMis:'Question {a}/{b}', pzInfoSud:'Mistakes: {n}', pzTapCell:'Tap a cell, then an animal',
       names:['Jade','Ocean','Cherry','Sunset','Violet night','Red lacquer','Ice','Gold','Midnight','Cosmos','Mint','Coral','Sapphire','Lemon','Amethyst','Desert','Storm','Bronze','Starry','Dawn'],
       intro:{
         1:{t:'Welcome!',l:['Tap two identical, free tiles to remove them.','A tile is free when nothing covers it and its left or right side is open.','Play fast and with few aids to earn 3 stars ★.']},
@@ -902,7 +1056,8 @@ header{gap:6px}
         13:{t:'Two hidden groups',l:['There are now two groups of locked tiles.','Each pair of stars ⭐ unlocks only one group: you need two pairs.']},
         16:{t:'Three hidden groups',l:['Three groups of locked tiles: you need three pairs of stars ⭐.','The 🔒 counter at the top shows how many tiles are still hidden.']},
         19:{t:'Four hidden groups',l:['Four groups of locked tiles: you need four pairs of stars ⭐.','Look for the stars first: they open the way.']},
-        23:{t:'Golden tiles and combos',l:['Some tiles glow gold ✨: match them to collect the treasure.','They do not change the rules, but they count: the number is shown at the top.','Match pairs quickly in a row for combos: more combos, more sparkles!']}
+        23:{t:'Golden tiles and combos',l:['Some tiles glow gold ✨: match them to collect the treasure.','They do not change the rules, but they count: the number is shown at the top.','Match pairs quickly in a row for combos: more combos, more sparkles!']},
+        33:{t:'Fog',l:['Some tiles are veiled 🌫️: you cannot see their picture.','They are revealed as soon as they become free: remember what you see!','Fog does not change the rules, it just makes the game trickier.']}
       }
     },
     it:{
@@ -941,6 +1096,23 @@ header{gap:6px}
       mapTitle:'Il viaggio', mapSub:'Scegli un\'isola', mapBack:'🗺️ Le isole', isl_animals:'Isola degli animali', isl_sweets:'Isola dei dolci', isl_art:'Isola dell\'arte', isl_science:'Isola della scienza', isl_sea:'Isola del mare', isl_flowers:'Isola dei fiori', mapProgress:'{a}/{b} ★', mapSoon:'Presto', mapAria:'Mappa del viaggio',
       isl_prologue:'Livelli iniziali', mapNeedPrologue:'Finisci i livelli iniziali', winPrologue:'Livelli iniziali completati!', winPrologueSub:'Il viaggio comincia: ti aspetta l\'Isola degli animali', toMap:'🗺️ Verso il viaggio',
       cmb1:'Bene!', cmb2:'Super!', cmb3:'Grande!', cmb4:'Incredibile!', goldLbl:'Tessere d\'oro {a}/{b}', winGold:'✨ Tessere d\'oro: {a}/{b}', diffLbl:'Difficoltà', setFx:'Effetti speciali', setFxHint:'Scintille, combo e tessere d\'oro che brillano',
+      sgDif:'Difficoltà', difNote:'Ogni livello di difficoltà si somma al precedente. Più la difficoltà è alta, più ✨ guadagni la prima volta che vinci un livello.', difCfNote:'(La Modalità comoda ignora la difficoltà.)',
+      dif_easy:'Facile', difd_easy:'Più aiuti, meno disegni diversi, tessere bloccate ben scure',
+      dif_normal:'Normale', difd_normal:'Il gioco com\'è',
+      dif_medium:'Medio', difd_medium:'Un po\' meno aiuti, un disegno in più, 3 rimescoli automatici',
+      dif_hard:'Difficile', difd_hard:'Metà degli aiuti, nebbia in più, tessere bloccate poco scurite, 2 rimescoli',
+      dif_expert:'Esperto', difd_expert:'Pochissimi aiuti, molta nebbia, 1 solo rimescolo, stelle più severe',
+      dif_master:'Maestro', difd_master:'Quasi nessun aiuto, nessun rimescolo automatico, tessere bloccate non scurite, stelle severissime',
+      mapFogName:'Isola misteriosa', mapNeed:'{a}/{b} ★ per scoprirla', giftTitle:'Nuova isola scoperta!',
+      giftAnimals:'L\'Isola degli animali appare sulla mappa. Regalo: +{n} ✨', giftSoon:'{name} appare sulla mappa (presto disponibile). Regalo: +{n} ✨',
+      tnFog:'Tessera velata', tFogStart:'Nebbia: alcune tessere sono velate e si scoprono quando diventano libere',
+      deadTitle:'Bloccato!', deadText:'Nessuna mossa possibile e nessun aiuto disponibile. Ricomincia il livello.', deadRestart:'Ricomincia', deadLevels:'Livelli',
+      tUseShuffle:'Nessuna mossa: usa Mescola 🔀', tUseUndo:'Nessuna mossa: usa Annulla ↩️', winCoins:'🎁 +{n} ✨',
+      bonusBtn:'🧩 Rompicapi', bonusTitle:'Rompicapi', bonusSub:'Gioca con i tuoi ✨: un rompicapo costa 1 ✨. Alla prima vittoria ne guadagni 2!',
+      pz_memory:'Memory', pzd_memory:'Trova le coppie di animali', pz_missing:'Pezzo mancante', pzd_missing:'Trova il pezzo che manca al disegno',
+      pz_sudoku:'Sudoku degli animali', pzd_sudoku:'Ogni animale una sola volta per riga, colonna e quadrato 2×2',
+      pzCost:'✨ {n}', pzNoCoins:'Non bastano i ✨! Guadagna stelle e tessere d\'oro.', pzWinTitle:'Bravo!', pzWinFirst:'Prima vittoria: +{n} ✨', pzWinAgain:'Ancora bravo!',
+      pzInfoMem:'Tentativi: {n}', pzInfoMis:'Domanda {a}/{b}', pzInfoSud:'Errori: {n}', pzTapCell:'Tocca una casella, poi un animale',
       names:['Giada','Oceano','Ciliegio','Tramonto','Notte viola','Lacca rossa','Ghiaccio','Oro','Mezzanotte','Cosmo','Menta','Corallo','Zaffiro','Limone','Ametista','Deserto','Tempesta','Bronzo','Stellata','Alba'],
       intro:{
         1:{t:'Benvenuto!',l:['Tocca due tessere uguali e libere per toglierle.','Una tessera è libera se nulla la copre e il suo lato sinistro o destro è libero.','Gioca veloce e con pochi aiuti per ottenere 3 stelle ★.']},
@@ -951,7 +1123,8 @@ header{gap:6px}
         13:{t:'Due gruppi nascosti',l:['Ora ci sono due gruppi di tessere bloccate.','Ogni coppia di stelle ⭐ ne sblocca uno solo: te ne servono due.']},
         16:{t:'Tre gruppi nascosti',l:['Tre gruppi di tessere bloccate: servono tre coppie di stelle ⭐.','Il contatore 🔒 in alto mostra quante tessere restano nascoste.']},
         19:{t:'Quattro gruppi nascosti',l:['Quattro gruppi di tessere bloccate: servono quattro coppie di stelle ⭐.','Cerca prima le stelle: aprono la strada.']},
-        23:{t:'Tessere d\'oro e combo',l:['Alcune tessere brillano d\'oro ✨: abbinale per raccogliere il tesoro.','Non cambiano le regole, ma contano: il numero è indicato in alto.','Abbina le coppie in fretta una dopo l\'altra per fare combo: più combo, più scintille!']}
+        23:{t:'Tessere d\'oro e combo',l:['Alcune tessere brillano d\'oro ✨: abbinale per raccogliere il tesoro.','Non cambiano le regole, ma contano: il numero è indicato in alto.','Abbina le coppie in fretta una dopo l\'altra per fare combo: più combo, più scintille!']},
+        33:{t:'Nebbia',l:['Alcune tessere sono velate 🌫️: non se ne vede il disegno.','Si scoprono appena diventano libere: ricorda bene quello che vedi!','La nebbia non cambia le regole, rende solo il gioco più furbo.']}
       }
     }
   };
@@ -1014,6 +1187,7 @@ header{gap:6px}
       for(i=0;i<a.length;i++)tone(r*a[i],i*.11,.35,'triangle',.16);
       tone(r*2,a.length*.11,.9,'sine',.14);tone(r*2.5,a.length*.11,.9,'sine',.12);tone(r*3,a.length*.11,.9,'sine',.12);},
     boom:function(){noise(0,.55,.2,'lowpass',500);noise(.03,.25,.1,'highpass',3500);tone(90,0,.3,'sine',.12,40);},
+    fog:function(){noise(0,.35,.06,'bandpass',900);tone(root()*2,.02,.25,'sine',.06);},
     gold:function(){var r=root(),a=[3,4,5,6.5,8],i;for(i=0;i<a.length;i++)tone(r*a[i],i*.055,.28,'sine',.13);},
     unlock:function(){var r=root(),a=[2,2.5,3,4,5],i;for(i=0;i<a.length;i++)tone(r*a[i],.05+i*.07,.3,'sine',.13);noise(0,.25,.08,'highpass',5000);},
     pop:function(){noise(0,.12,.07,'highpass',4500);}
@@ -1124,11 +1298,15 @@ header{gap:6px}
     '<text x="30" y="55" text-anchor="middle" font-size="34" font-weight="900" fill="#ffcf5a" font-family="Georgia,serif">?</text>'+
     '<rect x="24" y="60" width="12" height="9" rx="2" fill="#ffcf5a"/>'+
     '<path d="M26.5 60 v-3 a3.5 3.5 0 0 1 7 0 v3" fill="none" stroke="#ffcf5a" stroke-width="1.8"/>';
+  var FOG='<circle cx="30" cy="40" r="28" fill="#c9d6e4"/><path d="M12 52 Q6 42 17 39 Q18 28 30 30 Q41 24 45 36 Q56 37 52 52Z" fill="#fff" stroke="#8fa3b8" stroke-width="1.8" stroke-linejoin="round"/>'+
+    '<path d="M17 58 Q30 64 44 58" fill="none" stroke="#9fb2c6" stroke-width="2" stroke-linecap="round"/><text x="31" y="50" text-anchor="middle" font-size="18" font-weight="900" fill="#8fa3b8" font-family="Georgia,serif">?</text>';
   function paintTile(t){
     var lk=isLocked(t);
     t.el.classList.toggle('locked',lk);
-    t.el.classList.toggle('gold',!!t.gold&&!lk);
-    t.el.innerHTML='<svg viewBox="0 0 60 80" preserveAspectRatio="xMidYMid meet">'+(lk?LOCKED:TYPES[t.type])+'</svg>'+((t.gold&&!lk)?'<span class="gem">✨</span>':'');
+    var fg=!!t.fogOn&&!lk;
+    t.el.classList.toggle('gold',!!t.gold&&!lk&&!fg);
+    t.el.classList.toggle('fog',fg);
+    t.el.innerHTML='<svg viewBox="0 0 60 80" preserveAspectRatio="xMidYMid meet">'+(lk?LOCKED:(fg?FOG:TYPES[t.type]))+'</svg>'+((t.gold&&!lk&&!fg)?'<span class="gem">✨</span>':'');
   }
   function layout(){
     var maxX=0,maxY=0; maxZ=0;
@@ -1148,10 +1326,15 @@ header{gap:6px}
     });
   }
   function refresh(){
-    var al=alive(), left=0;
+    var al=alive(), left=0, unfogged=false;
     tiles.forEach(function(t){
       if(t.gone)return;
       var lk=isLocked(t); if(lk)left++;
+      if(t.fogOn&&!lk&&isFree(t,al)){   // la nebbia si dirada quando la tessera diventa libera
+        t.fogOn=false; paintTile(t); unfogged=true;
+        t.el.classList.remove('reveal'); void t.el.offsetWidth; t.el.classList.add('reveal');
+        (function(e){setTimeout(function(){e.classList.remove('reveal');},700);})(t.el);
+      }
       t.el.classList.toggle('blocked',!lk&&!isFree(t,al));
       t.el.classList.toggle('sel',t===sel);
       var fr=!lk&&isFree(t,al), eqOn=!!(eff('eq')&&sel&&t!==sel);
@@ -1159,6 +1342,7 @@ header{gap:6px}
       t.el.classList.toggle('fade',eqOn&&fr&&t.type!==sel.type);
       t.el.classList.remove('hint');
     });
+    if(unfogged&&fxOk())SND.fog();
     pairsEl.textContent=al.length/2;
     lockStat.style.display=G()?'':'none'; locksEl.textContent=left;
   }
@@ -1178,9 +1362,9 @@ header{gap:6px}
   function sbSlot(id,t){
     var e=sbEl(id); e.innerHTML='';
     if(!t){e.className='sbslot empty';return;}
-    e.className='sbslot'; e.appendChild(miniTile(isLocked(t)?'L':t.type));
+    e.className='sbslot'; e.appendChild(miniTile(isLocked(t)?'L':(t.fogOn?'F':t.type)));
   }
-  function tName(t){return isLocked(t)?tx('tnHidden'):((I18N[lang].tn||I18N.fr.tn)[t.type]||'');}
+  function tName(t){return isLocked(t)?tx('tnHidden'):(t.fogOn?tx('tnFog'):((I18N[lang].tn||I18N.fr.tn)[t.type]||''));}
   function sbShow(a,b,st){
     if(!S.bar)return;
     clearTimeout(sbT);
@@ -1195,7 +1379,19 @@ header{gap:6px}
   function sbLater(fn,ms){clearTimeout(sbT); sbT=setTimeout(fn,ms);}
   var timerOn=false;
   var curCf=false;   // la partita in corso usa la tavola comoda?
-  function nEff(){return curCf?Math.max(6,Math.round(cfg.n*0.7)):cfg.n;}
+  var curDif=1, rescueLeft=null;   // difficoltà della partita in corso (0-5) e rimescoli automatici rimasti (null = illimitati)
+  function nEff(){
+    if(curCf)return Math.max(6,Math.round(cfg.n*0.7));
+    return Math.max(5,Math.min(cfg.n+DIF_N[curDif],poolOf(lv).length-2));
+  }
+  function scaleAid(v,d,kind){   // aiuti secondo la difficoltà (Normale = invariato)
+    if(d===1)return v;
+    var r;
+    if(v===null){r=DIF_AID_NULL[d];}
+    else{r=Math.round(v*DIF_AID[d]); if(d===0&&v>=8)r=null;}
+    if(kind==='shuf'&&r!==null&&r<1)r=1;
+    return r;
+  }
   var IDLE_MS=120000;   // aiuto automatico: dopo 2 minuti di inattività
   var idleT=null;
   function armIdle(){
@@ -1224,9 +1420,9 @@ header{gap:6px}
     if(!started||over||!tiles.length)return;
     try{
       localStorage.setItem(SAVE_KEY,JSON.stringify({v:1,lv:lv,secs:secs,unl:unl,hl:hintsLeft,sl:shufLeft,ul:undoLeft,
-        hu:hintsUsed,uu:undosUsed,su:shufUsed,sb:shufBarrier,cm:curCf?1:0,
+        hu:hintsUsed,uu:undosUsed,su:shufUsed,sb:shufBarrier,cm:curCf?1:0,df:curDif,rl:rescueLeft,
         gg:goldGot,
-        t:tiles.map(function(t){return [t.type,t.hid||0,t.gone?1:0,t.gold?1:0];}),
+        t:tiles.map(function(t){return [t.type,t.hid||0,t.gone?1:0,t.gold?1:0,t.fogOn?1:0];}),
         h:history.map(function(p){return [tiles.indexOf(p[0]),tiles.indexOf(p[1]),p[2]];}),at:Date.now()}));
     }catch(e){}
   }
@@ -1374,12 +1570,27 @@ header{gap:6px}
   function rescue(){
     if(over)return;
     var al=alive(); if(al.length<2)return;
+    if(rescueLeft!==null&&rescueLeft<=0){deadCheck();return;}
     SND.stuck(); toast(tx('tRescue'),2400);
     clearTimeout(rescue.t);
     rescue.t=setTimeout(function(){
       if(over||findMove())return;
+      if(rescueLeft!==null)rescueLeft--;
       var a2=alive(); assign(a2,nEff(),unl,G()); sel=null; history=[]; shufBarrier=true; a2.forEach(paintTile); refresh(); SND.shuffle(); saveGame();
     },1100);
+  }
+  // senza più mosse e senza rimescoli gratuiti: si suggerisce un aiuto, altrimenti il livello è bloccato
+  function deadCheck(){
+    if(over)return;
+    if(shufLeft===null||shufLeft>0){SND.stuck();toast(tx('tUseShuffle'),2600);return;}
+    if(history.length&&(undoLeft===null||undoLeft>0)){SND.stuck();toast(tx('tUseUndo'),2600);return;}
+    showDead();
+  }
+  function showDead(){
+    stopTimer(); SND.stuck();
+    document.getElementById('deadText').textContent=tx('deadText');
+    setTxt('deadTitle','deadTitle'); setTxt('bDeadRestart','deadRestart'); setTxt('bDeadLevels','deadLevels');
+    document.getElementById('dead').classList.add('show');
   }
   function afterMove(){
     var al=alive();
@@ -1387,6 +1598,8 @@ header{gap:6px}
     saveGame();
     if(!findMove())rescue();
   }
+  document.getElementById('bDeadRestart').onclick=function(){document.getElementById('dead').classList.remove('show');startLevel(lv);};
+  document.getElementById('bDeadLevels').onclick=function(){document.getElementById('dead').classList.remove('show');openMenu(islandOf(lv).id);};
 
   // ================= EFFETTI VITTORIA =================
   var fwC=document.getElementById('fw'), fx=fwC.getContext('2d');
@@ -1458,7 +1671,8 @@ header{gap:6px}
   window.addEventListener('resize',function(){if(fwRun)fwSize();});
 
   function calcStars(sec,pairs,aids){
-    var byTime=eff('nt')?3:(sec<=pairs*5?3:(sec<=pairs*10?2:1));
+    var tm=DIF_TM[curDif]||1;
+    var byTime=eff('nt')?3:(sec<=pairs*5*tm?3:(sec<=pairs*10*tm?2:1));
     var cap=aids<=1?3:(aids<=Math.max(3,Math.ceil(pairs/6))?2:1);
     return Math.min(byTime,cap);
   }
@@ -1466,13 +1680,15 @@ header{gap:6px}
     over=true; stopTimer(); clearSave();
     var pairsTotal=tiles.length/2, aids=hintsUsed+undosUsed+shufUsed;
     var stars=calcStars(secs,pairsTotal,aids);
-    var oldBest=prog.best[lv];
+    var oldBest=prog.best[lv], prevStars=prog.stars[lv]||0, coinGain=Math.max(0,stars-prevStars);
     if((prog.stars[lv]||0)<stars)prog.stars[lv]=stars;
     var rec=false;
     if(!eff('nt')&&(!oldBest||secs<oldBest)){prog.best[lv]=secs;rec=!!oldBest;}
     var grand=(lv===LEVELS.length), prologueEnd=(lv===BASE_LV);
     if(!grand&&prog.unlocked<lv+1)prog.unlocked=lv+1;
-    if(goldTotal>0){prog.gold=prog.gold||{}; prog.goldTot=prog.goldTot||{}; if((prog.gold[lv]||0)<goldGot)prog.gold[lv]=goldGot; prog.goldTot[lv]=goldTotal;}
+    if(goldTotal>0){prog.gold=prog.gold||{}; prog.goldTot=prog.goldTot||{}; var pg=prog.gold[lv]||0; if(pg<goldGot){coinGain+=goldGot-pg; prog.gold[lv]=goldGot;} prog.goldTot[lv]=goldTotal;}
+    var pd=prog.dif[lv], pb=(pd===undefined?0:DIF_BONUS[pd]); if(DIF_BONUS[curDif]>pb)coinGain+=DIF_BONUS[curDif]-pb; if(pd===undefined||curDif>pd)prog.dif[lv]=curDif;
+    prog.coins=(prog.coins||0)+coinGain;
     saveProg();
     document.getElementById('winIcon').textContent=grand?'👑':(prologueEnd?'🗺️':'🏆');
     document.getElementById('winTitle').textContent=grand?tx('winGrand'):(prologueEnd?tx('winPrologue'):tx('winLevelDone',{n:localLv(lv)}));
@@ -1481,7 +1697,7 @@ header{gap:6px}
     document.getElementById('winStars').innerHTML=h;
     for(i=0;i<stars;i++)(function(k){setTimeout(function(){SND.star(k);},500+k*400);})(i);
     var l1=tx('winTime',{t:fmt(secs)})+(rec?'  ·  '+tx('winNewRecord'):(oldBest?'  ·  '+tx('winRecord',{t:fmt(Math.min(oldBest,secs))}):''));
-    document.getElementById('winInfo').innerHTML=(eff('nt')?tx('winAids',{n:aids}):(l1+'<br>'+tx('winAids',{n:aids})))+(goldTotal>0?'<br>'+tx('winGold',{a:goldGot,b:goldTotal}):'');
+    document.getElementById('winInfo').innerHTML=(eff('nt')?tx('winAids',{n:aids}):(l1+'<br>'+tx('winAids',{n:aids})))+(goldTotal>0?'<br>'+tx('winGold',{a:goldGot,b:goldTotal}):'')+(coinGain>0?'<br>'+tx('winCoins',{n:coinGain}):'');
     document.getElementById('winRule').textContent=tx(eff('nt')?'starsRuleNT':'starsRule');
     document.getElementById('bNext').style.display=grand?'none':'';
     document.getElementById('bNext').textContent=prologueEnd?tx('toMap'):tx('nextLevel',{n:localLv(lv)+1});
@@ -1492,11 +1708,11 @@ header{gap:6px}
   }
 
   // ================= MODALE NOVITA' DEL LIVELLO =================
-  var INTRO_VIS={23:['✨','✨','➜','🏅'],1:[0,'=',0],3:['💡','🔀','↩️'],4:['S'],8:['↩️'],11:[26,26,'➜','L'],13:['2×',26,26,'➜','L'],16:['3×',26,26,'➜','L'],19:['4×',26,26,'➜','L']};
-  var INTRO_ICON={23:'✨',1:'👋',3:'💡',4:'🧱',8:'↩️',11:'🔒',13:'🔒',16:'🔒',19:'🔒'};
+  var INTRO_VIS={33:['F','➜',0],23:['✨','✨','➜','🏅'],1:[0,'=',0],3:['💡','🔀','↩️'],4:['S'],8:['↩️'],11:[26,26,'➜','L'],13:['2×',26,26,'➜','L'],16:['3×',26,26,'➜','L'],19:['4×',26,26,'➜','L']};
+  var INTRO_ICON={33:'🌫️',23:'✨',1:'👋',3:'💡',4:'🧱',8:'↩️',11:'🔒',13:'🔒',16:'🔒',19:'🔒'};
   function miniTile(idx){
-    var d=document.createElement('div'); d.className='mt'+(idx==='L'?' locked':'');
-    d.innerHTML='<svg viewBox="0 0 60 80">'+(idx==='L'?LOCKED:TYPES[idx])+'</svg>'; return d;
+    var d=document.createElement('div'); d.className='mt'+(idx==='L'?' locked':(idx==='F'?' fog':''));
+    d.innerHTML='<svg viewBox="0 0 60 80">'+(idx==='L'?LOCKED:(idx==='F'?FOG:TYPES[idx]))+'</svg>'; return d;
   }
   function buildVis(n,box){
     box=box||document.getElementById('introVis'); box.innerHTML='';
@@ -1536,14 +1752,17 @@ header{gap:6px}
     document.getElementById('intro').classList.remove('show');
     document.getElementById('pause').classList.remove('show');
     document.getElementById('guide').classList.remove('show');
+    document.getElementById('dead').classList.remove('show');
+    document.getElementById('bonus').classList.remove('show'); document.getElementById('puz').classList.remove('show');
     applyTheme(cfg);
     document.getElementById('lvNum').textContent=tx('lvShort',{n:localLv(n)});
     document.getElementById('lvName').textContent=lvTitle(n);
     curCf=saved?!!saved.cm:!!S.cf;
+    curDif=curCf?1:(saved?(typeof saved.df==='number'?saved.df:1):S.dif);
     var list=layoutList(n,curCf);
-    tiles=list; tiles.forEach(function(t){t.gone=false;t.hid=0;t.gold=false;});
+    tiles=list; tiles.forEach(function(t){t.gone=false;t.hid=0;t.gold=false;t.fog=false;t.fogOn=false;});
     if(saved){
-      saved.t.forEach(function(r,i){var t=tiles[i]; t.type=r[0]; t.hid=r[1]; t.gone=!!r[2]; t.gold=!!r[3];});
+      saved.t.forEach(function(r,i){var t=tiles[i]; t.type=r[0]; t.hid=r[1]; t.gone=!!r[2]; t.gold=!!r[3]; t.fogOn=!!r[4]; t.fog=t.fogOn;});
       unl=saved.unl||0; goldGot=saved.gg||0;
     } else {
       if(cfg.hid)markHidden(tiles,cfg.hid);
@@ -1551,21 +1770,27 @@ header{gap:6px}
       assign(tiles,nEff(),0,G());
       if(cfg.gold)markGold(tiles,cfg.gold);
       goldGot=0;
+      var fogN=curCf?0:Math.round((cfg.fog||0)*DIF_FOGM[curDif])+DIF_FOGADD[curDif];
+      if(fogN>0)markFog(tiles,fogN);
     }
     goldTotal=tiles.filter(function(t){return t.gold;}).length;
     over=false; started=true; sel=null; combo=0; lastMatch=0; sbRecent=[]; sbShow(null,null,'');
     if(saved){
       secs=saved.secs||0; hintsUsed=saved.hu||0; undosUsed=saved.uu||0; shufUsed=saved.su||0; shufBarrier=!!saved.sb;
-      hintsLeft=saved.hl; shufLeft=saved.sl; undoLeft=saved.ul;
+      hintsLeft=saved.hl; shufLeft=saved.sl; undoLeft=saved.ul; rescueLeft=(saved.rl===undefined?null:saved.rl);
       history=(saved.h||[]).map(function(r){return [tiles[r[0]],tiles[r[1]],r[2]];}).filter(function(p){return p[0]&&p[1];});
     } else {
       history=[]; secs=0;
       hintsUsed=0; undosUsed=0; shufUsed=0; shufBarrier=false;
-      hintsLeft=curCf?null:cfg.hints; shufLeft=curCf?null:cfg.shuf; undoLeft=curCf?null:cfg.undo;
+      hintsLeft=curCf?null:scaleAid(cfg.hints,curDif,'hint'); shufLeft=curCf?null:scaleAid(cfg.shuf,curDif,'shuf'); undoLeft=curCf?null:scaleAid(cfg.undo,curDif,'undo');
+      rescueLeft=curCf?null:DIF_RESC[curDif];
     }
     counts();
     showTime();
-    board.innerHTML=''; board.classList.toggle('nodim',!cfg.dim);
+    board.innerHTML='';
+    var dm=(S.cb||S.hc)?1:curDif;   // chi ha attivato i segnali di accessibilità non cambia lo scurimento con la difficoltà
+    board.classList.toggle('nodim',dm===0?false:(dm>=3?true:!cfg.dim));
+    board.classList.toggle('nodim2',dm===4); board.classList.toggle('nodim3',dm===5);
     board.classList.remove('board-in');
     tiles.forEach(function(t){
       var d=document.createElement('div'); d.className='tile'+(t.gone?' gone hidden':''); t.el=d;
@@ -1582,6 +1807,7 @@ header{gap:6px}
     } else {
       startTimer();
       if(cfg.hid&&!saved)toast(tx('tHiddenStart'),4200);
+      else if(!saved&&tiles.some(function(t){return t.fogOn;}))toast(tx('tFogStart'),4200);
     }
     setTimeout(function(){board.classList.remove('board-in');},1800);
     saveGame();
@@ -1638,33 +1864,269 @@ header{gap:6px}
   // ---------- mappa del viaggio ----------
   var map=document.getElementById('map');
   function totalStars(W){var t=0,k,lo=W?W.levels[0]:1,hi=W?W.levels[1]:999;for(k in prog.stars){k=+k; if(k>=lo&&k<=hi)t+=prog.stars[k]||0;}return t;}
-  function worldOpen(I){return I.id==='prologue'||(I.id==='animals'&&prog.unlocked>BASE_LV);}
+  // stato di una tappa: 'open' (si può entrare), 'soon' (scoperta ma ancora senza livelli), 'fog' (nascosta dalla nebbia)
+  function worldState(I){
+    if(I.id==='prologue')return 'open';
+    if(I.id==='animals')return prog.unlocked>BASE_LV?'open':'fog';
+    return totalStars()>=I.need?'soon':'fog';
+  }
+  function worldOpen(I){return worldState(I)==='open';}
+  function showGift(icon,title,text,after){
+    document.getElementById('giftIcon').textContent=icon;
+    document.getElementById('giftTitle').textContent=title;
+    document.getElementById('giftText').textContent=text;
+    setTxt('bGiftOk','ok');
+    document.getElementById('gift').classList.add('show');
+    SND.win(); sparkBurst(window.innerWidth/2,window.innerHeight*.33,['✨','⭐','💛'],24,150);
+    document.getElementById('bGiftOk').onclick=function(){document.getElementById('gift').classList.remove('show');if(after)after();};
+  }
   function buildMap(){
     buildResume(document.getElementById('resumeBoxMap'));
+    document.getElementById('mapCoins').textContent='✨ '+(prog.coins||0);
     var p=document.getElementById('mapPath'); p.innerHTML='';
+    var reveals=[];
     ISLANDS.forEach(function(I,i){
       if(i>0){var c=document.createElement('div'); c.className='conn'; p.appendChild(c);}
-      var open=worldOpen(I), soon=!I.levels;
-      var d=document.createElement('div'); d.className='isl '+(i%2?'right':'left')+(open?'':' locked'); d.setAttribute('data-id',I.id);
+      var st=worldState(I), open=st==='open', fog=st==='fog';
+      var d=document.createElement('div'); d.className='isl '+(i%2?'right':'left')+(open?'':' locked')+(fog?' fogged':''); d.setAttribute('data-id',I.id);
+      var isNew=(I.id!=='prologue'&&!fog&&!prog.revealed[I.id]);
+      if(isNew){d.classList.add('revealing'); reveals.push(I);}
       var b=document.createElement('button'); b.className='islbtn'; b.id='isl_'+I.id;
-      b.style.background='linear-gradient(145deg,'+I.th[0]+','+I.th[1]+')';
-      var lockTxt=soon?tx('mapSoon'):tx('mapNeedPrologue');
-      b.setAttribute('aria-label',tx('isl_'+I.id)+(open?'':' ('+lockTxt+')'));
-      b.innerHTML='<span>'+I.icon+'</span>';
-      var nm=document.createElement('div'); nm.className='islname'; nm.textContent=tx('isl_'+I.id);
-      var sb=document.createElement('div'); sb.className='islsub';
-      sb.textContent=open?tx('mapProgress',{a:totalStars(I),b:(I.levels[1]-I.levels[0]+1)*3}):lockTxt;
+      if(!fog)b.style.background='linear-gradient(145deg,'+I.th[0]+','+I.th[1]+')';
+      var sub;
+      if(fog)sub=(I.id==='animals')?tx('mapNeedPrologue'):tx('mapNeed',{a:totalStars(),b:I.need});
+      else sub=open?tx('mapProgress',{a:totalStars(I),b:(I.levels[1]-I.levels[0]+1)*3}):tx('mapSoon');
+      b.setAttribute('aria-label',(fog?tx('mapFogName'):tx('isl_'+I.id))+' ('+sub+')');
+      b.innerHTML='<span>'+(fog?'🌫️':I.icon)+'</span>';
+      var nm=document.createElement('div'); nm.className='islname'; nm.textContent=fog?tx('mapFogName'):tx('isl_'+I.id);
+      var sb=document.createElement('div'); sb.className='islsub'; sb.textContent=sub;
       b.onclick=function(){
         if(open){ac();SND.select();openMenu(I.id);}
         else{SND.blocked();d.classList.remove('shake');void d.offsetWidth;d.classList.add('shake');}
       };
       d.appendChild(b); d.appendChild(nm); d.appendChild(sb); p.appendChild(d);
     });
+    // sorpresa: le isole appena scoperte portano un regalo di ✨ (una volta sola)
+    if(reveals.length&&map.classList.contains('show')){
+      var I0=reveals[0], total=0;
+      reveals.forEach(function(I){prog.revealed[I.id]=true; total+=I.gift||0;});
+      prog.coins=(prog.coins||0)+total; saveProg();
+      document.getElementById('mapCoins').textContent='✨ '+prog.coins;
+      setTimeout(function(){
+        showGift('🎁',tx('giftTitle'),tx(I0.id==='animals'?'giftAnimals':'giftSoon',{name:tx('isl_'+I0.id),n:total}));
+      },900);
+    }
   }
+  // ================= ROMPICAPO (sala bonus, si pagano con i ✨) =================
+  var PUZZLES=['memory','missing','sudoku'], PUZ_COST=1, PUZ_REFUND=2, puz=null;
+  function pkey(k,r){return k+':'+r;}
+  function coinsUi(){var t='✨ '+(prog.coins||0); document.getElementById('mapCoins').textContent=t; document.getElementById('bonusCoins').textContent=t;}
+  function animalPick(n,except){   // n animali diversi (senza la stella)
+    var a=ANIMAL_TYPES.filter(function(x){return !except||except.indexOf(x)<0;}); shuffleArr(a); return a.slice(0,n);
+  }
+  function tileSvg(idx,vb){return '<svg viewBox="'+(vb||'0 0 60 80')+'" preserveAspectRatio="xMidYMid meet">'+TYPES[idx]+'</svg>';}
+  function buildBonus(){
+    setTxt('bonusTitle','bonusTitle'); setTxt('bonusSub','bonusSub'); coinsUi();
+    var box=document.getElementById('bonusList'); box.innerHTML='';
+    PUZZLES.forEach(function(k){
+      var c=document.createElement('div'); c.className='pcard'; c.setAttribute('data-k',k);
+      var icon={memory:'🃏',missing:'🧩',sudoku:'🔢'}[k];
+      c.innerHTML='<h4>'+icon+' '+tx('pz_'+k)+'</h4><p>'+tx('pzd_'+k)+'</p>';
+      var row=document.createElement('div'); row.className='prow'; c.appendChild(row);
+      [1,2,3].forEach(function(r){
+        var st=prog.puz[pkey(k,r)]||0, b=document.createElement('button'); b.className='pbtn'; b.setAttribute('data-r',r);
+        var sh=''; for(var i=0;i<3;i++)sh+=(i<st?'★':'<s>★</s>');
+        b.innerHTML='<b>'+tx(['','dif_easy','dif_medium','dif_hard'][r])+'</b><span class="st">'+sh+'</span><small>'+tx('pzCost',{n:PUZ_COST})+'</small>';
+        b.onclick=function(){startPuzzle(k,r);};
+        row.appendChild(b);
+      });
+      box.appendChild(c);
+    });
+  }
+  function openBonus(){
+    stopTimer(); buildBonus(); document.getElementById('bonus').classList.add('show');
+  }
+  function closeBonus(){document.getElementById('bonus').classList.remove('show'); coinsUi();}
+  function startPuzzle(k,r){
+    if((prog.coins||0)<PUZ_COST){
+      SND.blocked(); var sub=document.getElementById('bonusSub'); sub.textContent=tx('pzNoCoins'); sub.style.color='#ffb3b3';
+      setTimeout(function(){sub.style.color='';sub.textContent=tx('bonusSub');},2600); return;
+    }
+    prog.coins-=PUZ_COST; saveProg(); coinsUi(); SND.start();
+    puz={kind:k,round:r,moves:0,errors:0,won:false};
+    document.getElementById('puzTitle').textContent=tx('pz_'+k)+' · '+tx(['','dif_easy','dif_medium','dif_hard'][r]);
+    var body=document.getElementById('puzBody'); body.innerHTML='';
+    ({memory:buildMemory,missing:buildMissing,sudoku:buildSudoku})[k](body,r);
+    document.getElementById('puz').classList.add('show');
+  }
+  function leavePuzzle(){
+    if(puz&&!puz.won&&puz.moves===0){prog.coins=(prog.coins||0)+PUZ_COST; saveProg();}   // se non si è mosso nulla, il ✨ torna indietro
+    document.getElementById('puz').classList.remove('show'); puz=null; buildBonus();
+  }
+  function puzWin(stars){
+    if(!puz||puz.won)return; puz.won=true;
+    var key=pkey(puz.kind,puz.round), prev=prog.puz[key], first=(prev===undefined), reward=0;
+    if(first){reward=PUZ_REFUND; prog.coins=(prog.coins||0)+reward;}
+    if(!prev||prev<stars)prog.puz[key]=stars;
+    saveProg(); coinsUi();
+    var sh=''; for(var i=0;i<3;i++)sh+=(i<stars?'★':'☆');
+    showGift('🏆',tx('pzWinTitle'),sh+'  ·  '+(first?tx('pzWinFirst',{n:reward}):tx('pzWinAgain')),function(){leavePuzzle();});
+  }
+  function puzInfo(t){document.getElementById('puzInfo').textContent=t;}
+
+  // ---- Memory ----
+  function buildMemory(body,r){
+    var cfgM=[{c:3,r:4},{c:4,r:4},{c:4,r:5}][r-1], pairs=cfgM.c*cfgM.r/2;
+    var types=animalPick(pairs), cards=shuffleArr(types.concat(types));
+    var availH=window.innerHeight-190, availW=Math.min(window.innerWidth-28,380);
+    var cw=Math.floor(Math.min(availW/cfgM.c-8,availH/cfgM.r/1.3-8));
+    var grid=document.createElement('div'); grid.className='mgrid'; grid.style.gridTemplateColumns='repeat('+cfgM.c+','+cw+'px)'; grid.style.justifyContent='center'; grid.style.width='auto'; body.appendChild(grid);
+    puz.cards=cards; puz.up=[]; puz.lock=false; puz.left=pairs; puz.pairs=pairs; puz.els=[];
+    puzInfo(tx('pzInfoMem',{n:0}));
+    cards.forEach(function(ty,i){
+      var b=document.createElement('button'); b.className='mcard'; b.style.width=cw+'px'; b.style.height=Math.round(cw*1.3)+'px';
+      b.setAttribute('data-i',i);
+      b.innerHTML='<span class="q">❓</span>'+tileSvg(ty);
+      b.onclick=function(){
+        if(puz.lock||b.classList.contains('up')||b.classList.contains('ok'))return;
+        b.classList.add('up'); SND.select(); puz.up.push(i);
+        if(puz.up.length===2){
+          puz.moves++; puzInfo(tx('pzInfoMem',{n:puz.moves}));
+          var a=puz.up[0], c=puz.up[1];
+          if(cards[a]===cards[c]){
+            SND.match(1); puz.left--; var ea=puz.els[a], ec=puz.els[c];
+            setTimeout(function(){ea.classList.add('ok');ec.classList.add('ok');},350); puz.up=[];
+            if(puz.left===0){
+              var bad=puz.moves-puz.pairs, st=bad<=puz.pairs/2?3:(bad<=puz.pairs?2:1);
+              setTimeout(function(){puzWin(st);},700);
+            }
+          } else {
+            SND.blocked(); puz.errors++; puz.lock=true;
+            setTimeout(function(){puz.els[a].classList.remove('up');puz.els[c].classList.remove('up');puz.up=[];puz.lock=false;},800);
+          }
+        }
+      };
+      puz.els.push(b); grid.appendChild(b);
+    });
+  }
+
+  // ---- Pezzo mancante ----
+  function buildMissing(body,r){
+    var total=[3,4,5][r-1], nOpt=[2,4,4][r-1]; puz.q=0; puz.total=total;
+    var qbox=document.createElement('div'), obox=document.createElement('div'); obox.className='opts'; body.appendChild(qbox); body.appendChild(obox);
+    function nextQ(){
+      if(puz.q>=total){var st=puz.errors===0?3:(puz.errors<=2?2:1); setTimeout(function(){puzWin(st);},300); return;}
+      puzInfo(tx('pzInfoMis',{a:puz.q+1,b:total}));
+      var a=animalPick(1)[0], w=[26,24,22][r-1], ang=Math.random()*6.283, rad=Math.random()*13;
+      var cx=30+Math.cos(ang)*rad, cy=42+Math.sin(ang)*rad;
+      var rx=Math.max(4,Math.min(56-w,cx-w/2)), ry=Math.max(8,Math.min(72-w,cy-w/2));
+      var vb=rx.toFixed(1)+' '+ry.toFixed(1)+' '+w+' '+w, opts=[{svg:tileSvg(a,vb),ok:true}];
+      if(r===3){   // difficile: pezzi diversi dello stesso animale
+        var guard=0;
+        while(opts.length<nOpt&&guard++<60){
+          var ox=4+Math.random()*(56-w-4), oy=8+Math.random()*(72-w-8);
+          if(Math.abs(ox-rx)+Math.abs(oy-ry)<w*1.2)continue;
+          if(opts.some(function(o){return o.dx!==undefined&&Math.abs(o.dx-ox)+Math.abs(o.dy-oy)<w*.9;}))continue;
+          opts.push({svg:tileSvg(a,ox.toFixed(1)+' '+oy.toFixed(1)+' '+w+' '+w),ok:false,dx:ox,dy:oy});
+        }
+      } else {     // facile/medio: lo stesso punto di altri animali
+        animalPick(nOpt-1,[a]).forEach(function(o){opts.push({svg:tileSvg(o,vb),ok:false});});
+      }
+      shuffleArr(opts); puz.qa={correct:opts.findIndex(function(o){return o.ok;}),a:a};
+      qbox.innerHTML='<div class="qbig"><svg viewBox="0 0 60 80">'+TYPES[a]+'<rect x="'+rx.toFixed(1)+'" y="'+ry.toFixed(1)+'" width="'+w+'" height="'+w+'" rx="3" fill="#6d5cc9" stroke="#ffe9a8" stroke-width="1.4" stroke-dasharray="3 2"/><text x="'+(rx+w/2).toFixed(1)+'" y="'+(ry+w/2+5).toFixed(1)+'" text-anchor="middle" font-size="16" font-weight="900" fill="#ffe9a8" font-family="Georgia,serif">?</text></svg></div>';
+      obox.innerHTML='';
+      opts.forEach(function(o,i){
+        var b=document.createElement('button'); b.className='opt'; b.setAttribute('data-i',i); b.innerHTML=o.svg;
+        b.onclick=function(){
+          if(puz.lockQ)return; puz.moves++;
+          if(o.ok){b.classList.add('good');SND.match(1);puz.lockQ=true;puz.q++;setTimeout(function(){puz.lockQ=false;nextQ();},650);}
+          else{b.classList.add('bad');SND.blocked();puz.errors++;setTimeout(function(){b.classList.remove('bad');},450);}
+        };
+        obox.appendChild(b);
+      });
+    }
+    nextQ();
+  }
+
+  // ---- Sudoku degli animali (4×4) ----
+  function sudoSolve(g,limit){   // conta le soluzioni (fino a limit)
+    var i=g.indexOf(-1); if(i<0)return 1;
+    var r=Math.floor(i/4), c=i%4, br=r-r%2, bc=c-c%2, n=0, v;
+    for(v=0;v<4&&n<limit;v++){
+      var ok=true,k;
+      for(k=0;k<4;k++){ if(g[r*4+k]===v||g[k*4+c]===v){ok=false;break;} }
+      if(ok){ for(k=0;k<4;k++){ if(g[(br+(k>>1))*4+bc+(k&1)]===v){ok=false;break;} } }
+      if(!ok)continue;
+      g[i]=v; n+=sudoSolve(g,limit-n); g[i]=-1;
+    }
+    return n;
+  }
+  function sudoGen(blanks){
+    var g=[],i; for(i=0;i<16;i++)g.push(-1);
+    (function fill(pos){
+      if(pos===16)return true;
+      var r=Math.floor(pos/4), c=pos%4, br=r-r%2, bc=c-c%2, vals=shuffleArr([0,1,2,3]), k, v;
+      for(var j=0;j<4;j++){
+        v=vals[j]; var ok=true;
+        for(k=0;k<4;k++){ if(g[r*4+k]===v||g[k*4+c]===v||g[(br+(k>>1))*4+bc+(k&1)]===v){ok=false;break;} }
+        if(!ok)continue;
+        g[pos]=v; if(fill(pos+1))return true; g[pos]=-1;
+      }
+      return false;
+    })(0);
+    var sol=g.slice(), order=shuffleArr([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]), removed=0;
+    for(i=0;i<16&&removed<blanks;i++){
+      var p=order[i], keep=g[p]; g[p]=-1;
+      var t=g.slice(); if(sudoSolve(t,2)===1)removed++; else g[p]=keep;
+    }
+    return {sol:sol,grid:g};
+  }
+  function buildSudoku(body,r){
+    var blanks=[6,8,10][r-1], gen=sudoGen(blanks), syms=animalPick(4);
+    puz.sol=gen.sol; puz.grid=gen.grid.slice(); puz.syms=syms; puz.selCell=-1; puz.fixed=gen.grid.map(function(v){return v>=0;});
+    puzInfo(tx('pzInfoSud',{n:0}));
+    var hint=document.createElement('div'); hint.className='difnote'; hint.style.color='#d6e6ff'; hint.textContent=tx('pzTapCell'); body.appendChild(hint);
+    var grid=document.createElement('div'); grid.className='sgrid'; body.appendChild(grid);
+    var pal=document.createElement('div'); pal.className='spal'; body.appendChild(pal);
+    var cells=[];
+    function paint(){
+      cells.forEach(function(b,i){
+        var v=puz.grid[i]; b.innerHTML=v>=0?tileSvg(syms[v]):'';
+        b.className='scell'+(puz.fixed[i]?' fixed':'')+(puz.selCell===i?' sel':'');
+      });
+    }
+    for(var i=0;i<16;i++){(function(i){
+      var b=document.createElement('button'); b.className='scell'; b.setAttribute('data-i',i);
+      if(i%4===1)b.style.marginRight='7px'; if(Math.floor(i/4)===1)b.style.marginBottom='7px';   // separa i quadrati 2×2
+      b.onclick=function(){ if(puz.fixed[i])return; puz.selCell=i; SND.select(); paint(); };
+      cells.push(b); grid.appendChild(b);
+    })(i);}
+    function place(v){
+      var i=puz.selCell; if(i<0||puz.fixed[i])return;
+      puz.moves++;
+      if(v===-1){puz.grid[i]=-1; paint(); return;}
+      if(v===puz.sol[i]){
+        puz.grid[i]=v; SND.match(1); paint();
+        if(puz.grid.every(function(x,k){return x===puz.sol[k];})){var st=puz.errors===0?3:(puz.errors<=2?2:1); setTimeout(function(){puzWin(st);},400);}
+      } else {
+        puz.errors++; puzInfo(tx('pzInfoSud',{n:puz.errors})); SND.blocked();
+        cells[i].classList.add('err'); setTimeout(function(){cells[i].classList.remove('err');},450);
+      }
+    }
+    syms.forEach(function(ty,v){
+      var b=document.createElement('button'); b.setAttribute('data-v',v); b.innerHTML=tileSvg(ty); b.onclick=function(){place(v);}; pal.appendChild(b);
+    });
+    var er=document.createElement('button'); er.className='era'; er.textContent='⌫'; er.onclick=function(){place(-1);}; pal.appendChild(er);
+    paint();
+  }
+  document.getElementById('bBonus').onclick=function(){ac();SND.select();openBonus();};
+  document.getElementById('bonusClose').onclick=closeBonus;
+  document.getElementById('puzBack').onclick=leavePuzzle;
+
   function openMap(){
-    stopTimer(); buildMap();
+    stopTimer();
     document.getElementById('mapClose').style.display=started&&!over?'':'none';
-    map.classList.add('show');
+    map.classList.add('show'); buildMap();
   }
   function closeMap(silent){
     map.classList.remove('show');
@@ -1684,7 +2146,7 @@ header{gap:6px}
   // ================= PULSANTI =================
   document.addEventListener('pointerdown',function(){ac();},{once:true});
   document.getElementById('bLevel').onclick=function(){stopFx();document.getElementById('win').classList.remove('show');openMenu(started?islandOf(lv).id:undefined);};
-  document.getElementById('bMapBack').onclick=function(){menu.classList.remove('show');buildMap();map.classList.add('show');document.getElementById('mapClose').style.display=started&&!over?'':'none';};
+  document.getElementById('bMapBack').onclick=function(){menu.classList.remove('show');openMap();};
   document.getElementById('mapClose').onclick=function(){closeMap();};
   document.getElementById('bSetMap').onclick=function(){openSettings();};
   document.getElementById('bGuideMap').onclick=function(){openGuide();};
@@ -1824,6 +2286,15 @@ header{gap:6px}
         c.appendChild(b);
       });
     }
+    var gd=group('sgDif');
+    var dl=document.createElement('div'); dl.className='difl'; gd.appendChild(dl);
+    DIFS.forEach(function(k,i){
+      var b=document.createElement('button'); b.className='difbtn'+(S.dif===i?' on':''); b.setAttribute('data-d',i);
+      b.innerHTML='<b>'+tx('dif_'+k)+'</b><span>'+tx('difd_'+k)+'</span><i>'+'●'.repeat(i+1)+'○'.repeat(5-i)+'</i>';
+      b.onclick=function(){S.dif=i;saveSettings();Array.prototype.forEach.call(dl.children,function(x){x.classList.remove('on');});b.classList.add('on');};
+      dl.appendChild(b);
+    });
+    var dn=document.createElement('div'); dn.className='difnote'; dn.textContent=tx('difNote')+(S.cf?' '+tx('difCfNote'):''); gd.appendChild(dn);
     var g=group('sgApp');
     swatches(g,'slBg',['level'].concat(Object.keys(BGP)),BGP,S.bg,function(k){S.bg=k;saveSettings();applyTheme(cfg);});
     swatches(g,'slTile',['level'].concat(Object.keys(TLP)),TLP,S.tile,function(k){S.tile=k;saveSettings();applyTheme(cfg);});
@@ -1880,6 +2351,7 @@ header{gap:6px}
     setTxt('lblHint','hint'); setTxt('lblUndo','undo'); setTxt('lblShuf','shuffle'); setTxt('lblNew','restart');
     setTxt('menuSub','chooseLevel'); setTxt('bAgain','again'); setTxt('bMenu','levels');
     document.getElementById('bSettings').setAttribute('aria-label',tx('setAria')); setTxt('bSetMenu','setBtn');
+    setTxt('bBonus','bonusBtn'); if(document.getElementById('bonus').classList.contains('show'))buildBonus();
     setTxt('mapTitle','mapTitle'); setTxt('mapSub','mapSub'); setTxt('bMapBack','mapBack'); setTxt('bSetMap','setBtn'); setTxt('bGuideMap','guideBtn');
     if(menu.classList.contains('show'))buildMenu();
     if(map.classList.contains('show'))buildMap();

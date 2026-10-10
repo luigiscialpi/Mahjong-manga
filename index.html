@@ -255,9 +255,25 @@ header{gap:6px}
 .menutop{display:flex;align-items:center;min-height:46px;margin-bottom:2px}
 .mapback{min-height:44px;padding:4px 16px;background:var(--panel);color:var(--ink);box-shadow:none;border-radius:22px;flex-direction:row;font-size:15px}
 #islTitle{margin:2px 0 0;text-align:center;font-size:19px;font-weight:800;color:var(--ink)}
+.tile.gold{background:linear-gradient(145deg,#fff6c8,#ffe27a 65%,#f2c13a)}
+.hc .tile.gold{background:#fff0a8}
+.gem{position:absolute;top:-10px;left:-10px;font-size:20px;line-height:1;z-index:2;pointer-events:none;animation:gemtw 1.8s ease-in-out infinite}
+@keyframes gemtw{50%{transform:scale(1.25) rotate(14deg)}}
+.nofx .gem{animation:none}
+#goldBar{display:none;align-items:center;justify-content:center;gap:8px;min-height:26px;flex-shrink:0;font-size:17px;letter-spacing:3px;color:#ffe27a;font-weight:700}
+#goldBar small{font-size:12px;letter-spacing:0;color:var(--ink-soft);font-weight:600}
+#fxLayer{position:fixed;inset:0;pointer-events:none;z-index:6000;overflow:hidden}
+#fxLayer .sp{position:absolute;font-size:18px;line-height:1;will-change:transform,opacity}
+#combo{position:fixed;left:50%;top:34%;transform:translateX(-50%);z-index:6100;pointer-events:none;font-family:Georgia,serif;font-weight:900;font-size:40px;color:#ffe27a;
+  text-shadow:0 3px 0 #b8741a,0 0 18px rgba(255,226,122,.9);opacity:0;white-space:nowrap}
+.lcard i.dif{position:absolute;right:12px;top:10px;font-style:normal;font-size:10px;letter-spacing:1px;color:#fff;opacity:.9}
+.lcard.locked i.dif{display:none}
+.lcard u.bossb{position:absolute;right:12px;top:24px;text-decoration:none;font-size:17px}
+.lcard.locked u.bossb{display:none}
+.lcard .stars em{font-style:normal;font-size:12px;letter-spacing:0;margin-left:6px;color:#fff3b0}
 @media (prefers-reduced-motion: reduce){
   .tile,#toast{transition:none}.tile.hint{animation:none;outline:4px solid #ff6a3d}
-  .tile.blocker,.tile.target,.tile.match,.isl.shake{animation:none}
+  .tile.blocker,.tile.target,.tile.match,.isl.shake,.gem{animation:none}
   .card,.card .trophy,.board-in .tile{animation:none}.card .st.on{animation:none;opacity:1}
 }
 </style>
@@ -278,6 +294,7 @@ header{gap:6px}
   <div class="sbname" id="sbName"></div>
   <div class="sbrec" id="sbRec"></div>
 </div>
+<div id="goldBar"><span id="goldIcons"></span><small id="goldLbl"></small></div>
 <div id="area"><div id="board"></div><div id="toast"></div></div>
 <nav>
   <button id="bHint"><i>💡</i><span id="lblHint">Aide</span><em id="cHint">∞</em></button>
@@ -285,6 +302,9 @@ header{gap:6px}
   <button id="bShuf"><i>🔀</i><span id="lblShuf">Mélanger</span><em id="cShuf">∞</em></button>
   <button id="bNew"><i>🔄</i><span id="lblNew">Refaire</span><em>&nbsp;</em></button>
 </nav>
+
+<div id="fxLayer"></div>
+<div id="combo"></div>
 
 <div id="map" class="ov">
   <button id="mapClose" aria-label="Fermer">✕</button>
@@ -677,6 +697,39 @@ header{gap:6px}
       th:['#e0742a','#6a1f4a','#fff1a8','#f09a3a','#8a3a1f'],
       build:function(a){rect(a,0,0,6,7,0);rect(a,1,1,4,5,1);rect(a,1,1,4,5,2);rect(a,1,2,4,3,3);rect(a,2,3,2,1,4);}}
   ];
+  // ---- Isola degli animali: forme proprie (al massimo 5 colonne × 6 righe: stesse in modalità normale e comoda) ----
+  function art(a,z,lines){
+    for(var y=0;y<lines.length;y++)for(var x=0;x<lines[y].length;x++)if(lines[y].charAt(x)==='#')a.push({x:x,y:y,z:z});
+  }
+  var ISL_SHAPES=[
+    function(a){art(a,0,['.###.','#####','#####','.###.']);},                                                   // 1 ottagono
+    function(a){art(a,0,['.###.','.###.','#####','#####','.###.','.###.']);},                                   // 2 croce
+    function(a){art(a,0,['..#..','.###.','#####','#####','.###.','..#..']);},                                   // 3 rombo
+    function(a){art(a,0,['##.##','#####','#####','.###.','..#..']);},                                           // 4 cuore
+    function(a){art(a,0,['#####','.###.','..#..','.###.','#####']);art(a,1,['.....','.###.','..#..','.###.']);},  // 5 clessidra (boss)
+    function(a){art(a,0,['##.##','##.##','#####','#####','##.##','##.##']);art(a,1,['##.##','##.##']);},       // 6 due torri
+    function(a){art(a,0,['#....','##...','###..','####.','#####']);art(a,1,['.....','#....','##...','###..']);},   // 7 scalinata
+    function(a){art(a,0,['.###.','#####','#####','#####','.###.']);art(a,1,['.....','.###.','.###.','.###.']);},   // 8 fiore
+    function(a){art(a,0,['.###.','#####','##.##','##.##','##.##']);art(a,1,['.###.','.###.']);},               // 9 ponte
+    function(a){art(a,0,['..#..','..#..','#####','.###.','.###.','##.##']);art(a,1,['.....','.....','.###.','.###.']);art(a,2,['.....','.....','..#..','..#..']);},   // 10 stella (boss)
+    function(a){art(a,0,['#.#.#','#####','#####','#####','#####','.###.']);art(a,1,['.....','.###.','.###.']);},   // 11 castello
+    function(a){art(a,0,['##.##','#####','.###.','.###.','#####','##.##']);art(a,1,['.....','.###.','..#..','..#..','.###.']);},   // 12 farfalla
+    function(a){art(a,0,['..#..','.###.','#####','.###.','#####','..#..']);art(a,1,['.....','.....','.###.','.###.','.###.']);art(a,2,['.....','.....','..#..','..#..']);},   // 13 albero
+    function(a){art(a,0,['.#.#.','#####','#####','#####','#####']);art(a,1,['.....','.###.','.###.','.###.']);art(a,2,['.....','..#..','.###.','..#..']);},   // 14 montagne
+    function(a){art(a,0,['.###.','.###.','#####','#####','.###.','.###.']);art(a,1,['.###.','.###.','.###.','.###.','.###.','.###.']);art(a,2,['.....','..#..','..#..','..#..','..#..']);},   // 15 faro (boss)
+    function(a){art(a,0,['..#..','.###.','#####','#####','.###.','..#..']);art(a,1,['.....','..#..','.###.','.###.','..#..']);art(a,2,['.....','.....','.###.','.###.']);art(a,3,['.....','.....','..#..','..#..']);},   // 16 diamante a strati
+    function(a){art(a,0,['#.#.#','#####','#####','#####','#####','#####']);art(a,1,['.....','.###.','.###.','.###.','.###.']);art(a,2,['.....','..#..','.###.','.###.','..#..']);art(a,3,['.....','.....','..#..','..#..']);},   // 17 cattedrale
+    function(a){art(a,0,['.###.','#####','#####','#####','#####','.###.']);art(a,1,['.###.','.###.','.###.','.###.','.###.','.###.']);art(a,2,['.....','.###.','.###.','.###.','.###.']);art(a,3,['.....','..#..','.###.','.###.','..#..']);art(a,4,['.....','.....','..#..','..#..']);},   // 18 piramide a gradoni
+    function(a){art(a,0,['#####','#####','#####','#####','#####','#####']);art(a,1,['.###.','#####','#####','#####','#####','.###.']);art(a,2,['.....','.###.','.###.','.###.','.###.']);art(a,3,['.....','.....','..#..','..#..']);},   // 19 grande piramide
+    function(a){art(a,0,['#####','#####','#####','#####','#####','#####']);art(a,1,['.###.','#####','#####','#####','#####','.###.']);art(a,2,['.....','.###.','.###.','.###.','.###.']);art(a,3,['.....','..#..','.###.','.###.','..#..']);art(a,4,['.....','.....','..#..','..#..']);}    // 20 re del viaggio (boss)
+  ];
+  // parametri dei livelli dell'isola: n = tipi di disegno, gold = tessere d'oro, diff = difficoltà 1-5, boss, hid = gruppi nascosti
+  var ISL_CFG=[
+    {n:6,gold:0,diff:1},{n:7,gold:0,diff:1},{n:8,gold:1,diff:1},{n:9,gold:1,diff:2},{n:10,gold:2,diff:2,boss:true},
+    {n:11,gold:2,diff:2},{n:12,gold:3,diff:3},{n:13,gold:3,diff:3},{n:14,gold:3,diff:3},{n:14,gold:4,diff:4,boss:true},
+    {n:15,gold:3,diff:3,hid:[6]},{n:16,gold:3,diff:3,hid:[8]},{n:17,gold:4,diff:4,hid:[4,4]},{n:18,gold:4,diff:4,hid:[6,6]},{n:18,gold:5,diff:4,hid:[8,8],boss:true},
+    {n:19,gold:5,diff:4,hid:[4,4,4]},{n:20,gold:5,diff:5,hid:[6,6,6]},{n:22,gold:5,diff:5,hid:[8,8,8]},{n:23,gold:6,diff:5,hid:[6,6,6,6]},{n:24,gold:8,diff:5,hid:[8,8,8,8],boss:true}
+  ];
   // Layout della Modalità comoda: al massimo 5 colonne × 6 righe, così le tessere sono più grandi.
   // Ogni funzione costruisce una tavola; se il numero di tessere è dispari si toglie l'ultima (sempre dell'ultimo piano).
   var COMFORT=[
@@ -703,6 +756,7 @@ header{gap:6px}
   ];
   function layoutList(n,comfort){
     var a=[];
+    if(n>BASE_LV){ISL_SHAPES[n-BASE_LV-1](a); if(a.length%2)a.pop(); return a;}
     var b=(n-1)%BASE_LV;
     if(comfort&&COMFORT[b]){COMFORT[b](a); if(a.length%2)a.pop();}
     else LEVELS[b].build(a);
@@ -710,7 +764,15 @@ header{gap:6px}
   }
   // i 20 livelli base servono sia ai «livelli iniziali» (id 1-20) sia all'Isola degli animali (id 21-40: stessi layout, regole e limiti)
   (function(){var i,k,c,base=LEVELS.length; for(i=0;i<base;i++){LEVELS[i].world='prologue';}
-    for(i=0;i<base;i++){c={}; for(k in LEVELS[i])c[k]=LEVELS[i][k]; c.world='animals'; LEVELS.push(c);} })();
+    for(i=0;i<base;i++){c={}; for(k in LEVELS[i])c[k]=LEVELS[i][k]; c.world='animals';
+      var cf=ISL_CFG[i]; c.n=cf.n; c.gold=cf.gold; c.diff=cf.diff; c.boss=!!cf.boss;
+      if(cf.hid)c.hid=cf.hid.slice(); else delete c.hid;
+      c.build=(function(j){return function(a){ISL_SHAPES[j](a);};})(i);
+      LEVELS.push(c);} })();
+  function markGold(list,count){
+    var c=list.filter(function(t){return !(t.hid>0);}); shuffleArr(c);
+    for(var i=0;i<count&&i<c.length;i++)c[i].gold=true;
+  }
   function markHidden(list,sizes){
     var idx=shuffleArr(list.map(function(_,i){return i;})), p=0;
     sizes.forEach(function(sz,g){for(var k=0;k<sz;k++)list[idx[p++]].hid=g+1;});
@@ -725,7 +787,7 @@ header{gap:6px}
 
   // ================= IMPOSTAZIONI (dati) =================
   var SET_KEY='mj_set1';
-  var SDEF={bg:'level',tile:'level',ui:0,hc:0,cb:0,nt:0,bar:0,vol:100,vib:1,eq:0,auto:0,cf:0};
+  var SDEF={bg:'level',tile:'level',ui:0,hc:0,cb:0,nt:0,bar:0,vol:100,vib:1,eq:0,auto:0,cf:0,fx:1};
   var BGP={jade:['#1f6b57','#134536','#e8b43a'],ocean:['#1f6f94','#0d3350','#7fe0ff'],cherry:['#b0476f','#5c1f3b','#ffd1e3'],sunset:['#bf5d2c','#5e2512','#ffd166'],
     violet:['#6038a6','#2a1757','#dcbcff'],graphite:['#3b3f46','#15171a','#f0c040'],night:['#2a3a73','#0a0e2c','#9bbcff'],sand:['#8a7a55','#3e3520','#fff0b0']};
   var TLP={green:['#2a8a62','#17503b'],blue:['#2a86b8','#154a73'],pink:['#d8628f','#7d2a52'],gold:['#cfa72f','#7a5a0e'],
@@ -780,6 +842,7 @@ header{gap:6px}
       pauseShort:'Pause', tNoMatchFree:'Aucune tuile identique n\'est libre pour le moment',
       mapTitle:'Le voyage', mapSub:'Choisis une île', mapBack:'🗺️ Les îles', isl_animals:'Île des animaux', isl_sweets:'Île des douceurs', isl_art:'Île de l\'art', isl_science:'Île des sciences', isl_sea:'Île de la mer', isl_flowers:'Île des fleurs', mapProgress:'{a}/{b} ★', mapSoon:'Bientôt', mapAria:'Carte du voyage',
       isl_prologue:'Niveaux de départ', mapNeedPrologue:'Termine les niveaux de départ', winPrologue:'Niveaux de départ terminés !', winPrologueSub:'Le voyage commence : l\'Île des animaux t\'attend', toMap:'🗺️ Vers le voyage',
+      cmb1:'Bien !', cmb2:'Super !', cmb3:'Génial !', cmb4:'Incroyable !', goldLbl:'Tuiles d\'or {a}/{b}', winGold:'✨ Tuiles d\'or : {a}/{b}', diffLbl:'Difficulté', setFx:'Effets spéciaux', setFxHint:'Étincelles, combos et tuiles d\'or qui brillent',
       names:['Jade','Océan','Cerisier','Crépuscule','Nuit violette','Laque rouge','Glace','Or','Minuit','Cosmos','Menthe','Corail','Saphir','Citron','Améthyste','Désert','Tempête','Bronze','Étoilée','Aube'],
       intro:{
         1:{t:'Bienvenue !',l:['Touche deux tuiles identiques et libres pour les retirer.','Une tuile est libre si rien ne la recouvre et si son côté gauche ou droit est dégagé.','Joue vite et avec peu d\'aides pour gagner 3 étoiles ★.']},
@@ -789,7 +852,8 @@ header{gap:6px}
         11:{t:'Tuiles cachées',l:['Certaines tuiles sont verrouillées 🔒 : tu ne peux pas les toucher.','Associe une paire d\'étoiles ⭐ pour les déverrouiller.','Même verrouillées, elles bloquent les tuiles voisines.']},
         13:{t:'Deux groupes cachés',l:['Il y a maintenant deux groupes de tuiles verrouillées.','Chaque paire d\'étoiles ⭐ n\'en débloque qu\'un seul : il t\'en faut deux.']},
         16:{t:'Trois groupes cachés',l:['Trois groupes de tuiles verrouillées : il faut trois paires d\'étoiles ⭐.','Le compteur 🔒 en haut indique combien de tuiles restent cachées.']},
-        19:{t:'Quatre groupes cachés',l:['Quatre groupes de tuiles verrouillées : il faut quatre paires d\'étoiles ⭐.','Cherche les étoiles en premier : elles ouvrent la voie.']}
+        19:{t:'Quatre groupes cachés',l:['Quatre groupes de tuiles verrouillées : il faut quatre paires d\'étoiles ⭐.','Cherche les étoiles en premier : elles ouvrent la voie.']},
+        23:{t:'Tuiles d\'or et combos',l:['Certaines tuiles brillent en doré ✨ : associe-les pour collecter ce trésor.','Elles ne changent pas les règles, mais comptent : le nombre est affiché en haut.','Enchaîne les paires vite pour faire des combos : plus de combos, plus d\'étincelles !']}
       }
     },
     en:{
@@ -827,6 +891,7 @@ header{gap:6px}
       pauseShort:'Pause', tNoMatchFree:'No identical tile is free right now',
       mapTitle:'The journey', mapSub:'Choose an island', mapBack:'🗺️ Islands', isl_animals:'Animal island', isl_sweets:'Sweets island', isl_art:'Art island', isl_science:'Science island', isl_sea:'Sea island', isl_flowers:'Flower island', mapProgress:'{a}/{b} ★', mapSoon:'Coming soon', mapAria:'Journey map',
       isl_prologue:'Starting levels', mapNeedPrologue:'Finish the starting levels', winPrologue:'Starting levels complete!', winPrologueSub:'The journey begins: the Animal island awaits', toMap:'🗺️ To the journey',
+      cmb1:'Nice!', cmb2:'Super!', cmb3:'Great!', cmb4:'Amazing!', goldLbl:'Golden tiles {a}/{b}', winGold:'✨ Golden tiles: {a}/{b}', diffLbl:'Difficulty', setFx:'Special effects', setFxHint:'Sparkles, combos and glowing golden tiles',
       names:['Jade','Ocean','Cherry','Sunset','Violet night','Red lacquer','Ice','Gold','Midnight','Cosmos','Mint','Coral','Sapphire','Lemon','Amethyst','Desert','Storm','Bronze','Starry','Dawn'],
       intro:{
         1:{t:'Welcome!',l:['Tap two identical, free tiles to remove them.','A tile is free when nothing covers it and its left or right side is open.','Play fast and with few aids to earn 3 stars ★.']},
@@ -836,7 +901,8 @@ header{gap:6px}
         11:{t:'Hidden tiles',l:['Some tiles are locked 🔒: you can\'t tap them.','Match a pair of stars ⭐ to unlock them.','Even while locked, they still block the tiles next to them.']},
         13:{t:'Two hidden groups',l:['There are now two groups of locked tiles.','Each pair of stars ⭐ unlocks only one group: you need two pairs.']},
         16:{t:'Three hidden groups',l:['Three groups of locked tiles: you need three pairs of stars ⭐.','The 🔒 counter at the top shows how many tiles are still hidden.']},
-        19:{t:'Four hidden groups',l:['Four groups of locked tiles: you need four pairs of stars ⭐.','Look for the stars first: they open the way.']}
+        19:{t:'Four hidden groups',l:['Four groups of locked tiles: you need four pairs of stars ⭐.','Look for the stars first: they open the way.']},
+        23:{t:'Golden tiles and combos',l:['Some tiles glow gold ✨: match them to collect the treasure.','They do not change the rules, but they count: the number is shown at the top.','Match pairs quickly in a row for combos: more combos, more sparkles!']}
       }
     },
     it:{
@@ -874,6 +940,7 @@ header{gap:6px}
       pauseShort:'Pausa', tNoMatchFree:'Nessuna tessera uguale è libera per ora',
       mapTitle:'Il viaggio', mapSub:'Scegli un\'isola', mapBack:'🗺️ Le isole', isl_animals:'Isola degli animali', isl_sweets:'Isola dei dolci', isl_art:'Isola dell\'arte', isl_science:'Isola della scienza', isl_sea:'Isola del mare', isl_flowers:'Isola dei fiori', mapProgress:'{a}/{b} ★', mapSoon:'Presto', mapAria:'Mappa del viaggio',
       isl_prologue:'Livelli iniziali', mapNeedPrologue:'Finisci i livelli iniziali', winPrologue:'Livelli iniziali completati!', winPrologueSub:'Il viaggio comincia: ti aspetta l\'Isola degli animali', toMap:'🗺️ Verso il viaggio',
+      cmb1:'Bene!', cmb2:'Super!', cmb3:'Grande!', cmb4:'Incredibile!', goldLbl:'Tessere d\'oro {a}/{b}', winGold:'✨ Tessere d\'oro: {a}/{b}', diffLbl:'Difficoltà', setFx:'Effetti speciali', setFxHint:'Scintille, combo e tessere d\'oro che brillano',
       names:['Giada','Oceano','Ciliegio','Tramonto','Notte viola','Lacca rossa','Ghiaccio','Oro','Mezzanotte','Cosmo','Menta','Corallo','Zaffiro','Limone','Ametista','Deserto','Tempesta','Bronzo','Stellata','Alba'],
       intro:{
         1:{t:'Benvenuto!',l:['Tocca due tessere uguali e libere per toglierle.','Una tessera è libera se nulla la copre e il suo lato sinistro o destro è libero.','Gioca veloce e con pochi aiuti per ottenere 3 stelle ★.']},
@@ -883,7 +950,8 @@ header{gap:6px}
         11:{t:'Tessere nascoste',l:['Alcune tessere sono bloccate 🔒: non puoi toccarle.','Abbina una coppia di stelle ⭐ per sbloccarle.','Anche bloccate, ostacolano le tessere vicine.']},
         13:{t:'Due gruppi nascosti',l:['Ora ci sono due gruppi di tessere bloccate.','Ogni coppia di stelle ⭐ ne sblocca uno solo: te ne servono due.']},
         16:{t:'Tre gruppi nascosti',l:['Tre gruppi di tessere bloccate: servono tre coppie di stelle ⭐.','Il contatore 🔒 in alto mostra quante tessere restano nascoste.']},
-        19:{t:'Quattro gruppi nascosti',l:['Quattro gruppi di tessere bloccate: servono quattro coppie di stelle ⭐.','Cerca prima le stelle: aprono la strada.']}
+        19:{t:'Quattro gruppi nascosti',l:['Quattro gruppi di tessere bloccate: servono quattro coppie di stelle ⭐.','Cerca prima le stelle: aprono la strada.']},
+        23:{t:'Tessere d\'oro e combo',l:['Alcune tessere brillano d\'oro ✨: abbinale per raccogliere il tesoro.','Non cambiano le regole, ma contano: il numero è indicato in alto.','Abbina le coppie in fretta una dopo l\'altra per fare combo: più combo, più scintille!']}
       }
     }
   };
@@ -946,6 +1014,7 @@ header{gap:6px}
       for(i=0;i<a.length;i++)tone(r*a[i],i*.11,.35,'triangle',.16);
       tone(r*2,a.length*.11,.9,'sine',.14);tone(r*2.5,a.length*.11,.9,'sine',.12);tone(r*3,a.length*.11,.9,'sine',.12);},
     boom:function(){noise(0,.55,.2,'lowpass',500);noise(.03,.25,.1,'highpass',3500);tone(90,0,.3,'sine',.12,40);},
+    gold:function(){var r=root(),a=[3,4,5,6.5,8],i;for(i=0;i<a.length;i++)tone(r*a[i],i*.055,.28,'sine',.13);},
     unlock:function(){var r=root(),a=[2,2.5,3,4,5],i;for(i=0;i<a.length;i++)tone(r*a[i],.05+i*.07,.3,'sine',.13);noise(0,.25,.08,'highpass',5000);},
     pop:function(){noise(0,.12,.07,'highpass',4500);}
   };
@@ -1027,6 +1096,7 @@ header{gap:6px}
   var sel=null, history=[], secs=0, timer=null, over=false, started=false, unl=0;
   var hintsLeft=0, shufLeft=0, undoLeft=0, combo=0, lastMatch=0;
   var hintsUsed=0, undosUsed=0, shufUsed=0, shufBarrier=false;
+  var goldGot=0, goldTotal=0;
 
   function G(){return cfg.hid?cfg.hid.length:0;}
   function isLocked(t){return (t.hid||0)>unl;}
@@ -1057,7 +1127,8 @@ header{gap:6px}
   function paintTile(t){
     var lk=isLocked(t);
     t.el.classList.toggle('locked',lk);
-    t.el.innerHTML='<svg viewBox="0 0 60 80" preserveAspectRatio="xMidYMid meet">'+(lk?LOCKED:TYPES[t.type])+'</svg>';
+    t.el.classList.toggle('gold',!!t.gold&&!lk);
+    t.el.innerHTML='<svg viewBox="0 0 60 80" preserveAspectRatio="xMidYMid meet">'+(lk?LOCKED:TYPES[t.type])+'</svg>'+((t.gold&&!lk)?'<span class="gem">✨</span>':'');
   }
   function layout(){
     var maxX=0,maxY=0; maxZ=0;
@@ -1154,7 +1225,8 @@ header{gap:6px}
     try{
       localStorage.setItem(SAVE_KEY,JSON.stringify({v:1,lv:lv,secs:secs,unl:unl,hl:hintsLeft,sl:shufLeft,ul:undoLeft,
         hu:hintsUsed,uu:undosUsed,su:shufUsed,sb:shufBarrier,cm:curCf?1:0,
-        t:tiles.map(function(t){return [t.type,t.hid||0,t.gone?1:0];}),
+        gg:goldGot,
+        t:tiles.map(function(t){return [t.type,t.hid||0,t.gone?1:0,t.gold?1:0];}),
         h:history.map(function(p){return [tiles.indexOf(p[0]),tiles.indexOf(p[1]),p[2]];}),at:Date.now()}));
     }catch(e){}
   }
@@ -1216,6 +1288,43 @@ header{gap:6px}
       if(x.type===STAR_IDX&&selectable(x,al)){x.el.classList.remove('hint'); void x.el.offsetWidth; x.el.classList.add('hint');}
     });
   }
+  // ---------- effetti speciali: scintille, combo, tessere d'oro ----------
+  var REDUCE_MOTION=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function fxOk(){return !!S.fx&&!REDUCE_MOTION&&typeof Element!=='undefined'&&!!Element.prototype.animate;}
+  function sparkBurst(x,y,list,count,dist){
+    if(!fxOk())return;
+    var layer=document.getElementById('fxLayer'), i, el, a, d;
+    for(i=0;i<count;i++){
+      el=document.createElement('span'); el.className='sp'; el.textContent=list[i%list.length];
+      el.style.left=(x-9)+'px'; el.style.top=(y-9)+'px'; layer.appendChild(el);
+      a=Math.random()*Math.PI*2; d=(.5+Math.random()*.7)*dist;
+      (function(e){
+        var an=e.animate([{transform:'translate(0,0) scale(.6)',opacity:1},{transform:'translate('+Math.cos(a)*d+'px,'+(Math.sin(a)*d-18)+'px) scale(1.15)',opacity:0}],{duration:600+Math.random()*350,easing:'ease-out'});
+        an.onfinish=function(){if(e.parentNode)e.parentNode.removeChild(e);};
+      })(el);
+    }
+  }
+  function burstAt(t,gold){
+    if(!t.el)return;
+    var r=t.el.getBoundingClientRect();
+    if(gold)sparkBurst(r.left+r.width/2,r.top+r.height/2,['✨','⭐','💛'],12,80);
+    else sparkBurst(r.left+r.width/2,r.top+r.height/2,['✨','⭐'],4,46);
+  }
+  function showCombo(c){
+    if(!fxOk())return;
+    var e=document.getElementById('combo'); e.textContent=tx('cmb'+Math.min(c,4));
+    e.style.color=c>=3?'#ff9ad5':'#ffe27a';
+    e.animate([{opacity:0,transform:'translateX(-50%) scale(.4)'},{opacity:1,transform:'translateX(-50%) scale(1.15)',offset:.25},{opacity:1,transform:'translateX(-50%) scale(1)',offset:.7},{opacity:0,transform:'translateX(-50%) translateY(-30px) scale(1)'}],{duration:1100,easing:'ease-out'});
+    sparkBurst(window.innerWidth/2,window.innerHeight*.36,['⭐','✨'],6+c*2,90+c*14);
+  }
+  function showGold(){
+    var b=document.getElementById('goldBar');
+    if(!goldTotal){b.style.display='none';return;}
+    var h='',i; for(i=0;i<goldTotal;i++)h+=(i<goldGot?'✨':'◌');
+    document.getElementById('goldIcons').textContent=h;
+    document.getElementById('goldLbl').textContent=tx('goldLbl',{a:goldGot,b:goldTotal});
+    b.style.display='flex';
+  }
   function tap(t){
     if(over||t.gone)return;
     armIdle();
@@ -1237,6 +1346,10 @@ header{gap:6px}
       history.push([a,b,g]);
       if(!g)SND.match(combo);
       buzz(14);
+      var gn=(a.gold?1:0)+(b.gold?1:0);
+      if(gn){goldGot+=gn; showGold(); SND.gold(); burstAt(a,!!a.gold); burstAt(b,!!b.gold);}
+      else {burstAt(a,false); burstAt(b,false);}
+      if(combo>=1)showCombo(combo);
       sbRecent.push(a.type); sbShow(a,b,'✔'); sbLater(function(){sbShow(null,null,'');},1100);
       a.gone=b.gone=true;
       a.el.classList.add('gone'); b.el.classList.add('gone');
@@ -1359,6 +1472,7 @@ header{gap:6px}
     if(!eff('nt')&&(!oldBest||secs<oldBest)){prog.best[lv]=secs;rec=!!oldBest;}
     var grand=(lv===LEVELS.length), prologueEnd=(lv===BASE_LV);
     if(!grand&&prog.unlocked<lv+1)prog.unlocked=lv+1;
+    if(goldTotal>0){prog.gold=prog.gold||{}; prog.goldTot=prog.goldTot||{}; if((prog.gold[lv]||0)<goldGot)prog.gold[lv]=goldGot; prog.goldTot[lv]=goldTotal;}
     saveProg();
     document.getElementById('winIcon').textContent=grand?'👑':(prologueEnd?'🗺️':'🏆');
     document.getElementById('winTitle').textContent=grand?tx('winGrand'):(prologueEnd?tx('winPrologue'):tx('winLevelDone',{n:localLv(lv)}));
@@ -1367,7 +1481,7 @@ header{gap:6px}
     document.getElementById('winStars').innerHTML=h;
     for(i=0;i<stars;i++)(function(k){setTimeout(function(){SND.star(k);},500+k*400);})(i);
     var l1=tx('winTime',{t:fmt(secs)})+(rec?'  ·  '+tx('winNewRecord'):(oldBest?'  ·  '+tx('winRecord',{t:fmt(Math.min(oldBest,secs))}):''));
-    document.getElementById('winInfo').innerHTML=eff('nt')?tx('winAids',{n:aids}):(l1+'<br>'+tx('winAids',{n:aids}));
+    document.getElementById('winInfo').innerHTML=(eff('nt')?tx('winAids',{n:aids}):(l1+'<br>'+tx('winAids',{n:aids})))+(goldTotal>0?'<br>'+tx('winGold',{a:goldGot,b:goldTotal}):'');
     document.getElementById('winRule').textContent=tx(eff('nt')?'starsRuleNT':'starsRule');
     document.getElementById('bNext').style.display=grand?'none':'';
     document.getElementById('bNext').textContent=prologueEnd?tx('toMap'):tx('nextLevel',{n:localLv(lv)+1});
@@ -1378,8 +1492,8 @@ header{gap:6px}
   }
 
   // ================= MODALE NOVITA' DEL LIVELLO =================
-  var INTRO_VIS={1:[0,'=',0],3:['💡','🔀','↩️'],4:['S'],8:['↩️'],11:[26,26,'➜','L'],13:['2×',26,26,'➜','L'],16:['3×',26,26,'➜','L'],19:['4×',26,26,'➜','L']};
-  var INTRO_ICON={1:'👋',3:'💡',4:'🧱',8:'↩️',11:'🔒',13:'🔒',16:'🔒',19:'🔒'};
+  var INTRO_VIS={23:['✨','✨','➜','🏅'],1:[0,'=',0],3:['💡','🔀','↩️'],4:['S'],8:['↩️'],11:[26,26,'➜','L'],13:['2×',26,26,'➜','L'],16:['3×',26,26,'➜','L'],19:['4×',26,26,'➜','L']};
+  var INTRO_ICON={23:'✨',1:'👋',3:'💡',4:'🧱',8:'↩️',11:'🔒',13:'🔒',16:'🔒',19:'🔒'};
   function miniTile(idx){
     var d=document.createElement('div'); d.className='mt'+(idx==='L'?' locked':'');
     d.innerHTML='<svg viewBox="0 0 60 80">'+(idx==='L'?LOCKED:TYPES[idx])+'</svg>'; return d;
@@ -1427,15 +1541,18 @@ header{gap:6px}
     document.getElementById('lvName').textContent=lvTitle(n);
     curCf=saved?!!saved.cm:!!S.cf;
     var list=layoutList(n,curCf);
-    tiles=list; tiles.forEach(function(t){t.gone=false;t.hid=0;});
+    tiles=list; tiles.forEach(function(t){t.gone=false;t.hid=0;t.gold=false;});
     if(saved){
-      saved.t.forEach(function(r,i){var t=tiles[i]; t.type=r[0]; t.hid=r[1]; t.gone=!!r[2];});
-      unl=saved.unl||0;
+      saved.t.forEach(function(r,i){var t=tiles[i]; t.type=r[0]; t.hid=r[1]; t.gone=!!r[2]; t.gold=!!r[3];});
+      unl=saved.unl||0; goldGot=saved.gg||0;
     } else {
       if(cfg.hid)markHidden(tiles,cfg.hid);
       unl=0;
       assign(tiles,nEff(),0,G());
+      if(cfg.gold)markGold(tiles,cfg.gold);
+      goldGot=0;
     }
+    goldTotal=tiles.filter(function(t){return t.gold;}).length;
     over=false; started=true; sel=null; combo=0; lastMatch=0; sbRecent=[]; sbShow(null,null,'');
     if(saved){
       secs=saved.secs||0; hintsUsed=saved.hu||0; undosUsed=saved.uu||0; shufUsed=saved.su||0; shufBarrier=!!saved.sb;
@@ -1455,6 +1572,7 @@ header{gap:6px}
       d.addEventListener('click',function(){tap(t);});
       paintTile(t); board.appendChild(d);
     });
+    showGold();
     layout(); refresh();
     void board.offsetWidth; board.classList.add('board-in');
     SND.start();
@@ -1503,7 +1621,8 @@ header{gap:6px}
       b.style.background='linear-gradient(145deg,'+L.th[0]+','+L.th[1]+')';
       b.style.borderColor=L.th[2];
       var s=''; for(var k=0;k<3;k++)s+=(k<st?'★':'<s>★</s>');
-      b.innerHTML='<b>'+loc+'</b><span>'+lname(n)+'</span><div class="stars">'+s+'</div>'+
+      var gTot=(prog.goldTot||{})[n]||0, gGot=(prog.gold||{})[n]||0;
+      b.innerHTML='<b>'+loc+'</b>'+(L.diff?'<i class="dif" title="'+tx('diffLbl')+'">'+'●'.repeat(L.diff)+'○'.repeat(5-L.diff)+'</i>':'')+(L.boss?'<u class="bossb" title="Boss">👑</u>':'')+'<span>'+lname(n)+'</span><div class="stars">'+s+(gTot?'<em>✨'+gGot+'/'+gTot+'</em>':'')+'</div>'+
         '<small>'+(prog.best[n]?tx('record',{t:fmt(prog.best[n])}):(locked?tx('lockedLv'):fmtInfo(L)))+'</small>';
       b.addEventListener('click',function(){
         if(locked){SND.blocked();return;} ac(); startLevel(n);
@@ -1594,6 +1713,7 @@ header{gap:6px}
     var p=history.pop();
     if(p[2]){unl=p[2]-1; tiles.forEach(function(t){if(t.hid===p[2])paintTile(t);});}
     p[0].gone=false;p[1].gone=false;
+    goldGot=Math.max(0,goldGot-((p[0].gold?1:0)+(p[1].gold?1:0))); showGold();
     [p[0],p[1]].forEach(function(t){t.el.classList.remove('gone','hidden');});
     sel=null; refresh(); saveGame(); sbRecent.pop(); sbShow(null,null,'');
   };
@@ -1631,10 +1751,10 @@ header{gap:6px}
     var reach=Math.max(prog.unlocked, started?lv:1), cur=started?lv:reach, target=null;
     ns.forEach(function(n){
       var d=document.createElement('div'); d.className='gitem'; d.setAttribute('data-n',n);
-      if(n>reach){ d.className+=' lockedg'; d.innerHTML='<h4>'+tx('guideLocked',{n:n})+'</h4>'; }
+      if(n>reach){ d.className+=' lockedg'; d.innerHTML='<h4>'+tx('guideLocked',{n:(n>BASE_LV?islandOf(n).icon+' ':'')+localLv(n)})+'</h4>'; }
       else {
         var it=I18N[lang].intro[n]||I18N.fr.intro[n];
-        d.innerHTML='<h4>'+(INTRO_ICON[n]||'✨')+' '+it.t+'</h4><div class="sub">'+tx('newIn',{n:n})+'</div><div class="vis"></div><ul>'+
+        d.innerHTML='<h4>'+(INTRO_ICON[n]||'✨')+' '+it.t+'</h4><div class="sub">'+(n>BASE_LV?islandOf(n).icon+' ':'')+tx('newIn',{n:localLv(n)})+'</div><div class="vis"></div><ul>'+
           it.l.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>';
         buildVis(n,d.querySelector('.vis'));
         if(n<=cur)target=d;
@@ -1664,7 +1784,7 @@ header{gap:6px}
   var setWasOn=false;
   function applySettings(){
     var c=document.body.classList;
-    c.toggle('bigui',eff('ui')); showTime(); c.toggle('hc',!!S.hc); c.toggle('cb',!!(S.cb||S.hc));
+    c.toggle('bigui',eff('ui')); c.toggle('nofx',!S.fx); showTime(); c.toggle('hc',!!S.hc); c.toggle('cb',!!(S.cb||S.hc));
     sbEl('selbar').style.display=S.bar?'flex':'none';
     applyTheme(cfg);
     if(S.bar)sbShow(sel,null,'');
@@ -1713,7 +1833,7 @@ header{gap:6px}
       sw(r,it[1],!!S[it[0]],function(v){S[it[0]]=v?1:0;saveSettings();applySettings();});
     });
     g=group('sgHelp');
-    [['eq','setEq','setEqHint'],['auto','setAuto','setAutoHint']].forEach(function(it){
+    [['fx','setFx','setFxHint'],['eq','setEq','setEqHint'],['auto','setAuto','setAutoHint']].forEach(function(it){
       var r=row(g,it[1],it[2]); r.setAttribute('data-k',it[0]);
       sw(r,it[1],!!S[it[0]],function(v){S[it[0]]=v?1:0;saveSettings();applySettings();});
     });

@@ -268,14 +268,14 @@ header{gap:6px}
 #fxLayer .sp{position:absolute;font-size:18px;line-height:1;will-change:transform,opacity}
 #combo{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 74px);transform:translateX(-50%);z-index:6100;pointer-events:none;opacity:0;white-space:nowrap}
 .cmbox{display:flex;align-items:center;gap:8px;background:rgba(24,12,48,.78);border:3px solid #ffe27a;border-radius:34px;padding:4px 20px 4px 5px;box-shadow:0 5px 0 rgba(0,0,0,.35),0 0 18px rgba(255,226,122,.6)}
-.cmbox .mcv{width:52px;height:52px;border-radius:50%;background:#fff7dd;flex-shrink:0}
+.cmbox .mcv{width:58px;height:58px;border-radius:50%;background:#fff7dd;flex-shrink:0}
 .cmbox span{font-family:Georgia,serif;font-weight:900;font-size:28px;color:#ffe27a;text-shadow:0 2px 0 #b8741a}
 .cmbox.hot span{color:#ff9ad5;text-shadow:0 2px 0 #8a2a6a}
 .mclist{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:4px 0}
 .mcbtn{min-height:0;padding:6px 4px;border-radius:14px;background:rgba(255,255,255,.12);color:var(--ink);box-shadow:none;border:2px solid transparent;gap:2px;font-size:12.5px;font-weight:600;line-height:1.2;text-align:center}
-.mcbtn svg{width:58px;height:58px;background:#fff7dd;border-radius:50%}
+.mcbtn svg{width:76px;height:76px;background:#fff7dd;border-radius:50%}
 .mcbtn.on{background:rgba(255,255,255,.28);border-color:var(--accent)}
-.mcbtn .none{width:58px;height:58px;display:flex;align-items:center;justify-content:center;font-size:26px;background:rgba(0,0,0,.25);border-radius:50%}
+.mcbtn .none{width:76px;height:76px;display:flex;align-items:center;justify-content:center;font-size:26px;background:rgba(0,0,0,.25);border-radius:50%}
 #giftIcon svg{width:92px;height:92px;background:#fff7dd;border-radius:50%}
 .lcard i.dif{position:absolute;right:12px;top:10px;font-style:normal;font-size:10px;letter-spacing:1px;color:#fff;opacity:.9}
 .lcard.locked i.dif{display:none}
@@ -807,25 +807,74 @@ header{gap:6px}
     E(30,46,21,19,'#ffe066')+C(17,51,5.5,'#ff8a3d',false)+C(43,51,5.5,'#ff8a3d',false)+
     eye(23,44,'#2a1a10',.85)+eye(37,44,'#2a1a10',.85)+P('M26.5 48 Q30 44.5 33.5 48 Q30 55 26.5 48Z','#9aa3b0')+L('M30 56 q-2 2 -4 .3 M30 56 q2 2 4 .3',1.2)
   );
-  // ---- mascotte (si sceglie in Impostazioni): collie, shetland, siamese a pelo corto o lungo ----
+  // ---- mascotte in stile fumetto (contorno spesso, colori pieni, luci), fedeli alla razza ----
+  var MK='#2b2230';
+  function mp(d,f,w){return '<path d="'+d+'" fill="'+f+'" stroke="'+MK+'" stroke-width="'+(w||2)+'" stroke-linejoin="round" stroke-linecap="round"/>';}
+  function mn(d,f){return '<path d="'+d+'" fill="'+f+'"/>';}   // senza contorno (ombre e luci)
+  function me(x,y,rx,ry,f,w,tr){return '<ellipse cx="'+x+'" cy="'+y+'" rx="'+rx+'" ry="'+ry+'" fill="'+f+'"'+(w===0?'':' stroke="'+MK+'" stroke-width="'+(w||2)+'"')+(tr?' transform="'+tr+'"':'')+'/>';}
+  function ml(d,w,c){return '<path d="'+d+'" fill="none" stroke="'+(c||MK)+'" stroke-width="'+(w||1.8)+'" stroke-linecap="round" stroke-linejoin="round"/>';}
+  // occhio a mandorla da fumetto: bianco della luce + riflesso
+  function almond(x,y,w,h,iris,tilt,pupilV){
+    var tr='rotate('+tilt+' '+x+' '+y+')';
+    return '<g transform="'+tr+'">'+me(x,y,w,h,iris,2)+(pupilV?me(x,y,w*.28,h*.82,'#12101a',0):me(x+w*.1,y+h*.05,w*.5,h*.72,'#12101a',0))+me(x-w*.28,y-h*.38,w*.26,h*.3,'#fff',0)+me(x+w*.32,y+h*.3,w*.12,h*.14,'#fff',0)+'</g>';
+  }
   var MASCOTS={
-    collie:{vb:'0 2 60 76',art:
-      P('M13 36 L8 12 L25 24 L24 36Z','#a5561a')+P('M47 36 L52 12 L35 24 L36 36Z','#a5561a')+
-      C(11,60,9,'#fff')+C(49,60,9,'#fff')+E(30,62,22,11,'#fff')+
-      E(30,42,17,19,'#dc8a3c')+P('M30 24 Q23 36 25 48 Q27 58 30 60 Q33 58 35 48 Q37 36 30 24Z','#fff',false)+E(30,54,8,8.5,'#fff',false)+
-      eye(22.5,40,'#5a3a18',.8)+eye(37.5,40,'#5a3a18',.8)+E(30,60,3.4,2.6,O,false)+C(29,59,.9,'#fff',false)+
-      L('M30 62.5 q-3 3 -6 .3 M30 62.5 q3 3 6 .3',1.2)+blush(17.5,52)+blush(42.5,52)},
-    sheltie:{vb:'0 2 60 76',art:
-      P('M14 36 L10 13 L26 24 L25 36Z','#34303c')+P('M46 36 L50 13 L34 24 L35 36Z','#34303c')+
-      C(10,61,9,'#fff')+C(50,61,9,'#fff')+E(30,63,23,11,'#fff')+
-      E(30,43,17.5,18.5,'#34303c')+E(17,47,5,7,'#c47a3a',false)+E(43,47,5,7,'#c47a3a',false)+
-      P('M30 26 Q24 37 26 49 Q27.5 58 30 60 Q32.5 58 34 49 Q36 37 30 26Z','#fff',false)+E(30,54.5,7.5,8,'#fff',false)+
-      C(22.5,34.5,2.2,'#c47a3a',false)+C(37.5,34.5,2.2,'#c47a3a',false)+
-      eye(23,41,'#4a2a14',.8)+eye(37,41,'#4a2a14',.8)+E(30,60.5,3.2,2.4,O,false)+C(29,59.6,.9,'#fff',false)+
-      L('M30 63 q-3 3 -6 .3 M30 63 q3 3 6 .3',1.2)+blush(17,53)+blush(43,53)},
-    siamshort:{vb:'4 6 52 62',art:FACES[34]},
-    siamlong:{vb:'0 4 60 70',art:
-      C(8,50,9,'#f6ead3')+C(52,50,9,'#f6ead3')+P('M14 58 Q30 76 46 58 Q40 70 30 72 Q20 70 14 58Z','#f6ead3')+FACES[34]}
+    // COLLIE (a pelo lungo): sabbia-bianco, muso lungo e stretto, strisciatura bianca, grande gorgiera bianca, orecchie con la punta piegata in avanti
+    collie:{vb:'0 0 100 112',art:
+      mp('M4 112 Q-3 97 8 89 Q1 78 14 74 Q9 62 24 66 Q27 55 38 62 Q44 57 50 62 Q56 57 62 62 Q73 55 76 66 Q91 62 86 74 Q99 78 92 89 Q103 97 96 112Z','#ffffff')+
+      ml('M16 96 L12 106 M28 90 L24 104 M72 90 L76 104 M84 96 L88 106',1.4,'#c9d0de')+
+      mp('M43 74 Q50 69 57 74 L60 92 Q50 112 40 92Z','#f4f6fb',1.8)+
+      mp('M23 48 Q15 22 27 7 Q36 1 43 12 Q39 18 34 22 Q32 34 37 43Z','#a85a1c')+mp('M27 7 Q36 1 43 12 Q39 18 34 22Z','#e09a4a')+
+      mp('M77 48 Q85 22 73 7 Q64 1 57 12 Q61 18 66 22 Q68 34 63 43Z','#a85a1c')+mp('M73 7 Q64 1 57 12 Q61 18 66 22Z','#e09a4a')+
+      mp('M26 38 Q26 19 50 19 Q74 19 74 38 Q74 50 64 62 Q58 70 50 76 Q42 70 36 62 Q26 50 26 38Z','#dc8b3c')+
+      mn('M28 46 Q30 58 40 67 Q34 54 33 42Z M72 46 Q70 58 60 67 Q66 54 67 42Z','#b86a24')+
+      mp('M45 20 Q50 18 55 20 L59 44 Q60 58 56 68 Q53 75 50 77 Q47 75 44 68 Q40 58 41 44Z','#ffffff',1.8)+
+      almond(37,42,7.6,5,'#6a3b18',-12)+almond(63,42,7.6,5,'#6a3b18',12)+
+      ml('M30 34 Q37 30 44 34 M56 34 Q63 30 70 34',1.7)+
+      me(50,75,5.6,3.8,'#1b1620',1.6)+me(48.4,73.8,1.5,1,'#ffffff',0)+
+      ml('M50 79 V82 M50 82 Q45 87 40 83 M50 82 Q55 87 60 83',1.8)+mp('M46 85 Q50 93 54 85Z','#ff7f9c',1.6)},
+    sheltie:{vb:'0 0 100 112',art:
+      mp('M4 112 Q-3 97 8 89 Q1 78 14 74 Q9 62 24 66 Q27 55 38 62 Q44 57 50 62 Q56 57 62 62 Q73 55 76 66 Q91 62 86 74 Q99 78 92 89 Q103 97 96 112Z','#ffffff')+
+      ml('M15 96 L11 106 M27 90 L23 104 M73 90 L77 104 M85 96 L89 106',1.4,'#c9d0de')+
+      mp('M43 73 Q50 68 57 73 L60 92 Q50 112 40 92Z','#f4f6fb',1.8)+
+      mp('M22 48 Q14 22 27 7 Q36 1 43 12 Q39 18 34 22 Q32 34 37 43Z','#2e2a36')+mp('M27 7 Q36 1 43 12 Q39 18 34 22Z','#575166')+
+      mp('M78 48 Q86 22 73 7 Q64 1 57 12 Q61 18 66 22 Q68 34 63 43Z','#2e2a36')+mp('M73 7 Q64 1 57 12 Q61 18 66 22Z','#575166')+
+      mp('M24 40 Q24 19 50 19 Q76 19 76 40 Q76 53 64 62 Q58 68 50 73 Q42 68 36 62 Q24 53 24 40Z','#2e2a36')+
+      me(29,52,6,9,'#cf7a30',0,'rotate(-14 29 52)')+me(71,52,6,9,'#cf7a30',0,'rotate(14 71 52)')+
+      mp('M45 20 Q50 18 55 20 L59 43 Q60 56 56 65 Q53 72 50 73 Q47 72 44 65 Q40 56 41 43Z','#ffffff',1.8)+
+      me(36,32,4,3,'#cf7a30',1.5)+me(64,32,4,3,'#cf7a30',1.5)+
+      almond(37,42,7.4,5,'#4a2a14',-12)+almond(63,42,7.4,5,'#4a2a14',12)+
+      me(50,72,5.4,3.6,'#1b1620',1.6)+me(48.4,70.8,1.4,1,'#ffffff',0)+
+      ml('M50 76 V79 M50 79 Q45 84 40 80 M50 79 Q55 84 60 80',1.8)+mp('M46 82 Q50 90 54 82Z','#ff7f9c',1.6)},
+    // SIAMESE A PELO CORTO: testa a cuneo, grandi orecchie scure, maschera marrone che sfuma, occhi azzurri a mandorla obliqui, corpo crema slanciato
+    siamshort:{vb:'0 0 100 112',art:
+      mp('M36 84 Q50 92 64 84 L68 112 H32Z','#f3e6cf')+mn('M36 90 Q50 98 64 90 L66 100 Q50 106 34 100Z','#e6d5b8')+
+      mp('M16 48 L19 4 L48 24Z','#5b3a2a')+mp('M24 40 L25 15 L39 26Z','#d9a898',1.4)+
+      mp('M84 48 L81 4 L52 24Z','#5b3a2a')+mp('M76 40 L75 15 L61 26Z','#d9a898',1.4)+
+      mp('M17 46 Q17 28 50 28 Q83 28 83 46 Q82 64 66 78 Q58 88 50 90 Q42 88 34 78 Q18 64 17 46Z','#f6ead4')+
+      mn('M40 38 Q50 32 60 38 Q55 44 50 44 Q45 44 40 38Z','#f0e0c4')+
+      mp('M33 54 Q38 45 50 47 Q62 45 67 54 Q69 66 59 77 Q55 84 50 85 Q45 84 41 77 Q31 66 33 54Z','#8c5a3e',0)+
+      mn('M45 46 Q50 36 55 46 Q52 52 50 54 Q48 52 45 46Z','#8c5a3e')+
+      mn('M36 56 Q40 52 44 56 Q41 62 36 60Z M64 56 Q60 52 56 56 Q59 62 64 60Z','#a87556')+
+      almond(31,45,8.4,4.6,'#38a2ff',20,true)+almond(69,45,8.4,4.6,'#38a2ff',-20,true)+
+      mp('M45 63 H55 L50 70Z','#d9837a',1.6)+ml('M50 70 V74 M50 74 Q45 78 41 75 M50 74 Q55 78 59 75',1.7)+
+      ml('M16 64 L33 66 M15 71 L33 71 M84 64 L67 66 M85 71 L67 71',1.2)},
+    // SIAMESE A PELO LUNGO (tipo balinese): come il corto ma con pelo setoso: ciuffi alle orecchie, guance e gorgiera soffici, coda a piuma
+    siamlong:{vb:'0 0 100 112',art:
+      mp('M80 112 Q104 84 94 56 Q96 40 84 36 Q86 60 70 86Z','#6a4632')+mn('M88 56 Q96 70 80 96','#8a6248')+
+      mp('M32 84 Q50 94 68 84 L72 112 H28Z','#f3e6cf')+
+      mp('M30 86 L25 100 L34 97 L37 110 L44 99 L50 111 L56 99 L63 110 L66 97 L75 100 L70 86Z','#f3e6cf')+ml('M34 96 L36 104 M50 98 L50 106 M66 96 L64 104',1.3,'#d8c6a4')+
+      mp('M14 50 L17 2 L48 24Z','#5b3a2a')+mp('M22 42 L23 14 L39 26Z','#d9a898',1.4)+ml('M24 40 L24 24 M29 40 L30 22 M34 38 L35 28',1.3,'#f3e6cf')+
+      mp('M86 50 L83 2 L52 24Z','#5b3a2a')+mp('M78 42 L77 14 L61 26Z','#d9a898',1.4)+ml('M76 40 L76 24 M71 40 L70 22 M66 38 L65 28',1.3,'#f3e6cf')+
+      mp('M20 52 L6 56 L15 62 L3 69 L14 73 L6 83 L22 78 L26 66Z','#f6ead4')+mp('M80 52 L94 56 L85 62 L97 69 L86 73 L94 83 L78 78 L74 66Z','#f6ead4')+
+      mp('M17 46 Q17 28 50 28 Q83 28 83 46 Q82 64 66 78 Q58 88 50 90 Q42 88 34 78 Q18 64 17 46Z','#f6ead4')+
+      mn('M40 38 Q50 32 60 38 Q55 44 50 44 Q45 44 40 38Z','#f0e0c4')+
+      mp('M33 54 Q38 45 50 47 Q62 45 67 54 Q69 66 59 77 Q55 84 50 85 Q45 84 41 77 Q31 66 33 54Z','#8c5a3e',0)+
+      mn('M45 46 Q50 36 55 46 Q52 52 50 54 Q48 52 45 46Z','#8c5a3e')+
+      mn('M36 56 Q40 52 44 56 Q41 62 36 60Z M64 56 Q60 52 56 56 Q59 62 64 60Z','#a87556')+
+      almond(31,45,8.4,4.6,'#38a2ff',20,true)+almond(69,45,8.4,4.6,'#38a2ff',-20,true)+
+      mp('M45 63 H55 L50 70Z','#d9837a',1.6)+ml('M50 70 V74 M50 74 Q45 78 41 75 M50 74 Q55 78 59 75',1.7)+
+      ml('M18 66 L33 66 M17 72 L33 71 M82 66 L67 66 M83 72 L67 71',1.2)}
   };
   function mascotSvg(px){
     var m=MASCOTS[S.mascot]; if(!m)return '';
@@ -1965,7 +2014,7 @@ header{gap:6px}
       localStorage.setItem(SAVE_KEY,JSON.stringify({v:1,lv:lv,secs:secs,unl:unl,hl:hintsLeft,sl:shufLeft,ul:undoLeft,
         hu:hintsUsed,uu:undosUsed,su:shufUsed,sb:shufBarrier,cm:curCf?1:0,df:curDif,rl:rescueLeft,
         gg:goldGot,
-        t:tiles.map(function(t){return [t.type,t.hid||0,t.gone?1:0,t.gold?1:0,t.fogOn?1:0];}),
+        t:tiles.map(function(t){return [t.type,t.hid||0,t.gone?1:0,t.gold?1:0,t.fogOn?1:0,t.rel?[t.x,t.y,t.z]:0];}),
         h:history.map(function(p){return [tiles.indexOf(p[0]),tiles.indexOf(p[1]),p[2],p[3]?tiles.indexOf(p[3]):-1];}),at:Date.now()}));
     }catch(e){}
   }
@@ -2052,7 +2101,7 @@ header{gap:6px}
   function showCombo(c){
     if(!fxOk())return;
     var e=document.getElementById('combo'), box=e.firstChild;
-    box.innerHTML=mascotSvg(52)+'<span>'+tx('cmb'+Math.min(c,4))+'</span>';
+    box.innerHTML=mascotSvg(58)+'<span>'+tx('cmb'+Math.min(c,4))+'</span>';
     box.classList.toggle('hot',c>=3);
     e.animate([{opacity:0,transform:'translateX(-50%) translateY(-26px) scale(.6)'},{opacity:1,transform:'translateX(-50%) translateY(0) scale(1.08)',offset:.2},{opacity:1,transform:'translateX(-50%) translateY(0) scale(1)',offset:.75},{opacity:0,transform:'translateX(-50%) translateY(-18px) scale(1)'}],{duration:1300,easing:'ease-out'});
     sparkBurst(window.innerWidth/2,(window.innerHeight*.05)+110,['⭐','✨'],5+c*2,70+c*12);
@@ -2123,7 +2172,7 @@ header{gap:6px}
       if(rescueLeft!==null)rescueLeft--;
       var a2=alive(); var okA=assign(a2,nEff(),unl,G()); sel=null; sel2=null; history=[]; shufBarrier=true;
       if(GS===3&&okA===false){   // Tris: le tessere rimaste sono messe in modo che nessun tris sia impossibile (es. tre in fila): si riordinano ben distanziate
-        a2.sort(function(p,q){return q.z-p.z;}); a2.forEach(function(t,i){t.x=(i%3)*2; t.y=Math.floor(i/3); t.z=0;});
+        a2.sort(function(p,q){return q.z-p.z;}); a2.forEach(function(t,i){t.x=(i%3)*2; t.y=Math.floor(i/3); t.z=0; t.rel=1;});
         var ks=shuffleArr(poolOf(lv).filter(function(k){return k!==STAR_IDX;}).slice()), gi;
         for(gi=0;gi<a2.length;gi+=3){var ty=ks[(gi/3)%ks.length]; a2[gi].type=ty; if(a2[gi+1])a2[gi+1].type=ty; if(a2[gi+2])a2[gi+2].type=ty;}
         layout();
@@ -2315,7 +2364,7 @@ header{gap:6px}
     var list=layoutList(n,curCf);
     tiles=list; tiles.forEach(function(t){t.gone=false;t.hid=0;t.gold=false;t.fog=false;t.fogOn=false;});
     if(saved){
-      saved.t.forEach(function(r,i){var t=tiles[i]; t.type=r[0]; t.hid=r[1]; t.gone=!!r[2]; t.gold=!!r[3]; t.fogOn=!!r[4]; t.fog=t.fogOn;});
+      saved.t.forEach(function(r,i){var t=tiles[i]; t.type=r[0]; t.hid=r[1]; t.gone=!!r[2]; t.gold=!!r[3]; t.fogOn=!!r[4]; t.fog=t.fogOn; if(r[5]){t.x=r[5][0]; t.y=r[5][1]; t.z=r[5][2]; t.rel=1;}});
       unl=saved.unl||0; goldGot=saved.gg||0;
     } else {
       if(cfg.hid)markHidden(tiles,cfg.hid);
@@ -3169,7 +3218,7 @@ header{gap:6px}
   function cardName(it){return (typeof it.src==='string')?tx('mc_'+it.src.slice(2)):((I18N[lang].tn||I18N.fr.tn)[it.src]||'');}
   function cardSvg(it,locked){
     var inner,vb='0 0 60 80';
-    if(typeof it.src==='string'){var m=MASCOTS[it.src.slice(2)]; inner='<circle cx="30" cy="40" r="29" fill="#fff7dd"/>'+m.art; vb=m.vb;}
+    if(typeof it.src==='string'){var m=MASCOTS[it.src.slice(2)]; inner='<circle cx="50" cy="56" r="54" fill="#fff7dd"/>'+m.art; vb=m.vb;}
     else inner=TYPES[it.src];
     return '<svg viewBox="'+vb+'" preserveAspectRatio="xMidYMid meet"'+(locked?' style="filter:brightness(0) opacity(.28)"':'')+'>'+inner+'</svg>';
   }
@@ -3395,7 +3444,7 @@ header{gap:6px}
     var ml=document.createElement('div'); ml.className='mclist'; gm.appendChild(ml);
     ['collie','sheltie','siamshort','siamlong','none'].forEach(function(k){
       var b=document.createElement('button'); b.className='mcbtn'+(S.mascot===k?' on':''); b.setAttribute('data-m',k);
-      var prev=S.mascot; S.mascot=k; var sv=(k==='none')?'<span class="none">∅</span>':mascotSvg(58); S.mascot=prev;
+      var prev=S.mascot; S.mascot=k; var sv=(k==='none')?'<span class="none">∅</span>':mascotSvg(76); S.mascot=prev;
       b.innerHTML=sv+'<span>'+tx('mc_'+k)+'</span>';
       b.onclick=function(){S.mascot=k;saveSettings();Array.prototype.forEach.call(ml.children,function(x){x.classList.remove('on');});b.classList.add('on');SND.select();};
       ml.appendChild(b);
